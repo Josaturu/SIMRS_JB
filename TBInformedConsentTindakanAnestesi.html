@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Informed Consent Anestesi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7ff;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 70px;
+      margin-right: 15px;
+    }
+
+    .title {
+      text-align: center;
+      color: #396cf0;
+      font-size: 22px;
+      font-weight: bold;
+      margin: 10px 0 20px 0;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 1100px;
+      margin: auto;
+      overflow-x: auto;
+    }
+
+    .identity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      color: #396cf0;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: #396cf0;
+      outline: none;
+      box-shadow: 0 0 6px rgba(57,108,240,0.4);
+    }
+
+    .sticker-box {
+      border: 2px dashed #396cf0;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-style: italic;
+      color: #666;
+      background: #fafbff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+      transition: all 0.3s ease;
+    }
+
+    th {
+      background-color: #396cf0;
+      color: white;
+    }
+
+    tr:hover td {
+      background-color: #eef2ff;
+      transform: scale(1.01);
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      cursor: pointer;
+      accent-color: #396cf0;
+      transition: transform 0.2s ease;
+    }
+
+    input[type="checkbox"]:hover {
+      transform: scale(1.4);
+    }
+
+    .signature-section {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .signature-box {
+      flex: 1;
+      text-align: center;
+      margin: 0 10px;
+      padding: 15px;
+      border: 2px dashed #396cf0;
+      border-radius: 10px;
+      background: #fafbff;
+      transition: all 0.3s ease;
+    }
+
+    .signature-box:hover {
+      background: #eaf0ff;
+      transform: scale(1.02);
+    }
+
+    button {
+      display: block;
+      margin: 20px auto 0;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 30px;
+      background-color: #396cf0;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2f55c8;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(57,108,240,0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg" alt="Logo Rumah Sakit">
+      <div>
+        <strong>Rumah Sakit Umum</strong><br>
+        <span style="color:#396cf0; font-weight:bold;">PRASETYA BUNDA</span>
+      </div>
+    </div>
+    <div class="sticker-box">
+      Tempelkan Stiker Identitas Pasien
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="title">
+    INFORMED CONSENT TINDAKAN ANESTESI
+  </div>
+
+  <div class="form-container">
+
+    <!-- Informasi Identitas -->
+    <div class="identity-grid">
+      <div class="form-group">
+        <label for="ruang">Ruang Perawatan</label>
+        <input type="text" id="ruang" placeholder="Masukkan ruang perawatan">
+      </div>
+      <div class="form-group">
+        <label for="dokter">Dokter Pelaksana Tindakan</label>
+        <input type="text" id="dokter" placeholder="Masukkan nama dokter">
+      </div>
+      <div class="form-group">
+        <label for="pemberi">Nama Pemberi Informasi</label>
+        <input type="text" id="pemberi" placeholder="Masukkan nama pemberi informasi">
+      </div>
+      <div class="form-group">
+        <label for="jabatan">Jabatan</label>
+        <input type="text" id="jabatan" placeholder="Masukkan jabatan pemberi informasi">
+      </div>
+      <div class="form-group">
+        <label for="penerima">Nama Penerima Informasi</label>
+        <input type="text" id="penerima" placeholder="Masukkan nama penerima informasi">
+      </div>
+      <div class="form-group">
+        <label for="hubungan">Hubungan dengan Pasien</label>
+        <input type="text" id="hubungan" placeholder="Masukkan hubungan dengan pasien">
+      </div>
+    </div>
+
+    <!-- Tabel Utama -->
+    <table>
+        <tr>
+            <th colspan="4" style="text-align: right;">RMC 4a Rev-01</th>
+        </tr>
+      <tr>
+        <th>No</th>
+        <th>Jenis Informasi</th>
+        <th>Isi Informasi</th>
+        <th>Ceklis</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Nama Tindakan Operasi</td>
+        <td><input type="text" style="width:100%; padding:5px; border:1px solid #ccc; border-radius:5px;"></td>
+        <td><input type="checkbox"></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Tindakan yang akan dilakukan</td>
+        <td>
+          <label><input type="checkbox"> Anestesi Umum</label><br>
+          <label><input type="checkbox"> Anestesi Spinal</label><br>
+          <label><input type="checkbox"> Anestesi Epidural</label><br>
+          <label><input type="checkbox"> Anestesi Kaudal</label><br>
+          <label><input type="checkbox"> Kombinasi Spinal-Epidural</label><br>
+          <label><input type="checkbox"> Blok Saraf Perifer</label><br>
+          <label><input type="checkbox"> Sedasi</label>
+        </td>
+        <td><input type="checkbox"></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Indikasi Tindakan</td>
+        <td>
+          <label><input type="checkbox"> Menghilangkan kesadaran selama prosedur atau tindakan pembedahan</label><br>
+          <label><input type="checkbox"> Menghilangkan nyeri selama prosedur atau tindakan pembedahan</label>
+        </td>
+        <td><input type="checkbox"></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Tata Cara</td>
+        <td>
+          <label><input type="checkbox"> Obat disuntikkan ke dalam pembuluh darah, dihisap melalui paru-paru atau dengan dilakukan alat bantu napas</label><br>
+          <label><input type="checkbox"> Obat disuntikkan melalui jarum atau kateter yang ditempatkan ke dalam rongga belakang atau rongga didekatnya</label>
+        </td>
+        <td><input type="checkbox"></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Tujuan</td>
+        <td>Memfasilitasi tindakan pembedahan, agar pasien dan dokter operator aman dan nyaman</td>
+        <td><input type="checkbox"></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Risiko Tindakan dan Komplikasi</td>
+        <td>
+          <label><input type="checkbox"> Nyeri Tenggorokan</label><br>
+          <label><input type="checkbox"> Suara Serak</label><br>
+          <label><input type="checkbox"> Mual, Muntah</label><br>
+          <label><input type="checkbox"> Nyeri Otot</label><br>
+          <label><input type="checkbox"> Trauma pada daerah mata</label><br>
+          <label><input type="checkbox"> Infeksi</label><br>
+          <label><input type="checkbox"> Trauma pada gusi</label><br>
+          <label><input type="checkbox"> Pendarahan</label><br>
+          <label><input type="checkbox"> Luka lecet pada daerah bibir, gusi dan lidah</label><br>
+          <label><input type="checkbox"> Gigi Patah</label><br>
+          <label><input type="checkbox"> Stroke</label><br>
+          <label><input type="checkbox"> Penurunan tekanan darah</label><br>
+          <label><input type="checkbox"> Peningkatan tekanan darah</label><br>
+          <label><input type="checkbox"> Reaksi Alergi</label><br>
+          <label><input type="checkbox"> Penyempitan jalan nafas</label><br>
+          <label><input type="checkbox"> Henti Jantung</label><br>
+          <label><input type="checkbox"> Stroke</label><br>
+          <label><input type="checkbox"> Sakit Punggung</label><br>
+          <label><input type="checkbox"> Kerusakan Pada Otak</label><br>
+          <label><input type="checkbox"> Kerusakan Pada Syaraf</label><br>
+          <label><input type="checkbox"> Kelumpuhan</label><br>
+          <label><input type="checkbox"> Serangan Jantung</label><br>
+          <label><input type="checkbox"> Gangguan Irama Jantung</label><br>
+          <label><input type="checkbox"> Pembentukan bekuan darah</label>
+        </td>
+        <td><input type="checkbox"></td>
+      </tr>
+      <tr>
+        <td>
+            <label> </label>
+        </td>
+        <td>
+            <label>Status fisik :</label>
+        </td>
+        <td>
+            <label><input type="checkbox"> ASA I</label>
+            <label><input type="checkbox"> ASA II</label>
+            <label><input type="checkbox"> ASA III</label>
+            <label><input type="checkbox"> ASA IV</label>
+            <label><input type="checkbox"> ASA V</label>
+        </td>
+        <td><input type="checkbox"></td>
+      </tr>
+      <tr>
+        <td>
+            <label>8</label>
+        </td>
+        <td>
+            <label>Prognosis</label>
+        </td>
+        <td>
+            <textarea cols="100" rows="10"></textarea>
+        </td>
+        <td><input type="checkbox"></td>
+      </tr>
+      <tr>
+        <td>
+            <label>9</label>
+        </td>
+        <td>
+            <label>Alternatif dan Resiko</label>
+        </td>
+        <td>
+            <textarea cols="100" rows="10"></textarea>
+        </td>
+        <td><input type="checkbox"></td>
+      </tr>
+        <td>
+            <label>10</label>
+        </td>
+        <td>
+            <label>Lain-lain</label>
+        </td>
+        <td>
+            <textarea cols="100" rows="10"></textarea>
+        </td>
+        <td><input type="checkbox"></td>
+      </tr>
+    </table>
+
+    <!-- Tanda tangan -->
+    <div class="signature-section">
+      <div class="signature-box">
+        Tanda Tangan Pemberi Informasi
+      </div>
+      <div class="signature-box">
+        Tanda Tangan Pasien/Keluarga
+      </div>
+    </div>
+
+    <button type="submit">Simpan Data</button>
+  </div>
+
+</body>
+</html>

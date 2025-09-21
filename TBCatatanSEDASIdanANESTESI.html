@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Catatan SEDASI dan Anestesi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7ff;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 70px;
+      margin-right: 15px;
+    }
+
+    .title {
+      text-align: center;
+      color: #396cf0;
+      font-size: 22px;
+      font-weight: bold;
+      margin: 10px 0 20px 0;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 1100px;
+      margin: auto;
+      overflow-x: auto;
+    }
+
+    .identity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      color: #396cf0;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    .sticker-box {
+      border: 2px dashed #396cf0;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-style: italic;
+      color: #666;
+      background: #fafbff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #396cf0;
+      color: white;
+    }
+
+    tr:hover td {
+      background-color: #eef2ff;
+    }
+
+    /* Rata kolom */
+    table.four-col { table-layout: fixed; }
+    table.four-col td, table.four-col th { width: 25%; }
+
+    table.three-col { table-layout: fixed; }
+    table.three-col td, table.three-col th { width: 33.33%; }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      cursor: pointer;
+      accent-color: #396cf0;
+    }
+
+    .signature-section {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .signature-box {
+      flex: 1;
+      text-align: center;
+      margin: 0 10px;
+      padding: 15px;
+      border: 2px dashed #396cf0;
+      border-radius: 10px;
+      background: #fafbff;
+    }
+
+    button {
+      display: block;
+      margin: 20px auto 0;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 30px;
+      background-color: #396cf0;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2f55c8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg" alt="Logo Rumah Sakit">
+      <div>
+        <strong>Rumah Sakit Umum</strong><br>
+        <span style="color:#396cf0; font-weight:bold;">PRASETYA BUNDA</span>
+      </div>
+    </div>
+    <div class="sticker-box">
+      Tempelkan Stiker Identitas Pasien
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="title">
+    CATATAN SEDASI DAN ANESTESI
+  </div>
+
+  <div class="form-container">
+
+    <!-- Informasi Identitas -->
+    <div class="identity-grid">
+      <div class="form-group"><label>No. RM</label><input type="text"></div>
+      <div class="form-group"><label>Nama</label><input type="text"></div>
+      <div class="form-group"><label>Tanggal Lahir</label><input type="text"></div>
+      <div class="form-group"><label>Ruang Perawatan</label><input type="text"></div>
+      <div class="form-group"><label>Dokter yang Merawat</label><input type="text"></div>
+      <div class="form-group"><label>Hubungan dengan Pasien</label><input type="text"></div>
+    </div>
+
+    <!-- Tabel Utama -->
+    <table class="four-col">
+      <tr>
+        <th colspan="4" style="text-align: right;">RMOK 1a Rev-01</th>
+      </tr>
+      <tr>
+        <td colspan="2">Tanggal: <input type="date"></td>
+        <td colspan="2">Pukul: <input type="time"></td>
+      </tr>
+      <tr>
+        <td>Dokter Bedah: <input type="text"></td>
+        <td>Perawat Bedah: <input type="text"></td>
+        <td>Dokter Anestesi: <input type="text"></td>
+        <td>Perawat Anestesi: <input type="text"></td>
+      </tr>
+      <tr>
+        <td colspan="4">
+          Jenis Pembedahan: 
+          <label><input type="checkbox"> Elektif</label>
+          <label><input type="checkbox"> Cito</label>
+          <label><input type="checkbox"> ODC</label>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4">Diagnosa Pra Bedah: <textarea rows="3" style="width:100%;"></textarea></td>
+      </tr>
+      <tr>
+        <td colspan="4">Assessment Pra Anestesi: <input type="text" style="width:80%;"></td>
+      </tr>
+      <tr>
+        <th colspan="4" style="text-align:center;">Assessment Pra Induksi</th>
+      </tr>
+      <tr>
+        <td>BB (Kg)</td>
+        <td><input type="text" class="form-input"></td>
+        <td>TD (mmHg)</td>
+        <td><input type="text" class="form-input"></td>
+      </tr>
+      <tr>
+        <td>Suhu (°C)</td>
+        <td><input type="text" class="form-input"></td>
+        <td>Respirasi</td>
+        <td><input type="text" class="form-input"></td>
+      </tr>
+      <tr>
+        <td>HB</td>
+        <td><input type="text" class="form-input"></td>
+        <td>TB (cm)</td>
+        <td><input type="text" class="form-input"></td>
+      </tr>
+      <tr>
+        <td>Nadi</td>
+        <td><input type="text" class="form-input"></td>
+        <td>GCS</td>
+        <td><input type="text" class="form-input"></td>
+      </tr>
+      <tr>
+        <td>Golongan Darah</td>
+        <td><input type="text" class="form-input"></td>
+        <td>Skrining Nyeri</td>
+        <td>
+          <label><input type="radio" name="skrining"> Tidak</label>
+          <label><input type="radio" name="skrining"> Ya</label>
+        </td>
+      </tr>
+      
+      <tr>
+        <th colspan="4" style="text-align:center;">Obat-obatan</th>
+      </tr>
+      <tr>
+        <td colspan="2">
+          1. <input type="text" style="width:90%;"><br>
+          2. <input type="text" style="width:90%;"><br>
+          3. <input type="text" style="width:90%;"><br>
+          4. <input type="text" style="width:90%;">
+        </td>
+        <td colspan="2">
+          5. <input type="text" style="width:90%;"><br>
+          6. <input type="text" style="width:90%;"><br>
+          7. <input type="text" style="width:90%;"><br>
+          8. <input type="text" style="width:90%;">
+        </td>
+      </tr>
+      <tr>
+        <th colspan="2" style="text-align:center;">Cairan Infus</th>
+        <th colspan="2" style="text-align:center;">Cairan Output</th>
+      </tr>
+      <tr>
+        <td colspan="2">
+          1. <input type="text" style="width:90%;"><br>
+          2. <input type="text" style="width:90%;"><br>
+          3. <input type="text" style="width:90%;"><br>
+          4. <input type="text" style="width:90%;">
+        </td>
+        <td colspan="2">
+          5. <input type="text" style="width:90%;"><br>
+          6. <input type="text" style="width:90%;"><br>
+          7. <input type="text" style="width:90%;"><br>
+          8. <input type="text" style="width:90%;">
+        </td>
+      </tr>
+      <tr>
+        <th colspan="2" style="text-align:center;">Masalah Selama Anestesi</th>
+        <th colspan="2" style="text-align:center;">Tindakan</th>
+      </tr>
+      <tr>
+        <td colspan="2">
+          1. <input type="text" style="width:90%;"><br>
+          2. <input type="text" style="width:90%;"><br>
+          3. <input type="text" style="width:90%;"><br>
+          4. <input type="text" style="width:90%;">
+        </td>
+        <td colspan="2">
+          5. <input type="text" style="width:90%;"><br>
+          6. <input type="text" style="width:90%;"><br>
+          7. <input type="text" style="width:90%;"><br>
+          8. <input type="text" style="width:90%;">
+        </td>
+      </tr>
+    </table>
+
+    <!-- Serah Terima Pasien -->
+    <table class="three-col">
+      <tr>
+        <th>Perawat Anestesi</th>
+        <th>Perawat Yang Menerima</th>
+        <th>Dokter Anestesi</th>
+      </tr>
+      <tr>
+        <td><input type="text" style="width: 100%;"></td>
+        <td><input type="text" style="width: 100%;"></td>
+        <td><input type="text" style="width: 100%;"></td>
+      </tr>
+    </table>
+
+    <!-- Tanda tangan -->
+    <div class="signature-section">
+      <div class="signature-box">Tanda Tangan Pemberi Informasi</div>
+      <div class="signature-box">Tanda Tangan Pasien/Keluarga</div>
+    </div>
+
+    <button type="submit">Simpan Data</button>
+  </div>
+</body>
+</html>

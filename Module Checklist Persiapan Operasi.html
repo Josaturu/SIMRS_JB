@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Checklist Persiapan Operasi</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 14px;
+      margin: 20px;
+      background: #f4f7fb;
+      color: #333;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      padding-bottom: 30px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      background: whitesmoke;
+      background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .hospital-name {
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+    .hospital-info {
+      font-size: 14px;
+      color: #e8f0fe;
+      font-weight: 500;
+    }
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: #333;
+    }
+    .header-right label {
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 6px;
+				gap: 5px;
+				color: #333;
+    }
+    .info-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
+    .info-label {
+      min-width: 120px;
+      font-weight: 500;
+    }
+    input, select {
+      border: 1px solid #cfd8e3;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 13px;
+      width: 100%;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    input:focus, select:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 2px rgba(26,115,232,0.15);
+      outline: none;
+    }
+    h3 {
+      text-align: center;
+      margin: 15px 0;
+      text-transform: uppercase;
+      font-size: 16px;
+      color: #004d80;
+    }
+    table {
+      border-collapse: collapse;
+      width: 95%;
+      margin: 0 auto 20px auto;
+      background: #fff;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #e1e7ef;
+      padding: 8px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background: #f1f5f9;
+      font-weight: 600;
+      text-align: center;
+    }
+    .section-title td {
+      background: #e9f0fb;
+      font-weight: bold;
+      color: #004d80;
+      text-align: left;
+    }
+    .radio-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+    }
+    input[type="radio"] {
+      accent-color: #1a73e8;
+    }
+    .signature {
+      display: flex;
+      justify-content: space-between;
+      margin: 40px 40px 0 40px;
+      gap: 20px;
+    }
+    .signature div {
+      text-align: center;
+      width: 45%;
+      font-size: 13px;
+    }
+    .signature-line {
+      margin-top: 60px;
+      border-top: 1px solid #777;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <div class="hospital-name">RSU PRASETYA BUNDA</div>
+        <div class="hospital-info">
+          Jl. Ir. H. Juanda No.1 (Simpang Jalit), Kota Tasikmalaya<br>
+          Telp. 0265-344477, Fax. 0265-342496 | RMO 1 a
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="info-row">
+          <span class="info-label">No. RM</span>
+          <input type="text">
+        </div>
+        <div class="info-row">
+          <span class="info-label">Nama</span>
+          <input type="text">
+        </div>
+        <div class="info-row">
+          <span class="info-label">Umur / Tgl Lahir</span>
+          <input type="date">
+        </div>
+        <div class="info-row">
+          <span class="info-label">DPJP</span>
+          <input type="text">
+        </div>
+        <div class="info-row">
+          <span class="info-label">Tanggal</span>
+          <input type="date">
+        </div>
+      </div>
+    </div>
+
+    <h3>Checklist Persiapan Operasi</h3>
+
+    <!-- Info Operasi -->
+    <table>
+      <tr>
+        <td>Tanggal Operasi: <input type="date"></td>
+        <td>Gol. Darah: <input type="text"></td>
+      </tr>
+      <tr>
+        <td>Macam Operasi: <input type="text"></td>
+        <td>Riwayat Alergi: <input type="text"></td>
+      </tr>
+      <tr>
+        <td>Tinggi Badan: <input type="number" style="width:50px"> cm</td>
+        <td>Berat Badan: <input type="number" style="width:50px"> kg</td>
+      </tr>
+    </table>
+
+    <!-- Checklist -->
+    <table>
+      <tr>
+        <th></th>
+        <th>R. RAWAT</th>
+        <th>UBS</th>
+        <th>Keterangan</th>
+      </tr>
+
+      <!-- Administrasi -->
+      <tr class="section-title"><td colspan="4">1. Persiapan Administrasi</td></tr>
+      <tr>
+          <td>Program ke UBS</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+      </tr>
+      <tr>
+          <td>Persetujuan Operasi Lengkap dan Terisi</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+      </tr>
+      <tr>
+          <td>Rekam Medis</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td></td>
+      </tr>
+      <tr>
+          <td>Laporan Operasi</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td></td>
+      </tr>
+      <tr>
+          <td>Laporan Anestesi</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td></td>
+      </tr>
+      <tr>
+          <td>Hasil Laboratorium</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td></td>
+      </tr>
+      <tr>
+          <td>Hasil Radiologi</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td></td>
+      </tr>
+      <tr>
+          <td>Hasil CT Scan</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td></td>
+      </tr>
+      <tr>
+          <td>Hasil USG</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td></td>
+      </tr>
+      <tr>
+          <td>Hasil EKG</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td></td>
+      </tr>
+      <tr>
+          <td>Lain-lain</td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+              <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td>
+              <div class="radio-group">
+              <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+              <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+              </div>
+          </td>
+          <td><input type="text" name="ket1"></td></td>
+      </tr>
+
+      <!-- Fisik -->
+      <tr class="section-title"><td colspan="4">2. Persiapan Fisik</td></tr>
+      <div class="persiapan-fisik">
+        <tr>
+            <td>Puasa</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1" placeholder="Sejak:"></td>
+        </tr>
+        <tr>
+            <td>Lavement/garam Inggris</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+            <td>Pasang DC</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+            <input type="number" name="ket1" style="width: 50px; border-style: none" placeholder="No."> / 
+            <input type="text" name="ket1" style="width: 60px" placeholder="Macam">
+            </td>
+        </tr>
+        <tr>
+            <td>Cukur dan bersihkan daerah operasi</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+            <td>Rambut palsu, gigi palsu, contact lens, sudah dilepas</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+            <td>Cat kuku dan make up muka sudah dibersihkan</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+            <td>Perhiasan dan arloji dll, sudah dilepas</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+            <td>Persiapan darah untuk transfusi :</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+            <td>1) Whole Blood (WB)</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1" placeholder="Kantong:"></td>
+        </tr>
+        <tr>
+            <td>2) PRC</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1" placeholder="Kantong:"></td>
+        </tr>
+        <tr>
+            <td>3) FFP</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1" placeholder="Kantong:"></td>
+        </tr>
+        <tr>
+            <td>Premedikasi</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+            <td>Antibiotik pre-ops :</td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+                <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td>
+                <div class="radio-group">
+                <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+                <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+                </div>
+            </td>
+            <td><input type="time" style="border-style:none; width: 100px;" name="ket1"><label for="ket1"> WIB</label></td>
+        </tr>
+      </div>
+
+      <!-- Khusus -->
+      <tr class="section-title"><td colspan="4">3. Persiapan Khusus</td></tr>
+      <div class="persiapan-khusus">
+        <tr>
+          <td>DM - Insulin Pre Op</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>Hipertensi - Obat anti hipertensi pre ops</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>Asma - Obat anti asma / Corticosteroid pre ops</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>Obat Lain :</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>Obat-obatan sebelum tidur</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>Pasang Infus</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="number" style="border-style: none;" name="ket1" placeholder="IV Catch No:"></td>
+        </tr>
+        <tr>
+          <td>Tekanan Darah</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>Nadi</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>Suhu</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>Pernapasan</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>Obat yang dibawa ke UBS</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>Hasil Skin Test :</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ket1" value="ya"> Positif</label>
+            <label><input type="radio" name="ket1" value="tidak"> Negatif</label>
+            </div>
+          </td>
+        </tr>
+        <tr class="section-title">
+          <td colspan="4">Kunjungan dokter pra bedah</td>
+        </tr>
+        <tr>
+          <td>1) Dokter Bedah</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>2) Dokter Anestesi</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>3) Dokter Konsul terkait</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>4) Dokter Konsul terkait</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+        <tr>
+          <td>5) Dokter Konsul terkait</td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="rawat1" value="ya"> Ya</label>
+            <label><input type="radio" name="rawat1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td>
+            <div class="radio-group">
+            <label><input type="radio" name="ubs1" value="ya"> Ya</label>
+            <label><input type="radio" name="ubs1" value="tidak"> Tidak</label>
+            </div>
+          </td>
+          <td><input type="text" name="ket1"></td>
+        </tr>
+      </div>
+    </table>
+
+    <!-- Signature
+    <div class="signature">
+      <label for="perawat-ruangan">Perawat Ruangan</label><br>
+      <select id="perawat-ruangan" name="perawat-ruangan">
+        <option value="">Pilih Perawat Ruangan</option>
+        <option>Perawat 1</option>
+        <option>Perawat 2</option>
+      </select>
+      <br><br>
+      <div>
+        <label for="perawat-ubs">Perawat UBS</label><br>
+        <select id="perawat-ubs" name="perawat-ubs">
+          <option value="">Pilih Perawat UBS</option>
+          <option>Perawat 1</option>
+          <option>Perawat 2</option>
+        </select>
+        <br><br>
+      </div>
+    </div> -->
+</body>
+</html>

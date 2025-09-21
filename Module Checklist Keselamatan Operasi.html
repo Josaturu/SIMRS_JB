@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ceklist Keselamatan Operasi</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-light: #e8f0fe;
+      --secondary: #34a853;
+      --accent: #f25c54;
+      --light-bg: #f8f9fa;
+      --dark-text: #202124;
+      --light-text: #5f6368;
+      --border: #dadce0;
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      margin: 0;
+      background: var(--light-bg);
+      color: var(--dark-text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+      padding: 24px;
+    }
+    
+    .header {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--primary);
+      margin-bottom: 24px;
+    }
+    
+    .header h2 {
+      color: var(--primary);
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    
+    .header p {
+      margin: 0;
+      color: var(--light-text);
+      font-size: 16px;
+    }
+    
+    .header h3 {
+      margin-top: 20px;
+      font-size: 20px;
+      color: var(--dark-text);
+      font-weight: 600;
+    }
+    
+    .info {
+      margin-bottom: 30px;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .info-card {
+      background: var(--primary-light);
+      border-radius: 10px;
+      padding: 20px;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .info-card h4 {
+      margin: 0 0 15px 0;
+      color: var(--primary);
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .form-line {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .form-line label {
+      flex: 0 0 180px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--dark-text);
+    }
+    
+    .form-line input {
+      flex: 1;
+      border: none;
+      border-bottom: 1.5px solid var(--border);
+      padding: 8px 0;
+      outline: none;
+      font-size: 14px;
+      background: transparent;
+      transition: border-color 0.3s;
+    }
+    
+    .form-line input:focus {
+      border-bottom: 1.5px solid var(--primary);
+    }
+    
+    .section-title {
+      text-align: center;
+      margin: 30px 0 20px;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 22px;
+    }
+    
+    .checklist-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+    }
+    
+    @media (max-width: 1024px) {
+      .checklist-container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .checklist-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 14px;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s, box-shadow 0.3s;
+      height: fit-content;
+    }
+    
+    .box:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--hover-shadow);
+    }
+    
+    .box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+    }
+    
+    .box-header h3 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .input-time {
+      border: none;
+      border-bottom: 2px solid var(--border);
+      padding: 6px 8px;
+      font-size: 14px;
+      outline: none;
+      width: 100px;
+      text-align: center;
+      border-radius: 4px;
+      transition: border-color 0.3s;
+    }
+    
+    .input-time:focus {
+      border-bottom: 2px solid var(--primary);
+    }
+    
+    .box ol {
+      padding-left: 20px;
+    }
+    
+    .box li {
+      margin-bottom: 16px;
+      padding-left: 4px;
+    }
+    
+    .checkbox-group {
+      margin-top: 8px;
+      padding-left: 8px;
+    }
+    
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+      padding: 4px 0;
+      transition: background 0.2s;
+      border-radius: 4px;
+    }
+    
+    .checkbox-item:hover {
+      background: #f8f9fa;
+    }
+    
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    
+    .checkbox-item label {
+      cursor: pointer;
+      font-size: 14px;
+      user-select: none;
+    }
+    
+    .notes-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      margin-top: 8px;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 80px;
+      transition: border-color 0.3s;
+    }
+    
+    .notes-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    }
+    
+    .signature {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    
+    .signature hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 20px 0;
+    }
+    
+    .sign-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 16px;
+    }
+    
+    .sign-row label {
+      flex: 0 0 140px;
+      font-weight: 500;
+      color: var(--dark-text);
+      font-size: 14px;
+    }
+    
+    .sign-row input {
+      flex: 1;
+      border: none;
+      border-bottom: 1.5px dotted var(--light-text);
+      outline: none;
+      background: transparent;
+      padding: 6px 0;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+    
+    .sign-row input:focus {
+      border-bottom: 1.5px solid var(--primary);
+    }
+    
+    .signature-date {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-top: 20px;
+      gap: 8px;
+      color: var(--light-text);
+      font-style: italic;
+    }
+    
+    .input-date, .input-year {
+      border: none;
+      border-bottom: 1.5px dotted var(--light-text);
+      outline: none;
+      background: transparent;
+      font-style: italic;
+      width: 100px;
+      text-align: center;
+      padding: 4px 0;
+      transition: border-color 0.3s;
+    }
+    
+    .input-date:focus, .input-year:focus {
+      border-bottom: 1.5px solid var(--primary);
+    }
+    
+    .required::after {
+      content: "*";
+      color: var(--accent);
+      margin-left: 3px;
+    }
+    
+    .print-btn {
+      display: block;
+      margin: 30px auto 10px;
+      padding: 12px 24px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .print-btn:hover {
+      background: #0d61d1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>RUMAH SAKIT PRASETYA BUNDA</h2>
+      <p>Jl. Ir. H. Juanda No. 1 Indihiang Kota Tasikmalaya</p>
+      <h3>Keterangan Pasien & Operator</h3>
+    </div>
+
+    <!-- Info Pasien & Operator -->
+    <div class="info">
+      <div class="info-grid">
+        <!-- Kolom kiri: Info Pasien -->
+        <div class="info-card">
+          <h4><i class="fas fa-user-injured"></i> Informasi Pasien</h4>
+          <div class="form-line">
+            <label class="required">Nama Pasien</label>
+            <input type="text">
+          </div>
+          <div class="form-line">
+            <label class="required">No. Rekam Medis</label>
+            <input type="text">
+          </div>
+          <div class="form-line">
+            <label>Tanggal Lahir / Umur</label>
+            <input type="text">
+          </div>
+          <div class="form-line">
+            <label>Alamat</label>
+            <input type="text">
+          </div>
+        </div>
+
+        <!-- Kolom kanan: Info Dokter/Operasi -->
+        <div class="info-card">
+          <h4><i class="fas fa-stethoscope"></i> Informasi Operasi</h4>
+          <div class="form-line">
+            <label class="required">Operator / dr. Bedah</label>
+            <input type="text">
+          </div>
+          <div class="form-line">
+            <label class="required">Operasi / Tindakan</label>
+            <input type="text">
+          </div>
+          <div class="form-line">
+            <label class="required">Tanggal Tindakan</label>
+            <input type="date">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Cheklist Keselamatan Operasi (Surgical Safety Checklist)</h3>
+    
+    <div class="checklist-container">
+      <!-- Sign In -->
+      <div class="box">
+        <div class="box-header">
+          <h3><i class="fas fa-sign-in-alt"></i> Sign In</h3>
+          <input type="time" class="input-time">
+        </div>
+        <ol>
+          <li>Pasien sudah konfirmasikan : 
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-1a">
+                <label for="signin-1a">Identitas pasien & gelang pasien</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-1b">
+                <label for="signin-1b">Lokasi operasi</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-1c">
+                <label for="signin-1c">Prosedur</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-1d">
+                <label for="signin-1d">Surat izin operasi</label>
+              </div>
+            </div>
+          </li>
+          <li>Lokasi operasi sudah diberi tanda?
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-2a">
+                <label for="signin-2a">Ya</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-2b">
+                <label for="signin-2b">Tidak dilakukan</label>
+              </div>
+            </div>
+          </li>
+          <li>Mesin anestesi dan obat-obatan sudah dicek lengkap :
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-3">
+                <label for="signin-3">Ya</label>
+              </div>
+            </div>
+          </li>
+          <li>Pulse Oximeter terpasang dan berfungsi :
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-4">
+                <label for="signin-4">Ya</label>
+              </div>
+            </div>
+          </li>
+          <li>Apakah pasien punya riwayat alergi?
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-5a">
+                <label for="signin-5a">Tidak</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-5b">
+                <label for="signin-5b">Ya</label>
+              </div>
+            </div>
+          </li>
+          <li>Kemungkinan kesulitan jalan nafas atau risiko aspirasi?
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-6a">
+                <label for="signin-6a">Tidak</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-6b">
+                <label for="signin-6b">Peralatan dan sistem telah tersedia</label>
+              </div>
+            </div>
+          </li>
+          <li>Resiko kehilangan darah > 500ml (7ml/kgBB pada anak)?
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-7a">
+                <label for="signin-7a">Tidak</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="signin-7b">
+                <label for="signin-7b">IV/sentral, dan terapi cairan telah direncanakan</label>
+              </div>
+            </div>
+          </li>
+        </ol>
+        <div class="signature">
+          <div class="sign-row">
+            <label>Dokter Anestesi</label>
+            <input type="text" placeholder="Nama & Tanda tangan">
+          </div>
+          <div class="sign-row">
+            <label>Perawat Anestesi</label>
+            <input type="text" placeholder="Nama & Tanda tangan">
+          </div>
+          <div class="sign-row">
+            <label>Perawat Sirkuler</label>
+            <input type="text" placeholder="Nama & Tanda tangan">
+          </div>
+        </div>
+      </div>
+
+      <!-- Time Out -->
+      <div class="box">
+        <div class="box-header">
+          <h3><i class="fas fa-clock"></i> Time Out</h3>
+          <input type="time" class="input-time">
+        </div>
+        <ol>
+          <li>Konfirmasi seluruh anggota tim (nama dan peran masing-masing)
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="timeout-1">
+                <label for="timeout-1">Ya</label>
+              </div>
+            </div>
+          </li>
+          <li>Konfirmasi secara verbal
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="timeout-2a">
+                <label for="timeout-2a">Nama Pasien</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="timeout-2b">
+                <label for="timeout-2b">Prosedur</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="timeout-2c">
+                <label for="timeout-2c">Lokasi dimana insisi akan dibuat</label>
+              </div>
+            </div>
+          </li>
+          <li>Antibiotik profilaksis dalam 60 menit sebelumnya
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="timeout-3">
+                <label for="timeout-3">Ya</label>
+              </div>
+            </div>
+          </li>
+          <li>Antisipasi kejadian kritis: 
+            <br>
+            <label>Review operator / dokter bedah :</label>
+            <textarea class="notes-input" placeholder="Catatan dokter bedah"></textarea>
+            <label>Review dokter anastesi :</label>
+            <textarea class="notes-input" placeholder="Catatan dokter anestesi"></textarea>
+            <label>Review tim perawat :</label>
+            <textarea class="notes-input" placeholder="Catatan perawat"></textarea>
+          </li>
+          <li>Foto Rontgen / CT-Scan / MRI yang diperlukan telah ditayangkan?
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="timeout-5a">
+                <label for="timeout-5a">Ya</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="timeout-5b">
+                <label for="timeout-5b">Tidak</label>
+              </div>
+            </div>
+          </li>
+        </ol>
+        <div class="signature">
+          <div class="sign-row">
+            <label>Perawat Sirkuler</label>
+            <input type="text" placeholder="Nama & Tanda tangan">
+          </div>
+        </div>
+      </div>
+
+      <!-- Sign Out -->
+      <div class="box">
+        <div class="box-header">
+          <h3><i class="fas fa-sign-out-alt"></i> Sign Out</h3>
+          <input type="time" class="input-time">
+        </div>
+        <ol>
+          <li>Konfirmasi perawat secara verbal:
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="signout-1a">
+                <label for="signout-1a">Nama prosedur tindakan</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="signout-1b">
+                <label for="signout-1b">Instrumen, kasa & jarum lengkap</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="signout-1c">
+                <label for="signout-1c">Spesimen diberi label </label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="signout-1d">
+                <label for="signout-1d">Tidak ada masalah alat operasi</label>
+              </div>
+            </div>
+          </li>
+          <li>Operator dokter bedah, dokter anestesi dan perawat membahas masalah utama penyembuhan & manajemen pasien selanjutnya
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="signout-2">
+                <label for="signout-2">Ya</label>
+              </div>
+            </div>
+          </li>
+        </ol>
+        <div class="signature-date">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Tasikmalaya,</span>
+          <input type="text" class="input-date" placeholder="Tanggal">
+          <input type="text" class="input-year" placeholder="Tahun">
+        </div>
+        <hr>
+        <div class="signature">
+          <div class="sign-row">
+            <label>Perawat Sirkuler</label>
+            <input type="text" placeholder="Nama & Tanda tangan">
+          </div>
+          <div class="sign-row">
+            <label>Dokter Anestesi</label>
+            <input type="text" placeholder="Nama & Tanda tangan">
+          </div>
+          <div class="sign-row">
+            <label>Operator / Dokter Bedah</label>
+            <input type="text" placeholder="Nama & Tanda tangan">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button class="print-btn" onclick="window.print()">
+      <i class="fas fa-print"></i> Cetak Dokumen
+    </button>
+  </div>
+
+  <script>
+    // Menambahkan fungsionalitas sederhana untuk interaksi
+    document.addEventListener('DOMContentLoaded', function() {
+      // Menambahkan tahun otomatis
+      const yearInput = document.querySelector('.input-year');
+      if (yearInput) {
+        yearInput.value = new Date().getFullYear();
+      }
+      
+      // Menambahkan tanggal otomatis
+      const dateInput = document.querySelector('.input-date');
+      if (dateInput) {
+        const today = new Date();
+        dateInput.value = today.getDate();
+      }
+      
+      // Menambahkan waktu sekarang untuk input waktu
+      const timeInputs = document.querySelectorAll('.input-time');
+      const now = new Date();
+      const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                         now.getMinutes().toString().padStart(2, '0');
+      
+      timeInputs.forEach(input => {
+        input.value = timeString;
+      });
+    });
+  </script>
+</body>
+</html>

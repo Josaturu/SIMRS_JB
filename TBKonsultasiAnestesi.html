@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konsultasi Anestesi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7ff;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 70px;
+      margin-right: 15px;
+    }
+
+    .title {
+      text-align: center;
+      color: #396cf0;
+      font-size: 22px;
+      font-weight: bold;
+      margin: 10px 0 20px 0;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 1100px;
+      margin: auto;
+      overflow-x: auto;
+    }
+
+    .identity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      color: #396cf0;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: #396cf0;
+      outline: none;
+      box-shadow: 0 0 6px rgba(57,108,240,0.4);
+    }
+
+    .sticker-box {
+      border: 2px dashed #396cf0;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-style: italic;
+      color: #666;
+      background: #fafbff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+      transition: all 0.3s ease;
+    }
+
+    th {
+      background-color: #396cf0;
+      color: white;
+    }
+
+    tr:hover td {
+      background-color: #eef2ff;
+      transform: scale(1.01);
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      cursor: pointer;
+      accent-color: #396cf0;
+      transition: transform 0.2s ease;
+    }
+
+    input[type="checkbox"]:hover {
+      transform: scale(1.4);
+    }
+
+    .signature-section {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .signature-box {
+      flex: 1;
+      text-align: center;
+      margin: 0 10px;
+      padding: 15px;
+      border: 2px dashed #396cf0;
+      border-radius: 10px;
+      background: #fafbff;
+      transition: all 0.3s ease;
+    }
+
+    .signature-box:hover {
+      background: #eaf0ff;
+      transform: scale(1.02);
+    }
+
+    button {
+      display: block;
+      margin: 20px auto 0;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 30px;
+      background-color: #396cf0;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2f55c8;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(57,108,240,0.4);
+    }
+  </style>
+</head>
+<body>
+    <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg" alt="Logo Rumah Sakit">
+      <div>
+        <strong>Rumah Sakit Umum</strong><br>
+        <span style="color:#396cf0; font-weight:bold;">PRASETYA BUNDA</span>
+      </div>
+    </div>
+    <div class="sticker-box">
+      Tempelkan Stiker Identitas Pasien
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="title">
+    KONSULTASI ANESTESI
+  </div>
+
+    <div class="form-container">
+        <div class="identity-grid">
+            <div class="form-group">
+              <label for="ruang">Ruang Perawatan</label>
+              <input type="text" id="ruang" placeholder="Masukkan ruang perawatan">
+            </div>
+            <div class="form-group">
+              <label for="dokter">Dokter Merawat</label>
+              <input type="text" id="dokter" placeholder="Masukkan nama dokter">
+            </div>
+          </div>
+        <table>
+            <tr>
+                <th colspan="4" style="text-align: right;">RMOK 3A</th>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Tanggal :</span>
+                        <div class="input-wrapper"><input type="date"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Jam :</span>
+                        <div class="input-wrapper"><input type="time"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Tinggi Badan :</span>
+                        <div class="input-wrapper"><input type="text" style="width: 150px;"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Berat Badan :</span>
+                        <div class="input-wrapper"><input type="text" style="width: 150px;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="form-row">
+                        <span class="label">Diagnosa Pra Operasi :</span>
+                        <div class="input-wrapper"><textarea name="DiagnosaPraOperasi" id="" cols="100" rows="5"></textarea></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Diagnosa" value="Cita"> Cita</label> 
+                        <label><input type="radio" name="Diagnosa" value="Efektif"> Efektif</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="form-row">
+                        <span class="label">Rencana Tindakan Operasi :</span>
+                        <div class="input-wrapper"><textarea name="RencanaTindakanOperasi" id="" cols="100" rows="5"></textarea></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="form-row">
+                        <span class="label">Kondisi Khusus atau penyulit yang mungkin terjadi pada pasien :</span>
+                        <div class="input-wrapper"><textarea name="KondisiKhusus" id="" cols="100" rows="5"></textarea></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="form-row">
+                        <span class="label">Tanggal dan Jam Dibuat :</span>
+                        <div class="input-wrapper"><input type="datetime-local"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="4">JAWABAN KONSUL (ASSESMEN PRA ANESTESI / PRADESI)
+                </th>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>DIISI : ANAMNESA</strong></td>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">Jam Visit :</span>
+                        <div class="input-wrapper"><input type="time"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Menikah</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="menikah" value="Ya"> Ya</label>
+                        <label><input type="radio" name="menikah" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Jenis Kelamin</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="jenis_kelamin" value="Laki-laki"> Laki-laki</label>
+                        <label><input type="radio" name="jenis_kelamin" value="Wanita"> Wanita</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Kebiasaan Merokok</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="merokok" value="Ya"> Ya</label>
+                        <label><input type="radio" name="merokok" value="Sebanyak"> Sebanyak</label>
+                        <label><input type="radio" name="merokok" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Kebiasaan Alkohol</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="alkohol" value="Ya"> Ya</label>
+                        <label><input type="radio" name="alkohol" value="Sebanyak"> Sebanyak</label>
+                        <label><input type="radio" name="alkohol" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Pengobatan: Sebutkan dosis atau jumlah pil per hari</span>
+                    </div>
+                </td>
+                <td colspan="3"><input type="text" name="pengobatan" class="full-width-input" size="100"></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Alergi Obat :</span>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <label>Ya, Daftar Obat & Tipe Reaksi: <input type="text" name="daftar_alergi_obat" style="width: 100%;"></label>
+                </td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="has_alergi_obat" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Alergi Makanan</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="alergi_makanan" value="Ya"> Ya</label>
+                        <label><input type="radio" name="alergi_makanan" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Alergi Lateks</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="alergi_lateks" value="Ya"> Ya</label>
+                        <label><input type="radio" name="alergi_lateks" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Tidak Alergi :</span>
+                    </div>
+                </td>
+                <td colspan="3"><input type="text" name="tidak_alergi" style="width: 100%;"></td>
+            </tr>
+            <tr>
+                <td>Komunikasi</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="komunikasi" value="Bahasa Indonesia" checked> Bahasa Indonesia</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Lainnya:</span>
+                    </div>
+                </td>
+                <td><input type="text" name="komunikasi_lainnya"></td>
+            </tr>
+            <tr>
+                <td colspan="4"><strong>Apakah Pasien pernah / sedang menderita penyakit di bawah ini?</strong></td>
+            </tr>
+            <tr>
+                <td>Asma</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="asma" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="asma" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Hepatitis / Sakit Kuning</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="hepatitis" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="hepatitis" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Sesak Nafas</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="sesak_nafas" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="sesak_nafas" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Pingsan</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="pingsan" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="pingsan" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Sumbatan Jalan Nafas</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="sumbatan_jalan_nafas" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="sumbatan_jalan_nafas" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Diabetes</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="diabetes" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="diabetes" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Tidur / Mengorok</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="tidur_mengorok" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="tidur_mengorok" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Anemia</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="anemia" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="anemia" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Serangan Jantung / Nyeri Dada</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="serangan_jantung" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="serangan_jantung" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Sakit Maag</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="sakit_maag" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="sakit_maag" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Hipertensi</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="hipertensi" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="hipertensi" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Pendarahan yang tidak normal</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="pendarahan" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="pendarahan" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Stroke</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="stroke" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="stroke" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Pembekuan darah yang tidak normal</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="pembekuan_darah" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="pembekuan_darah" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Kejang</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="kejag" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="kejag" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td>Penyakit Berat Lainnya</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="penyakit_berat_lainnya" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="penyakit_berat_lainnya" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Kelainan Lainnya</span>
+                    </div>
+                </td>
+                <td colspan="3"><input type="text" name="kelainan_lainnya" style="width: 100%;"></td>
+            </tr>
+            <tr>
+                <th colspan="4">Jelaskan penyakit yang dijawab "Ya" :</th>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="form-row">
+                        <span class="label">Apakah pasien memakai :</span>
+                        <div class="input-wrapper"><input type="text"></div>
+                    </div>
+                </td>
+                <td>
+                    Gigi Palsu 
+                    <div class="radio-group">
+                        <label><input type="radio" name="gigi_palsu" value="Ya"> Ya</label>
+                        <label><input type="radio" name="gigi_palsu" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Makan / Minum terakhir jam :</span>
+                    </div>
+                </td>
+                <td><input type="time" name="makan_terakhir"> / sebelum operasi</td>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Riwayat Operasi, tahun dan jenis operasi :</span>
+                    </div>
+                </td>
+                <td><textarea name="riwayat_operasi" rows="2"></textarea></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Jenis Anestesi yang digunakan dan sebutkan komplikasi / reaksi yang dialami :</span>
+                    </div>
+                </td>
+                <td colspan="3"><textarea name="jenis_anestesi" rows="2" cols="90" class="full-width-input"></textarea></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Tanggal terakhir kali periksa kesehatan ke dokter :</span>
+                    </div>
+                </td>
+                <td><input type="date" name="terakhir_periksa"></td>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Dimana :</span>
+                    </div>
+                </td>
+                <td><input type="text" name="Tempat_periksa_terakhir"></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Untuk penyakit gangguan apa :</span>
+                    </div>
+                </td>
+                <td colspan="3"><input type="text" name="penyakit_gangguan" class="full-width-input" style="width: 100%;"></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Jumlah Kehamilan</span>
+                    </div>
+                </td>
+                <td><input type="text"></td>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Jumlah Anak</span>
+                    </div>
+                </td>
+                <td><input type="text"></td>
+            </tr>
+            <tr>
+                <td>Menyusui</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="menyusui" value="Ya"> Ya</label> 
+                        <label><input type="radio" name="menyusui" value="Tidak"> Tidak</label>
+                    </div>
+                </td>
+                <td colspan="2"></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <th colspan="4" style="text-align: right;">RMOK 3B</th>
+            </tr>
+            <tr><td colspan="4"><strong>Diisi oleh : Dokter</strong></td></tr>
+            <tr><td colspan="4"><strong>Keadaan Umum</strong></td></tr>
+            <tr>
+                <td>
+                    <div class="form-row">
+                        <span class="label">Kesadaran</span>
+                    </div>
+                </td>
+                <td colspan="3"><input type="text" name="kesadaran" style="width: 100%;"></td>
+            </tr>
+            <tr><td colspan="4"><strong>Pemeriksaan Fisik : </strong></td></tr>
+            <tr class="exam-row">
+                <td>
+                  <div class="inline-input">
+                    <span>TB:</span>
+                    <input type="text" style="width:60px"> <span>Cm</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="inline-input">
+                    <span>BB:</span>
+                    <input type="text" style="width:60px"> <span>Kg</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="inline-input">
+                    <span>TD:</span>
+                    <input type="text" style="width:70px"> <span>mmHg</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="inline-input">
+                    <span>Nadi:</span>
+                    <input type="text" style="width:60px"> <span>x/mnt</span>
+                  </div>
+                </td>
+              </tr>
+              
+              <tr class="exam-row">
+                <td>
+                  <div class="inline-input">
+                    <span>RR:</span>
+                    <input type="text" style="width:60px"> <span>x/mnt</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="inline-input">
+                    <span>Suhu:</span>
+                    <input type="text" style="width:60px"> <span>°C</span>
+                  </div>
+                </td>
+                <td colspan="2"></td>
+              </tr>
+              
+            <tr>
+                <td>Skrining Nyeri</td>
+                <td colspan="3">
+                    <div class="radio-group">
+                        <label><input type="radio" name="nyeri" value="Tidak"> Tidak</label> 
+                        <label><input type="radio" name="nyeri" value="Ya"> Ya <strong>(Lanjut pengisian Formulir Assesment Nyeri)</strong></label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Jalan Nafas</td>
+                <td colspan="3">
+                    <div class="radio-group">
+                        <label><input type="radio" name="jalan_nafas" value="Normal"> Normal</label> 
+                        <label><input type="radio" name="jalan_nafas" value="Buka mulut"> Buka mulut > 2 jari</label> 
+                        <label><input type="radio" name="jalan_nafas" value="Jarak Thyrimental"> Jarak Thyrimental > 3 jari</label> 
+                        <label><input type="radio" name="jalan_nafas" value="Mallampati"> Mallampati I / II / III / IV</label>
+                    </div>
+                    <br>
+                    <div class="radio-group">
+                        <label><input type="radio" name="gerakan_leher" value="Maksimal"> Gerakan leher Maksimal</label> 
+                        <label><input type="radio" name="gerakan_leher" value="Abnormal"> Abnormal <input type="text"></label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="form-row">
+                        <span class="label">Paru - paru :</span>
+                        <div class="input-wrapper"><input type="text" class="full-width-input" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="form-row">
+                        <span class="label">Jantung :</span>
+                        <div class="input-wrapper"><input type="text" class="full-width-input" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="form-row">
+                        <span class="label">Abdomen :</span>
+                        <div class="input-wrapper"><input type="text" class="full-width-input" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="form-row">
+                        <span class="label">Ekstrimitas :</span>
+                        <div class="input-wrapper"><input type="text" class="full-width-input" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="form-row">
+                        <span class="label">Neurologi :</span>
+                        <div class="input-wrapper"><input type="text" class="full-width-input" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="form-row">
+                        <span class="label">Lain - lain :</span>
+                        <div class="input-wrapper"><input type="text" class="full-width-input" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4"><strong>Pemeriksaan Pengunjuang :</strong></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">Hb/Ht/AL/AT</span>
+                        <div class="input-wrapper"><input type="text" style="width: 100%;"></div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">NA/K/C L</span>
+                        <div class="input-wrapper"><input type="text" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">Ureum</span>
+                        <div class="input-wrapper"><input type="text" style="width: 100%;"></div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">CT / BT</span>
+                        <div class="input-wrapper"><input type="text" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">Kreatin</span>
+                        <div class="input-wrapper"><input type="text" style="width: 100%;"></div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">EKG</span>
+                        <div class="input-wrapper"><input type="text" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">RO Dada</span>
+                        <div class="input-wrapper"><input type="text" style="width: 100%;"></div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">Echo</span>
+                        <div class="input-wrapper"><input type="text" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="form-row">
+                        <span class="label">Lain - lain :</span>
+                        <div class="input-wrapper"><input type="text" class="full-width-input" style="width: 100%;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4"><strong>DIAGNOSIS :</strong></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    A. Klasifikasi berdasarkan ASA : <br>
+                    <div class="asa-list">
+                        1. ASA 1 Pasien normal yang Sehat <br>
+                        2. ASA 2 Pasien dengan Penyakit Sistemik Ringan <br>
+                        3. ASA 3 Pasien dengan Penyakit Sistemik Sedang <br>
+                        4. ASA 4 Pasien dengan Penyakit Sistemik Berat yang Mengancam Nyawa <br>
+                        5. ASA 5 Pasien yang apabila tidak dilakukan tindakan operasi akan mengancam nyawa <br>
+                    </div>
+                    B. Emergency <br>
+                    C. Lain - lain .......
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4"><strong>REKOMENDASI TINDAKAN ANESTESI YANG DIPILIH :</strong></td>
+            </tr>
+            <tr>
+                <td>Anestesi Umum</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="anestesi_umum" value="Intravena"> Intravena</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="anestesi_umum" value="Sungkup Muka"> Sungkup Muka</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="anestesi_umum" value="LMA"> LMA</label>
+                    </div>
+                </td>
+            </tr>
+            <tr class="exam-row">
+                <td></td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="anestesi_umum" value="Pipa ET"> Pipa ET</label>
+                    </div>
+                </td>
+                <td colspan="2"></td>
+            </tr>
+            <tr>
+                <td>Regional Anestesi</td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="regional" value="Spinal Anestesi"> Spinal Anestesi</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="regional" value="Epidural"> Epidural</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="regional" value="CSE"> CSE</label>
+                    </div>
+                </td>
+            </tr>
+            <tr class="exam-row">
+                <td></td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="regional" value="PNB"> PNB</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="combined" value="Anestesi Umum + Regional"> Anestesi Umum + Regional Anestesi</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="sedasi" value="Sedasi Sedang"> Sedasi Sedang</label>
+                    </div>
+                </td>
+            </tr>
+            <tr class="exam-row">
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="radio-group">
+                        <label><input type="radio" name="sedasi" value="Sedasi Dalam"> Sedasi Dalam</label>
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong>SARAN :</strong></td>
+                <td colspan="3"><textarea name="" id="" cols="110" rows="10" class="full-width-input"></textarea></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">Puasa Mulai</span>
+                    </div>
+                </td>
+                <td>Jam : <input type="time"></td>
+                <td>Tanggal : <input type="date"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">Rencana Tiba di OK</span>
+                    </div>
+                </td>
+                <td>Jam : <input type="time"></td>
+                <td>Tanggal : <input type="date"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="form-row">
+                        <span class="label">Rencana Operasi</span>
+                    </div>
+                </td>
+                <td>Jam : <input type="time"></td>
+                <td>Tanggal : <input type="date"></td>
+                <td></td>
+            </tr>
+        </table>
+
+        <button type="submit">Simpan Data</button>
+    </div>
+</body>
+</html>
