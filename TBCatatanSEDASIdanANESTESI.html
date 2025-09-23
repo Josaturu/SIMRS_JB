@@ -4,162 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Catatan SEDASI dan Anestesi</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f7ff;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-    }
-
-    .logo img {
-      height: 70px;
-      margin-right: 15px;
-    }
-
-    .title {
-      text-align: center;
-      color: #396cf0;
-      font-size: 22px;
-      font-weight: bold;
-      margin: 10px 0 20px 0;
-    }
-
-    .form-container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 1100px;
-      margin: auto;
-      overflow-x: auto;
-    }
-
-    .identity-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .form-group label {
-      font-weight: bold;
-      color: #396cf0;
-      margin-bottom: 5px;
-    }
-
-    .form-group input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 6px 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-
-    .sticker-box {
-      border: 2px dashed #396cf0;
-      height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
-      font-style: italic;
-      color: #666;
-      background: #fafbff;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 15px;
-    }
-
-    th, td {
-      padding: 12px;
-      border: 1px solid #ddd;
-      text-align: left;
-      vertical-align: top;
-    }
-
-    th {
-      background-color: #396cf0;
-      color: white;
-    }
-
-    tr:hover td {
-      background-color: #eef2ff;
-    }
-
-    /* Rata kolom */
-    table.four-col { table-layout: fixed; }
-    table.four-col td, table.four-col th { width: 25%; }
-
-    table.three-col { table-layout: fixed; }
-    table.three-col td, table.three-col th { width: 33.33%; }
-
-    input[type="checkbox"] {
-      transform: scale(1.2);
-      cursor: pointer;
-      accent-color: #396cf0;
-    }
-
-    .signature-section {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
-
-    .signature-box {
-      flex: 1;
-      text-align: center;
-      margin: 0 10px;
-      padding: 15px;
-      border: 2px dashed #396cf0;
-      border-radius: 10px;
-      background: #fafbff;
-    }
-
-    button {
-      display: block;
-      margin: 20px auto 0;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 30px;
-      background-color: #396cf0;
-      color: #fff;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #2f55c8;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -177,165 +22,362 @@
     </div>
   </div>
 
-  <!-- Title -->
-  <div class="title">
-    CATATAN SEDASI DAN ANESTESI
-  </div>
-
-  <div class="form-container">
-
-    <!-- Informasi Identitas -->
-    <div class="identity-grid">
-      <div class="form-group"><label>No. RM</label><input type="text"></div>
-      <div class="form-group"><label>Nama</label><input type="text"></div>
-      <div class="form-group"><label>Tanggal Lahir</label><input type="text"></div>
-      <div class="form-group"><label>Ruang Perawatan</label><input type="text"></div>
-      <div class="form-group"><label>Dokter yang Merawat</label><input type="text"></div>
-      <div class="form-group"><label>Hubungan dengan Pasien</label><input type="text"></div>
+  <div class="container">
+    <!-- Title -->
+    <div class="title">
+      <div style="color: #004d80;">CATATAN SEDASI DAN ANESTESI</div>
+      <div>RMOK-0003</div>
     </div>
 
-    <!-- Tabel Utama -->
-    <table class="four-col">
-      <tr>
-        <th colspan="4" style="text-align: right;">RMOK 1a Rev-01</th>
-      </tr>
-      <tr>
-        <td colspan="2">Tanggal: <input type="date"></td>
-        <td colspan="2">Pukul: <input type="time"></td>
-      </tr>
-      <tr>
-        <td>Dokter Bedah: <input type="text"></td>
-        <td>Perawat Bedah: <input type="text"></td>
-        <td>Dokter Anestesi: <input type="text"></td>
-        <td>Perawat Anestesi: <input type="text"></td>
-      </tr>
-      <tr>
-        <td colspan="4">
-          Jenis Pembedahan: 
-          <label><input type="checkbox"> Elektif</label>
-          <label><input type="checkbox"> Cito</label>
-          <label><input type="checkbox"> ODC</label>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="4">Diagnosa Pra Bedah: <textarea rows="3" style="width:100%;"></textarea></td>
-      </tr>
-      <tr>
-        <td colspan="4">Assessment Pra Anestesi: <input type="text" style="width:80%;"></td>
-      </tr>
-      <tr>
-        <th colspan="4" style="text-align:center;">Assessment Pra Induksi</th>
-      </tr>
-      <tr>
-        <td>BB (Kg)</td>
-        <td><input type="text" class="form-input"></td>
-        <td>TD (mmHg)</td>
-        <td><input type="text" class="form-input"></td>
-      </tr>
-      <tr>
-        <td>Suhu (°C)</td>
-        <td><input type="text" class="form-input"></td>
-        <td>Respirasi</td>
-        <td><input type="text" class="form-input"></td>
-      </tr>
-      <tr>
-        <td>HB</td>
-        <td><input type="text" class="form-input"></td>
-        <td>TB (cm)</td>
-        <td><input type="text" class="form-input"></td>
-      </tr>
-      <tr>
-        <td>Nadi</td>
-        <td><input type="text" class="form-input"></td>
-        <td>GCS</td>
-        <td><input type="text" class="form-input"></td>
-      </tr>
-      <tr>
-        <td>Golongan Darah</td>
-        <td><input type="text" class="form-input"></td>
-        <td>Skrining Nyeri</td>
-        <td>
-          <label><input type="radio" name="skrining"> Tidak</label>
-          <label><input type="radio" name="skrining"> Ya</label>
-        </td>
-      </tr>
-      
-      <tr>
-        <th colspan="4" style="text-align:center;">Obat-obatan</th>
-      </tr>
-      <tr>
-        <td colspan="2">
-          1. <input type="text" style="width:90%;"><br>
-          2. <input type="text" style="width:90%;"><br>
-          3. <input type="text" style="width:90%;"><br>
-          4. <input type="text" style="width:90%;">
-        </td>
-        <td colspan="2">
-          5. <input type="text" style="width:90%;"><br>
-          6. <input type="text" style="width:90%;"><br>
-          7. <input type="text" style="width:90%;"><br>
-          8. <input type="text" style="width:90%;">
-        </td>
-      </tr>
-      <tr>
-        <th colspan="2" style="text-align:center;">Cairan Infus</th>
-        <th colspan="2" style="text-align:center;">Cairan Output</th>
-      </tr>
-      <tr>
-        <td colspan="2">
-          1. <input type="text" style="width:90%;"><br>
-          2. <input type="text" style="width:90%;"><br>
-          3. <input type="text" style="width:90%;"><br>
-          4. <input type="text" style="width:90%;">
-        </td>
-        <td colspan="2">
-          5. <input type="text" style="width:90%;"><br>
-          6. <input type="text" style="width:90%;"><br>
-          7. <input type="text" style="width:90%;"><br>
-          8. <input type="text" style="width:90%;">
-        </td>
-      </tr>
-      <tr>
-        <th colspan="2" style="text-align:center;">Masalah Selama Anestesi</th>
-        <th colspan="2" style="text-align:center;">Tindakan</th>
-      </tr>
-      <tr>
-        <td colspan="2">
-          1. <input type="text" style="width:90%;"><br>
-          2. <input type="text" style="width:90%;"><br>
-          3. <input type="text" style="width:90%;"><br>
-          4. <input type="text" style="width:90%;">
-        </td>
-        <td colspan="2">
-          5. <input type="text" style="width:90%;"><br>
-          6. <input type="text" style="width:90%;"><br>
-          7. <input type="text" style="width:90%;"><br>
-          8. <input type="text" style="width:90%;">
-        </td>
-      </tr>
-    </table>
+    <div class="card">
+      <!-- Informasi Identitas -->
+      <h2>Informasi Pasien</h2>
+      <div class="form-grid">
+        <div class="form-column">
+          <div class="keterangan-pasien">
+            <div class="input-container">
+              <input type="text" id="noRm" placeholder=" ">
+              <label for="noRm" class="label-floating">No. RM</label>
+            </div>
+          </div>
+          <div class="keterangan-pasien">
+            <div class="input-container">
+              <input type="text" id="nama" placeholder=" ">
+              <label for="nama" class="label-floating">Nama</label>
+            </div>
+          </div>
+          <div class="keterangan-pasien">
+            <div class="input-container">
+              <input type="date" id="tglLahir" placeholder=" ">
+              <label for="tglLahir" class="label-floating">Tanggal Lahir</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-column">
+          <div class="keterangan-pasien">
+            <div class="input-container">
+              <input type="text" id="ruangPerawatan" placeholder=" ">
+              <label for="ruangPerawatan" class="label-floating">Ruang Perawatan</label>
+            </div>
+          </div>
+          <div class="keterangan-pasien">
+            <div class="input-container">
+              <input type="text" id="dokterPerawat" placeholder=" ">
+              <label for="dokterPerawat" class="label-floating">Dokter yang Merawat</label>
+            </div>
+          </div>
+          <div class="keterangan-pasien">
+            <div class="input-container">
+              <input type="text" id="hubungan" placeholder=" ">
+              <label for="hubungan" class="label-floating">Hubungan dengan Pasien</label>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!-- Serah Terima Pasien -->
-    <table class="three-col">
-      <tr>
-        <th>Perawat Anestesi</th>
-        <th>Perawat Yang Menerima</th>
-        <th>Dokter Anestesi</th>
-      </tr>
-      <tr>
-        <td><input type="text" style="width: 100%;"></td>
-        <td><input type="text" style="width: 100%;"></td>
-        <td><input type="text" style="width: 100%;"></td>
-      </tr>
-    </table>
+      <!-- Tabel Utama -->
+      <h2>Catatan Anestesi</h2>
+      <table>
+        <tr>
+          <th colspan="4" style="text-align: right;">RMOK 1a Rev-01</th>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div class="input-container">
+              <input type="date" id="tanggal" placeholder=" ">
+              <label for="tanggal" class="label-floating">Tanggal</label>
+            </div>
+          </td>
+          <td colspan="2">
+            <div class="input-container">
+              <input type="time" id="pukul" placeholder=" ">
+              <label for="pukul" class="label-floating">Pukul</label>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="input-container">
+              <input type="text" id="dokterBedah" placeholder=" ">
+              <label for="dokterBedah" class="label-floating">Dokter Bedah</label>
+            </div>
+          </td>
+          <td>
+            <div class="input-container">
+              <input type="text" id="perawatBedah" placeholder=" ">
+              <label for="perawatBedah" class="label-floating">Perawat Bedah</label>
+            </div>
+          </td>
+          <td>
+            <div class="input-container">
+              <input type="text" id="dokterAnestesi" placeholder=" ">
+              <label for="dokterAnestesi" class="label-floating">Dokter Anestesi</label>
+            </div>
+          </td>
+          <td>
+            <div class="input-container">
+              <input type="text" id="perawatAnestesi" placeholder=" ">
+              <label for="perawatAnestesi" class="label-floating">Perawat Anestesi</label>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            <label><strong>Jenis Pembedahan:</strong></label>
+            <div class="checkbox-group">
+              <label><input type="checkbox"> Elektif</label>
+              <label><input type="checkbox"> Cito</label>
+              <label><input type="checkbox"> ODC</label>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            <div class="input-container">
+              <textarea id="diagnosa" rows="3" placeholder=" "></textarea>
+              <label for="diagnosa" class="label-floating">Diagnosa Pra Bedah</label>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            <div class="input-container">
+              <input type="text" id="assessment" placeholder=" ">
+              <label for="assessment" class="label-floating">Assessment Pra Anestesi</label>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th colspan="4" style="text-align:center;">Assessment Pra Induksi</th>
+        </tr>
+        <tr>
+          <td>BB (Kg)</td>
+          <td><input type="text" class="form-input"></td>
+          <td>TD (mmHg)</td>
+          <td><input type="text" class="form-input"></td>
+        </tr>
+        <tr>
+          <td>Suhu (°C)</td>
+          <td><input type="text" class="form-input"></td>
+          <td>Respirasi</td>
+          <td><input type="text" class="form-input"></td>
+        </tr>
+        <tr>
+          <td>HB</td>
+          <td><input type="text" class="form-input"></td>
+          <td>TB (cm)</td>
+          <td><input type="text" class="form-input"></td>
+        </tr>
+        <tr>
+          <td>Nadi</td>
+          <td><input type="text" class="form-input"></td>
+          <td>GCS</td>
+          <td><input type="text" class="form-input"></td>
+        </tr>
+        <tr>
+          <td>Golongan Darah</td>
+          <td><input type="text" class="form-input"></td>
+          <td>Skrining Nyeri</td>
+          <td>
+            <div class="checkbox-group">
+              <label><input type="radio" name="skrining"> Tidak</label>
+              <label><input type="radio" name="skrining"> Ya</label>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <th colspan="4" style="text-align:center;">Obat-obatan</th>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div class="list-inputs">
+              <div class="input-container">
+                <input type="text" id="obat1" placeholder=" ">
+                <label for="obat1" class="label-floating">1.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="obat2" placeholder=" ">
+                <label for="obat2" class="label-floating">2.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="obat3" placeholder=" ">
+                <label for="obat3" class="label-floating">3.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="obat4" placeholder=" ">
+                <label for="obat4" class="label-floating">4.</label>
+              </div>
+            </div>
+          </td>
+          <td colspan="2">
+            <div class="list-inputs">
+              <div class="input-container">
+                <input type="text" id="obat5" placeholder=" ">
+                <label for="obat5" class="label-floating">5.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="obat6" placeholder=" ">
+                <label for="obat6" class="label-floating">6.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="obat7" placeholder=" ">
+                <label for="obat7" class="label-floating">7.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="obat8" placeholder=" ">
+                <label for="obat8" class="label-floating">8.</label>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th colspan="2" style="text-align:center;">Cairan Infus</th>
+          <th colspan="2" style="text-align:center;">Cairan Output</th>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div class="list-inputs">
+              <div class="input-container">
+                <input type="text" id="infus1" placeholder=" ">
+                <label for="infus1" class="label-floating">1.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="infus2" placeholder=" ">
+                <label for="infus2" class="label-floating">2.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="infus3" placeholder=" ">
+                <label for="infus3" class="label-floating">3.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="infus4" placeholder=" ">
+                <label for="infus4" class="label-floating">4.</label>
+              </div>
+            </div>
+          </td>
+          <td colspan="2">
+            <div class="list-inputs">
+              <div class="input-container">
+                <input type="text" id="output1" placeholder=" ">
+                <label for="output1" class="label-floating">1.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="output2" placeholder=" ">
+                <label for="output2" class="label-floating">2.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="output3" placeholder=" ">
+                <label for="output3" class="label-floating">3.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="output4" placeholder=" ">
+                <label for="output4" class="label-floating">4.</label>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th colspan="2" style="text-align:center;">Masalah Selama Anestesi</th>
+          <th colspan="2" style="text-align:center;">Tindakan</th>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div class="list-inputs">
+              <div class="input-container">
+                <input type="text" id="masalah1" placeholder=" ">
+                <label for="masalah1" class="label-floating">1.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="masalah2" placeholder=" ">
+                <label for="masalah2" class="label-floating">2.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="masalah3" placeholder=" ">
+                <label for="masalah3" class="label-floating">3.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="masalah4" placeholder=" ">
+                <label for="masalah4" class="label-floating">4.</label>
+              </div>
+            </div>
+          </td>
+          <td colspan="2">
+            <div class="list-inputs">
+              <div class="input-container">
+                <input type="text" id="tindakan1" placeholder=" ">
+                <label for="tindakan1" class="label-floating">1.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="tindakan2" placeholder=" ">
+                <label for="tindakan2" class="label-floating">2.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="tindakan3" placeholder=" ">
+                <label for="tindakan3" class="label-floating">3.</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="tindakan4" placeholder=" ">
+                <label for="tindakan4" class="label-floating">4.</label>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
 
-    <!-- Tanda tangan -->
-    <div class="signature-section">
-      <div class="signature-box">Tanda Tangan Pemberi Informasi</div>
-      <div class="signature-box">Tanda Tangan Pasien/Keluarga</div>
+      <!-- Serah Terima Pasien -->
+      <h2>Serah Terima Pasien</h2>
+      <table>
+        <tr>
+          <th>Perawat Anestesi</th>
+          <th>Perawat Yang Menerima</th>
+          <th>Dokter Anestesi</th>
+        </tr>
+        <tr>
+          <td>
+            <div class="input-container">
+              <input type="text" id="perawatAnestesi" placeholder=" ">
+              <label for="perawatAnestesi" class="label-floating">Nama</label>
+            </div>
+          </td>
+          <td>
+            <div class="input-container">
+              <input type="text" id="perawatMenerima" placeholder=" ">
+              <label for="perawatMenerima" class="label-floating">Nama</label>
+            </div>
+          </td>
+          <td>
+            <div class="input-container">
+              <input type="text" id="dokterAnestesi2" placeholder=" ">
+              <label for="dokterAnestesi2" class="label-floating">Nama</label>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Tanda tangan -->
+      <h2>Tanda Tangan</h2>
+      <div class="signature-section">
+        <div class="signature-box">
+          <div class="input-container">
+            <input type="text" id="ttdPemberi" placeholder=" ">
+            <label for="ttdPemberi" class="label-floating">Tanda Tangan Pemberi Informasi</label>
+          </div>
+        </div>
+        <div class="signature-box">
+          <div class="input-container">
+            <input type="text" id="ttdPasien" placeholder=" ">
+            <label for="ttdPasien" class="label-floating">Tanda Tangan Pasien/Keluarga</label>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <button type="submit">Simpan Data</button>
+    <div class="footer">
+      <div>RUMAH SAKIT UMUM PRASETYA BUNDA</div>
+      <div>RMOK-0003</div>
+    </div>
+    <!-- <button type="submit" class="print-btn">Simpan Data</button> -->
   </div>
 </body>
 </html>
