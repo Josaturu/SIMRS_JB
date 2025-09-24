@@ -98,18 +98,6 @@
         <tr>
           <td>
             <div class="input-container">
-              <input type="text" id="dokterBedah" placeholder=" ">
-              <label for="dokterBedah" class="label-floating">Dokter Bedah</label>
-            </div>
-          </td>
-          <td>
-            <div class="input-container">
-              <input type="text" id="perawatBedah" placeholder=" ">
-              <label for="perawatBedah" class="label-floating">Perawat Bedah</label>
-            </div>
-          </td>
-          <td>
-            <div class="input-container">
               <input type="text" id="dokterAnestesi" placeholder=" ">
               <label for="dokterAnestesi" class="label-floating">Dokter Anestesi</label>
             </div>
@@ -120,11 +108,23 @@
               <label for="perawatAnestesi" class="label-floating">Perawat Anestesi</label>
             </div>
           </td>
+          <td>
+            <div class="input-container">
+              <input type="text" id="dokterBedah" placeholder=" ">
+              <label for="dokterBedah" class="label-floating">Dokter Bedah</label>
+            </div>
+          </td>
+          <td>
+            <div class="input-container">
+              <input type="text" id="perawatBedah" placeholder=" ">
+              <label for="perawatBedah" class="label-floating">Perawat Bedah</label>
+            </div>
+          </td>
         </tr>
         <tr>
           <td colspan="4">
             <label><strong>Jenis Pembedahan:</strong></label>
-            <div class="checkbox-group">
+            <div>
               <label><input type="checkbox"> Elektif</label>
               <label><input type="checkbox"> Cito</label>
               <label><input type="checkbox"> ODC</label>
@@ -142,37 +142,37 @@
         <tr>
           <td colspan="4">
             <div class="input-container">
-              <input type="text" id="assessment" placeholder=" ">
-              <label for="assessment" class="label-floating">Assessment Pra Anestesi</label>
+              <textarea id="asessment" placeholder=" "></textarea>
+              <label for="asessment" class="label-floating">Asessmen Pra Anestesi</label>
             </div>
           </td>
         </tr>
         <tr>
-          <th colspan="4" style="text-align:center;">Assessment Pra Induksi</th>
+          <h2>Asessmen Pra Induksi</h2>
         </tr>
         <tr>
           <td>BB (Kg)</td>
-          <td><input type="text" class="form-input"></td>
+          <td><input type="number" class="form-input"></td>
           <td>TD (mmHg)</td>
-          <td><input type="text" class="form-input"></td>
+          <td><input type="number" class="form-input"></td>
         </tr>
         <tr>
           <td>Suhu (°C)</td>
-          <td><input type="text" class="form-input"></td>
+          <td><input type="number" class="form-input"></td>
           <td>Respirasi</td>
-          <td><input type="text" class="form-input"></td>
+          <td><input type="number" class="form-input"></td>
         </tr>
         <tr>
           <td>HB</td>
-          <td><input type="text" class="form-input"></td>
+          <td><input type="number" class="form-input"></td>
           <td>TB (cm)</td>
-          <td><input type="text" class="form-input"></td>
+          <td><input type="number" class="form-input"></td>
         </tr>
         <tr>
           <td>Nadi</td>
-          <td><input type="text" class="form-input"></td>
+          <td><input type="number" class="form-input"></td>
           <td>GCS</td>
-          <td><input type="text" class="form-input"></td>
+          <td><input type="number" class="form-input"></td>
         </tr>
         <tr>
           <td>Golongan Darah</td>
@@ -185,7 +185,221 @@
             </div>
           </td>
         </tr>
-        
+        <tr>
+          <td>
+            <strong>STATUS FISIK ASA</strong>
+          </td>
+          <td>
+            <input type="text">
+          </td>
+          <td>
+            penyulit pra Anestesi
+          </td>
+          <td>
+            <input type="text">
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <strong>JENIS ANESTESI</strong>
+          </td>
+          <td colspan="2">
+            <strong>RESIKO</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input type="checkbox"> Besar
+            <input type="checkbox"> Sedang
+            <input type="checkbox"> Ringan
+          </td>
+          <td colspan="2">
+            <input type="checkbox">Besar
+            <input type="checkbox">Sedang
+            <input type="checkbox">Ringan
+          </td>
+        </tr>
+        <tr>
+          <th colspan="4" style="text-align:center;">Checklist Sebelum Induksi</th>
+        </tr>
+        <tr>
+          <td colspan="4">
+            <div class="checkbox-group">
+              <label><input type="checkbox"> Ijin Operasi & Anestesi</label>
+              <label><input type="checkbox"> Antibiotika profilaksis</label>
+              <label><input type="checkbox"> EKG Lead</label>
+              <label><input type="checkbox"> SpO₂</label>
+              <label><input type="checkbox"> Urine Catheter</label>
+              <label><input type="checkbox"> Cek mesin Anestesi</label>
+              <label><input type="checkbox"> Cek suction unit</label>
+              <label><input type="checkbox"> NIBP</label>
+              <label><input type="checkbox"> Temp</label>
+              <label><input type="checkbox"> Cek Monitor</label>
+              <label><input type="checkbox"> Persiapan Jalan Napas</label>
+              <label><input type="checkbox"> Stetoskop</label>
+              <label><input type="checkbox"> NGT</label>
+              <label><input type="checkbox"> Persiapan Obat-Obatan Anestesi & Emergency</label>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th colspan="4" style="text-align:center;">Teknik Anestesi</th>
+        </tr>
+        <tr>
+          <td colspan="4">
+            <div class="checkbox-group">
+              <label><input type="checkbox"> GA</label>
+              <label><input type="checkbox"> Regional - Spinal</label>
+              <label><input type="checkbox"> Regional - Epidural</label>
+              <label><input type="checkbox"> Regional - Kaudal</label>
+              <label><input type="checkbox"> Regional - CSE</label>
+              <label><input type="checkbox"> Sedasi</label>
+            </div>
+          </td>
+        </tr>
+          <tr>
+            <th colspan="4" style="text-align:center;">Infus Perifer (Tempat / Ukuran)</th>
+          </tr>
+          <tr>
+            <td colspan="4">
+              <div class="list-inputs">
+                <div class="input-container">
+                  <input type="text" id="infus1" placeholder=" ">
+                  <label for="infus1" class="label-floating">1.</label>
+                </div>
+                <div class="input-container">
+                  <input type="text" id="infus2" placeholder=" ">
+                  <label for="infus2" class="label-floating">2.</label>
+                </div>
+                <div class="input-container">
+                  <input type="text" id="infus3" placeholder=" ">
+                  <label for="infus3" class="label-floating">3.</label>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="2" style="text-align:center;">Posisi</th>
+            <th colspan="2" style="text-align:center;">Premedikasi</th>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="checkbox-group">
+                <label><input type="checkbox"> Supine</label>
+                <label><input type="checkbox"> Lithotomi</label>
+                <label><input type="checkbox"> Prone</label>
+                <label><input type="checkbox"> Lateral</label>
+                <label><input type="checkbox"> Perlindungan Mata</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="LainlainPosisi" placeholder="">
+                <label for="LainlainPosisi" class="label-floating">Lain-lain</label>
+              </div>
+            </td>
+            <td colspan="2">
+              <div class="checkbox-group">
+                <label><input type="checkbox"> Oral</label>
+                <label><input type="checkbox"> I.M</label>
+                <label><input type="checkbox"> I.V</label>
+              </div>
+              <div class="input-container">
+                <input type="text" id="Premedik_Nama Obat" placeholder="">
+                <label for="Premedik_Nama Obat" class="label-floating">Nama Obat</label>
+                </div>
+                <div class="input-container">
+                <input  type="text" id="Premedik_Dosis Obat" placeholder=" ">
+                <label for="Premedik_Dosis Obat" class="label-floating">Dosis Obat</label>
+              </div>
+            </td>
+          </tr>
+          </table>
+        <table>
+          <h2>ANESTESI UMUM</h2>
+        <tr>
+          <th colspan="4" style="text-align: right;"><strong>RMOK 1b Rev-01</strong></th>
+        </tr>  
+        <tr>
+          <td>
+            <label style="text-align: center;"> Induksi</label>
+            <div>
+              <label><input type="checkbox"> Propofol</label>
+              <label><input type="checkbox"> Thiopental</label>
+              <label><input type="checkbox"> Etomidate</label>
+            </div>
+          </td>
+          <td style="text-align: center;">
+            <label> Jalan Nafas</label>
+            <div>
+              <label><input type="checkbox"> facemask</label>
+              <label><input type="checkbox"> LMA</label>
+              <label><input type="checkbox"> ETT</label>
+            </div>
+          </td>
+          <td style="text-align: center;">
+            <label> Ventilasi</label>
+            <div>
+              <label><input type="checkbox"> Spontant</label>
+              <label><input type="checkbox"> Assist</label>
+              <label><input type="checkbox"> Control</label>
+            </div>
+          </td>
+          <td>
+            <label style="text-align: center;"> Ventilator</label>
+            <div>
+              <label><input type="checkbox"> TV</label>
+              <label><input type="checkbox"> RR</label>
+              <label><input type="checkbox"> SpO2</label>
+              <label><input type="checkbox"> PEEP</label>
+            </div>
+          </td>
+        <tr>
+          <td colspan="2">
+            <div class="input-container">
+              <input type="text" id="ukuranBalon" placeholder=" ">
+              <label for="ukuranBalon" class="label-floating">Ukuran</label>
+            </div>
+          </td>
+          <td>
+            <input type="radio" name="balon" id="balon"> Balon <br>
+            <input type="radio" name="balon" id="balon"> Tanpa Balon
+          </td>
+          <td>
+            <input type="radio" name="oralNasal" id="oralNasal"> Oral <br>
+            <input type="radio" name="oralNasal" id="oralNasal"> Nasal
+          </td>
+        </tr>
+      
+        <!-- ANESTESI REGIONAL -->
+        <tr>
+          <th colspan="2" style="text-align:center;">ANESTESI REGIONAL</th>
+          <th colspan="2" style="text-align:center;">HASIL</th>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div class="input-container">
+              <input type="text" id="lokasi" placeholder=" ">
+              <label for="lokasi" class="label-floating">Lokasi</label>
+            </div>
+            <div class="input-container">
+              <input type="text" id="jarum" placeholder="">
+              <label for="jarum" class="label-floating">Jarum / No</label>
+            </div>
+            <div class="input-container">
+              <input type="text" id="kateter" placeholder="">
+              <label for="kateter" class="label-floating">Kateter</label>
+            </div>
+            <div class="input-container">
+              <input type="text" id="obatAnestesiLokal" placeholder=" ">
+              <label for="obatAnestesiLokal" class="label-floating">Obat Anestesi Lokal</label>
+            </div>
+          </td>
+          <td colspan="2" style="text-align: left;">
+            <label><input type="checkbox"> Ketinggian Blok</label><br>
+            <label><input type="checkbox"> Total Blok</label><br>
+            <label><input type="checkbox"> Gagal Blok</label><br>
+            <label><input type="checkbox"> Partial Blok</label>
+          </td>
+        </tr>
         <tr>
           <th colspan="4" style="text-align:center;">Obat-obatan</th>
         </tr>
