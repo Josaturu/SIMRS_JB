@@ -112,21 +112,100 @@ h2 {
 }
 
 /* Form Elements */
-.label-floating {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    transform: translateY(-50%);
-    color: gray;
-    font-size: 16px;
-    pointer-events: none;
-    transition: all 0.3s ease;
+.input-container {
+  position: relative;
+  margin-bottom: 20px;
 }
 
-.input-container {
-    position: relative;
-    margin-top: 20px;
+.input-container input,
+.input-container textarea,
+.input-container select {
+  border: 1px solid #cfd8e3;
+  border-radius: 6px;
+  padding: 12px 8px 8px 8px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  background-color: #fff;
 }
+
+.input-container input:focus,
+.input-container textarea:focus,
+.input-container select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+/* Label Floating Styles */
+.label-floating {
+  position: absolute;
+  top: 5px;
+  left: 8px;
+  font-size: 14px;
+  color: #6c757d;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  padding: 0 4px;
+}
+
+.input-container input:focus + .label-floating,
+.input-container input:not(:placeholder-shown) + .label-floating,
+.input-container textarea:focus + .label-floating,
+.input-container textarea:not(:placeholder-shown) + .label-floating,
+.input-container select:focus + .label-floating,
+.input-container select:not([value=""]) + .label-floating {
+  top: -8px;
+  left: 8px;
+  font-size: 12px;
+  color: #007bff;
+  background-color: #fff;
+  z-index: 10;
+}
+
+/* Input with Icon Styles */
+.input-container.with-icon {
+  position: relative;
+}
+
+.input-container.with-icon i {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  color: #6c757d;
+  transition: all 0.3s ease;
+}
+
+.input-container.with-icon input,
+.input-container.with-icon textarea,
+.input-container.with-icon select {
+  padding-left: 36px;
+}
+
+.input-container.with-icon input:focus + i,
+.input-container.with-icon input:not(:placeholder-shown) + i,
+.input-container.with-icon textarea:focus + i,
+.input-container.with-icon textarea:not(:placeholder-shown) + i,
+.input-container.with-icon select:focus + i,
+.input-container.with-icon select:not([value=""]) + i {
+  color: #007bff;
+}
+
+.input-container.with-icon .label-floating {
+  left: 36px;
+}
+
+.input-container.with-icon input:focus + .label-floating,
+.input-container.with-icon input:not(:placeholder-shown) + .label-floating,
+.input-container.with-icon textarea:focus + .label-floating,
+.input-container.with-icon textarea:not(:placeholder-shown) + .label-floating,
+.input-container.with-icon select:focus + .label-floating,
+.input-container.with-icon select:not([value=""]) + .label-floating {
+  left: 36px;
+}
+
 
 input[type="text"],
 input[type="date"],
@@ -228,7 +307,7 @@ th {
 
 /* Table Specific Styles */
 table td:first-child {
-  text-align: center;
+  text-align: left;
   /* width: 30px; */
 }
 
@@ -239,34 +318,7 @@ table td:last-child {
 
 table td:nth-child(2) {
   /* width: 150px; */
-  font-weight: 500;
-}
-
-/* Textarea in Input Container */
-.input-container textarea {
-  border: 1px solid #cfd8e3;
-  border-radius: 6px;
-  padding: 6px 8px;
-  font-size: 13px;
-  width: 100%;
-  box-sizing: border-box;
-  transition: outline-color 0.3s ease;
-  resize: vertical;
-  min-height: 80px;
-}
-
-.input-container textarea:focus {
-  border-color: #007bff;
-  outline: 2px solid blue;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
-}
-
-/* Label floating for textarea */
-.input-container textarea:focus + .label-floating,
-.input-container textarea:not(:placeholder-shown) + .label-floating {
-  top: -10px;
-  font-size: 15px;
-  color: #007bff;
+  /* font-weight: 500; */
 }
 
 /* Responsive adjustments */

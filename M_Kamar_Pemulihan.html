@@ -204,9 +204,9 @@
 						</div>
 					</div>
 					
-					<div class="input-group">
-						<label>Catatan:</label>
-						<textarea placeholder="Catatan Khusus Ruang Pemulihan"></textarea>
+					<div class="input-container" style="margin-top: 15px;">
+						<textarea id = "catatan" rows="" placeholder=""></textarea>
+						<label for="catatan" class="label-floating">Catatan Khusus Ruang Pemulihan</label>
 					</div>
 				</div>
 
@@ -243,7 +243,12 @@
 							<th>Dokter Anestesi</th>
 						</tr>
 						<tr>
-							<td><input type="text" placeholder="Nama Pasien" /></td>
+							<td>
+								<div class="input-container" style="margin-top: 17px;">
+									<input type="text" id="nama" placeholder=" ">
+									<label for="nama" class="label-floating">Nama</label>
+								</div>
+							</td>
 							<td>
 								<select>
 									<option value="">Pilih Perawat</option>
