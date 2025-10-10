@@ -171,97 +171,103 @@ class FormModel {
         return $stmt->execute();
     }
     public function createCatatanAnestesi($data) {
+        // Gunakan field yang sesuai dengan struktur tabel sebenarnya
         $query = "INSERT INTO " . $this->table_catatan_anestesi . " 
                  SET id=:id, no_rawat=:no_rawat, kode_paket=:kode_paket,
-                     tanggal=:tanggal, jam_mulai=:jam_mulai, tanggal_tindakan=:tanggal_tindakan,
-                     pukul=:pukul, dokter_bedah=:dokter_bedah, perawat_bedah=:perawat_bedah,
+                     tanggal=:tanggal, jam_mulai=:jam_mulai, 
+                     no_rm=:no_rm, nama=:nama, tgl_lahir=:tgl_lahir,
+                     ruang_perawatan=:ruang_perawatan, dokter_merawat=:dokter_merawat,
                      dokter_anestesi=:dokter_anestesi, perawat_anestesi=:perawat_anestesi,
-                     jenis_pembedahan=:jenis_pembedahan, diagnosa=:diagnosa,
-                     asesmen=:asesmen, bb_kg=:bb_kg, td_mmHg=:td_mmHg, suhu=:suhu,
-                     respirasi=:respirasi, hb=:hb, tb_cm=:tb_cm, nadi=:nadi,
-                     gcs=:gcs, gol_darah=:gol_darah, skrining_nyeri=:skrining_nyeri,
+                     diagnosa_pra_bedah=:diagnosa_pra_bedah, nama_tindakan=:nama_tindakan,
+                     diagnosa_pasca_bedah=:diagnosa_pasca_bedah, asessment_pra_anestesi=:asessment_pra_anestesi,
+                     tanggal_anestesi=:tanggal_anestesi, pukul=:pukul,
+                     dokter_bedah=:dokter_bedah, perawat_bedah=:perawat_bedah,
+                     jenis_pembedahan=:jenis_pembedahan, bb=:bb, td=:td, suhu=:suhu,
+                     respirasi=:respirasi, hb=:hb, tb=:tb, nadi=:nadi, gcs=:gcs,
+                     golongan_darah=:golongan_darah, skrining_nyeri=:skrining_nyeri,
                      status_fisik_asa=:status_fisik_asa, penyulit_pra_anestesi=:penyulit_pra_anestesi,
-                     jenis_anestesi=:jenis_anestesi, risiko=:risiko,
-                     checklist_sebelum_induksi=:checklist_sebelum_induksi, infus_perifer=:infus_perifer,
-                     posisi=:posisi, premedikasi_jenis=:premedikasi_jenis,
-                     premedikasi_nama_obat=:premedikasi_nama_obat, premedikasi_dosis_obat=:premedikasi_dosis_obat,
-                     induksi=:induksi, jalan_nafas=:jalan_nafas, ventilasi=:ventilasi,
-                     ventilator_tv=:ventilator_tv, ventilator_rr=:ventilator_rr,
-                     ventilator_spo2=:ventilator_spo2, ventilator_peep=:ventilator_peep,
-                     ukuran=:ukuran, balon=:balon, rute=:rute, lokasi=:lokasi,
-                     jarum_no=:jarum_no, kateter=:kateter, obat_anestesi_lokal=:obat_anestesi_lokal,
-                     hasil_anestesi_regional=:hasil_anestesi_regional, obat_obatan=:obat_obatan,
-                     cairan_infus=:cairan_infus, cairan_output=:cairan_output,  
-                     masalah_anestesi=:masalah_anestesi, tindakan=:tindakan,  
+                     jenis_anestesi=:jenis_anestesi, resiko=:resiko,
+                     checklist_sebelum_induksi=:checklist_sebelum_induksi, teknik_anestesi=:teknik_anestesi,
+                     infus_perifer=:infus_perifer, induksi=:induksi, jalan_nafas=:jalan_nafas, ventilasi=:ventilasi,
+                     ventilator=:ventilator, ukuran_balon=:ukuran_balon, jenis_balon=:jenis_balon,
+                     posisi_ett=:posisi_ett, lain_lain_balon=:lain_lain_balon,
+                     lokasi_regional=:lokasi_regional, jarum_regional=:jarum_regional,
+                     kateter_regional=:kateter_regional, obat_anestesi_lokal=:obat_anestesi_lokal,
+                     hasil_regional=:hasil_regional, obat=:obat, cairan_infus=:cairan_infus,
+                     cairan_output=:cairan_output, masalah_selama_anestesi=:masalah_selama_anestesi,
+                     tindakan=:tindakan, keterangan=:keterangan,
                      perawat_menyerahkan=:perawat_menyerahkan, perawat_menerima=:perawat_menerima,
-                     dokter_anestesi_serah=:dokter_anestesi_serah,
-                     mulai_anestesi=:mulai_anestesi, selesai_anestesi=:selesai_anestesi,  
-                     mulai_pembedahan=:mulai_pembedahan, selesai_pembedahan=:selesai_pembedahan,  
-                     keterangan_waktu=:keterangan_waktu, induksi_pukul=:induksi_pukul,  
-                     pasien_siap_insisi=:pasien_siap_insisi, insisi_mulai_pukul=:insisi_mulai_pukul,  
-                     operasi_mulai_pukul=:operasi_mulai_pukul, ekstubasi_pukul=:ekstubasi_pukul,  
-                     pasien_keluar_ok=:pasien_keluar_ok";  
+                     dokter_anestesi_ttd=:dokter_anestesi_ttd,
+                     mulai_anestesi=:mulai_anestesi, selesai_anestesi=:selesai_anestesi,
+                     mulai_pembedahan=:mulai_pembedahan, selesai_pembedahan=:selesai_pembedahan,
+                     keterangan_waktu=:keterangan_waktu, induksi_pukul=:induksi_pukul,
+                     pasien_siap_insisi=:pasien_siap_insisi, insisi_mulai_pukul=:insisi_mulai_pukul,
+                     operasi_mulai_pukul=:operasi_mulai_pukul, ekstubasi_pukul=:ekstubasi_pukul,
+                     pasien_keluar_ok=:pasien_keluar_ok";
         
         $stmt = $this->conn->prepare($query);
         
-        // Bind parameters
+        // Bind semua parameter sesuai dengan field di database
         $stmt->bindParam(":id", $data['id']);
         $stmt->bindParam(":no_rawat", $data['no_rawat']);
         $stmt->bindParam(":kode_paket", $data['kode_paket']);
         $stmt->bindParam(":tanggal", $data['tanggal']);
         $stmt->bindParam(":jam_mulai", $data['jam_mulai']);
-        $stmt->bindParam(":tanggal_tindakan", $data['tanggal_tindakan']);
+        $stmt->bindParam(":no_rm", $data['no_rm']);
+        $stmt->bindParam(":nama", $data['nama']);
+        $stmt->bindParam(":tgl_lahir", $data['tgl_lahir']);
+        $stmt->bindParam(":ruang_perawatan", $data['ruang_perawatan']);
+        $stmt->bindParam(":dokter_merawat", $data['dokter_merawat']);
+        $stmt->bindParam(":dokter_anestesi", $data['dokter_anestesi']);
+        $stmt->bindParam(":perawat_anestesi", $data['perawat_anestesi']);
+        $stmt->bindParam(":diagnosa_pra_bedah", $data['diagnosa_pra_bedah']);
+        $stmt->bindParam(":nama_tindakan", $data['nama_tindakan']);
+        $stmt->bindParam(":diagnosa_pasca_bedah", $data['diagnosa_pasca_bedah']);
+        $stmt->bindParam(":asessment_pra_anestesi", $data['asessment_pra_anestesi']);
+        $stmt->bindParam(":tanggal_anestesi", $data['tanggal_anestesi']);
         $stmt->bindParam(":pukul", $data['pukul']);
         $stmt->bindParam(":dokter_bedah", $data['dokter_bedah']);
         $stmt->bindParam(":perawat_bedah", $data['perawat_bedah']);
-        $stmt->bindParam(":dokter_anestesi", $data['dokter_anestesi']);
-        $stmt->bindParam(":perawat_anestesi", $data['perawat_anestesi']);
         $stmt->bindParam(":jenis_pembedahan", $data['jenis_pembedahan']);
-        $stmt->bindParam(":diagnosa", $data['diagnosa']);
-        $stmt->bindParam(":asesmen", $data['asesmen']);
-        $stmt->bindParam(":bb_kg", $data['bb_kg']);
-        $stmt->bindParam(":td_mmHg", $data['td_mmHg']);
+        $stmt->bindParam(":bb", $data['bb']);
+        $stmt->bindParam(":td", $data['td']);
         $stmt->bindParam(":suhu", $data['suhu']);
         $stmt->bindParam(":respirasi", $data['respirasi']);
         $stmt->bindParam(":hb", $data['hb']);
-        $stmt->bindParam(":tb_cm", $data['tb_cm']);
+        $stmt->bindParam(":tb", $data['tb']);
         $stmt->bindParam(":nadi", $data['nadi']);
         $stmt->bindParam(":gcs", $data['gcs']);
-        $stmt->bindParam(":gol_darah", $data['gol_darah']);
+        $stmt->bindParam(":golongan_darah", $data['golongan_darah']);
         $stmt->bindParam(":skrining_nyeri", $data['skrining_nyeri']);
         $stmt->bindParam(":status_fisik_asa", $data['status_fisik_asa']);
         $stmt->bindParam(":penyulit_pra_anestesi", $data['penyulit_pra_anestesi']);
         $stmt->bindParam(":jenis_anestesi", $data['jenis_anestesi']);
-        $stmt->bindParam(":risiko", $data['risiko']);
+        $stmt->bindParam(":resiko", $data['resiko']);
         $stmt->bindParam(":checklist_sebelum_induksi", $data['checklist_sebelum_induksi']);
+        $stmt->bindParam(":teknik_anestesi", $data['teknik_anestesi']);
         $stmt->bindParam(":infus_perifer", $data['infus_perifer']);
-        $stmt->bindParam(":posisi", $data['posisi']);
-        $stmt->bindParam(":premedikasi_jenis", $data['premedikasi_jenis']);
-        $stmt->bindParam(":premedikasi_nama_obat", $data['premedikasi_nama_obat']);
-        $stmt->bindParam(":premedikasi_dosis_obat", $data['premedikasi_dosis_obat']);
         $stmt->bindParam(":induksi", $data['induksi']);
         $stmt->bindParam(":jalan_nafas", $data['jalan_nafas']);
         $stmt->bindParam(":ventilasi", $data['ventilasi']);
-        $stmt->bindParam(":ventilator_tv", $data['ventilator_tv']);
-        $stmt->bindParam(":ventilator_rr", $data['ventilator_rr']);
-        $stmt->bindParam(":ventilator_spo2", $data['ventilator_spo2']);
-        $stmt->bindParam(":ventilator_peep", $data['ventilator_peep']);
-        $stmt->bindParam(":ukuran", $data['ukuran']);
-        $stmt->bindParam(":balon", $data['balon']);
-        $stmt->bindParam(":rute", $data['rute']);
-        $stmt->bindParam(":lokasi", $data['lokasi']);
-        $stmt->bindParam(":jarum_no", $data['jarum_no']);
-        $stmt->bindParam(":kateter", $data['kateter']);
+        $stmt->bindParam(":ventilator", $data['ventilator']);
+        $stmt->bindParam(":ukuran_balon", $data['ukuran_balon']);
+        $stmt->bindParam(":jenis_balon", $data['jenis_balon']);
+        $stmt->bindParam(":posisi_ett", $data['posisi_ett']);
+        $stmt->bindParam(":lain_lain_balon", $data['lain_lain_balon']);
+        $stmt->bindParam(":lokasi_regional", $data['lokasi_regional']);
+        $stmt->bindParam(":jarum_regional", $data['jarum_regional']);
+        $stmt->bindParam(":kateter_regional", $data['kateter_regional']);
         $stmt->bindParam(":obat_anestesi_lokal", $data['obat_anestesi_lokal']);
-        $stmt->bindParam(":hasil_anestesi_regional", $data['hasil_anestesi_regional']);
-        $stmt->bindParam(":obat_obatan", $data['obat_obatan']);
+        $stmt->bindParam(":hasil_regional", $data['hasil_regional']);
+        $stmt->bindParam(":obat", $data['obat']);
         $stmt->bindParam(":cairan_infus", $data['cairan_infus']);
         $stmt->bindParam(":cairan_output", $data['cairan_output']);
-        $stmt->bindParam(":masalah_anestesi", $data['masalah_anestesi']);
+        $stmt->bindParam(":masalah_selama_anestesi", $data['masalah_selama_anestesi']);
         $stmt->bindParam(":tindakan", $data['tindakan']);
+        $stmt->bindParam(":keterangan", $data['keterangan']);
         $stmt->bindParam(":perawat_menyerahkan", $data['perawat_menyerahkan']);
         $stmt->bindParam(":perawat_menerima", $data['perawat_menerima']);
-        $stmt->bindParam(":dokter_anestesi_serah", $data['dokter_anestesi_serah']);
+        $stmt->bindParam(":dokter_anestesi_ttd", $data['dokter_anestesi_ttd']);
         $stmt->bindParam(":mulai_anestesi", $data['mulai_anestesi']);
         $stmt->bindParam(":selesai_anestesi", $data['selesai_anestesi']);
         $stmt->bindParam(":mulai_pembedahan", $data['mulai_pembedahan']);
@@ -273,12 +279,7 @@ class FormModel {
         $stmt->bindParam(":operasi_mulai_pukul", $data['operasi_mulai_pukul']);
         $stmt->bindParam(":ekstubasi_pukul", $data['ekstubasi_pukul']);
         $stmt->bindParam(":pasien_keluar_ok", $data['pasien_keluar_ok']);
-
-        // Untuk array, konversi ke JSON
-        $data['cairan_output'] = json_encode($data['cairan_output']);
-        $data['masalah_anestesi'] = json_encode($data['masalah']);
-        $data['tindakan'] = json_encode($data['tindakan']);
-        
+    
         return $stmt->execute();
     }
 

@@ -1,19 +1,33 @@
 <?php
 $page_title = "Daftar Pasien Booking Operasi";
-// include __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../config/database.php';
 
 // Koneksi database
 $database = new Database();
 $db = $database->getConnection();
 
-// Query untuk mengambil data booking operasi
-$query = "SELECT * FROM booking_operasi ORDER BY tanggal DESC, jam_mulai DESC";
+// Query JOIN untuk menampilkan nama pasien & kode rekam medis
+$query = "
+    SELECT 
+        b.no_rawat,
+        b.kode_paket,
+        b.tanggal,
+        b.jam_mulai,
+        b.kd_dokter,
+        b.kd_ruang_ok,
+        b.status,
+        p.nama AS nama_pasien,
+        p.kode_rekam_medis
+    FROM booking_operasi AS b
+    LEFT JOIN pasien AS p ON b.kd_pasien = p.kd_pasien
+    ORDER BY b.tanggal DESC, b.jam_mulai DESC
+";
 $stmt = $db->prepare($query);
 $stmt->execute();
 $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <link rel="stylesheet" href="/assets/css/style.css">
+
 <div class="header">
     <div class="logo">
         <img src="assets/images/logo.png" alt="Logo Rumah Sakit" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'">
@@ -23,21 +37,19 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
+
 <div class="container">
     <div class="header-actions">
         <h2>Daftar Pasien Booking Operasi</h2>
         <a href="index.php?page=tambah-booking" class="btn btn-success">+ Tambah Booking Baru</a>
     </div>
-    
+
     <?php
     $show_notif = false;
     if (isset($_GET['status'])) {
-        // Tampilkan notifikasi hanya jika sebelumnya ada POST (submit form) atau ada session flash
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $show_notif = true;
         }
-        // Atau jika ingin lebih aman, bisa gunakan session flash message (opsional)
-        // if (isset($_SESSION['show_notif'])) { $show_notif = true; unset($_SESSION['show_notif']); }
     }
     ?>
     <?php if ($show_notif): ?>
@@ -66,6 +78,8 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <tr>
                 <th>No. Rawat</th>
                 <th>Kode Paket</th>
+                <th>Kode RM</th>
+                <th>Nama Pasien</th>
                 <th>Tanggal Operasi</th>
                 <th>Jam Mulai</th>
                 <th>Dokter</th>
@@ -78,28 +92,28 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php if (count($pasien_list) > 0): ?>
                 <?php foreach ($pasien_list as $pasien): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($pasien['no_rawat']); ?></td>
+                        <td><?= htmlspecialchars($pasien['no_rawat']); ?></td>
+                        <td><span class="kode-paket"><?= htmlspecialchars($pasien['kode_paket']); ?></span></td>
+                        <td><?= htmlspecialchars($pasien['kode_rekam_medis'] ?? '-'); ?></td>
+                        <td><?= htmlspecialchars($pasien['nama_pasien'] ?? '-'); ?></td>
+                        <td><?= htmlspecialchars($pasien['tanggal']); ?></td>
+                        <td><?= htmlspecialchars($pasien['jam_mulai']); ?></td>
+                        <td><?= htmlspecialchars($pasien['kd_dokter']); ?></td>
+                        <td><?= htmlspecialchars($pasien['kd_ruang_ok']); ?></td>
                         <td>
-                            <span class="kode-paket"><?php echo htmlspecialchars($pasien['kode_paket']); ?></span>
-                        </td>
-                        <td><?php echo htmlspecialchars($pasien['tanggal']); ?></td>
-                        <td><?php echo htmlspecialchars($pasien['jam_mulai']); ?></td>
-                        <td><?php echo htmlspecialchars($pasien['kd_dokter']); ?></td>
-                        <td><?php echo htmlspecialchars($pasien['kd_ruang_ok']); ?></td>
-                        <td>
-                            <span class="status-badge status-<?php echo strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
-                                <?php echo htmlspecialchars($pasien['status']); ?>
+                            <span class="status-badge status-<?= strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
+                                <?= htmlspecialchars($pasien['status']); ?>
                             </span>
                         </td>
                         <td>
-                            <a href="index.php?page=detail-pasien&no_rawat=<?php echo urlencode($pasien['no_rawat']); ?>&kode_paket=<?php echo urlencode($pasien['kode_paket']); ?>&tanggal=<?php echo urlencode($pasien['tanggal']); ?>&jam_mulai=<?php echo urlencode($pasien['jam_mulai']); ?>" 
+                            <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($pasien['no_rawat']); ?>&kode_paket=<?= urlencode($pasien['kode_paket']); ?>&tanggal=<?= urlencode($pasien['tanggal']); ?>&jam_mulai=<?= urlencode($pasien['jam_mulai']); ?>" 
                                class="btn btn-info btn-sm">Detail</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="8" class="text-center">
+                    <td colspan="10" class="text-center">
                         <p>Belum ada data booking operasi.</p>
                         <a href="index.php?page=tambah-booking" class="btn btn-primary">Tambah Booking Pertama</a>
                     </td>
@@ -107,5 +121,6 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </tbody>
     </table>
+
     <?php include __DIR__ . '/../includes/footer.php'; ?>
 </div>

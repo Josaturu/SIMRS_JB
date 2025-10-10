@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = "localhost";
-    private $db_name = "dbsimrs";
+    private $db_name = "dbanestesi";
     private $username = "root";
     private $password = "";
     public $conn;
