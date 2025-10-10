@@ -1,6 +1,5 @@
 <?php
 $page_title = "Daftar Pasien Booking Operasi";
-// include __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../config/database.php';
 
 // Koneksi database
@@ -12,17 +11,15 @@ $query = "SELECT * FROM booking_operasi ORDER BY tanggal DESC, jam_mulai DESC";
 $stmt = $db->prepare($query);
 $stmt->execute();
 $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Variabel kosong untuk header (tidak perlu stiker pasien di daftar)
+$no_rawat = '';
+$kode_paket = '';
+$tanggal = '';
+$pasien = [];
+
+include __DIR__ . '/../includes/header.php';
 ?>
-<link rel="stylesheet" href="/assets/css/style.css">
-<div class="header">
-    <div class="logo">
-        <img src="assets/images/logo.png" alt="Logo Rumah Sakit" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'">
-        <div>
-            <strong>Rumah Sakit Umum</strong><br>
-            <span style="color:#396cf0; font-weight:bold;">PRASETYA BUNDA</span>
-        </div>
-    </div>
-</div>
 <div class="container">
     <div class="header-actions">
         <h2>Daftar Pasien Booking Operasi</h2>

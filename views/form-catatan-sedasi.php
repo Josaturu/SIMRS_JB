@@ -34,6 +34,8 @@ $stmt_vs->execute();
 $vs = $stmt_vs->fetch(PDO::FETCH_ASSOC);
 $vs_done = $vs['total'] > 0;
 
+$pasien = $booking;
+
 if (!$booking) {
     echo "Data pasien tidak ditemukan.";
     exit;

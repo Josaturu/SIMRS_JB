@@ -4,5 +4,6 @@
     </div>
     
     <script src="assets/js/script.js"></script>
+    <script src="assets/js/improvements.js"></script>
 </body>
 </html>
