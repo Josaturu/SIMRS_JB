@@ -6,8 +6,25 @@ require_once __DIR__ . '/../config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
-// Query untuk mengambil data booking operasi
-$query = "SELECT * FROM booking_operasi ORDER BY tanggal DESC, jam_mulai DESC";
+// Query untuk mengambil data booking operasi dengan JOIN ke tabel pasien
+$query = "SELECT 
+            b.no_rawat, 
+            b.kode_paket, 
+            b.tanggal, 
+            b.jam_mulai, 
+            b.jam_selesai,
+            b.status, 
+            b.kd_dokter, 
+            b.kd_ruang_ok,
+            b.kd_pasien,
+            p.nama as nama_pasien,
+            p.kode_rekam_medis,
+            p.alamat,
+            p.tanggal_lahir,
+            p.jenis_kelamin
+          FROM booking_operasi b
+          LEFT JOIN pasien p ON b.kd_pasien = p.kd_pasien
+          ORDER BY b.tanggal DESC, b.jam_mulai DESC";
 $stmt = $db->prepare($query);
 $stmt->execute();
 $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -62,6 +79,7 @@ include __DIR__ . '/../includes/header.php';
         <thead>
             <tr>
                 <th>No. Rawat</th>
+                <th>Nama Pasien</th>
                 <th>Kode Paket</th>
                 <th>Tanggal Operasi</th>
                 <th>Jam Mulai</th>
@@ -76,6 +94,7 @@ include __DIR__ . '/../includes/header.php';
                 <?php foreach ($pasien_list as $pasien): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($pasien['no_rawat']); ?></td>
+                        <td><strong><?php echo htmlspecialchars($pasien['nama_pasien'] ?? '-'); ?></strong></td>
                         <td>
                             <span class="kode-paket"><?php echo htmlspecialchars($pasien['kode_paket']); ?></span>
                         </td>
@@ -96,7 +115,7 @@ include __DIR__ . '/../includes/header.php';
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="8" class="text-center">
+                    <td colspan="9" class="text-center">
                         <p>Belum ada data booking operasi.</p>
                         <a href="index.php?page=tambah-booking" class="btn btn-primary">Tambah Booking Pertama</a>
                     </td>

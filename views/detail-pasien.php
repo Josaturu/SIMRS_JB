@@ -17,8 +17,11 @@ if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mula
 $database = new Database();
 $db = $database->getConnection();
 
-// Query untuk mengambil data booking operasi
-$query = "SELECT * FROM booking_operasi WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+// Query untuk mengambil data booking operasi dengan data pasien
+$query = "SELECT b.*, p.kode_rekam_medis, p.nama, p.tanggal_lahir, p.jenis_kelamin, p.alamat, p.no_hp, p.gol_darah 
+           FROM booking_operasi b 
+           LEFT JOIN pasien p ON b.kd_pasien = p.kd_pasien 
+           WHERE b.no_rawat = ? AND b.kode_paket = ? AND b.tanggal = ? AND b.jam_mulai = ?";
 $stmt = $db->prepare($query);
 $stmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $pasien = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -29,12 +32,12 @@ if (!$pasien) {
 }
 
 // Query untuk mengecek form mana yang sudah diisi
-$query_persiapan = "SELECT COUNT(*) as total FROM tbl_anestesi_checklist_persiapan WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+$query_persiapan = "SELECT COUNT(*) as total FROM tbl_anestesi_persiapan_operasi WHERE no_rawat = ? AND kode_paket = ?";
 $stmt_persiapan = $db->prepare($query_persiapan);
-$stmt_persiapan->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
+$stmt_persiapan->execute([$no_rawat, $kode_paket]);
 $persiapan_terisi = $stmt_persiapan->fetch(PDO::FETCH_ASSOC)['total'] > 0;
 
-$query_keselamatan = "SELECT COUNT(*) as total FROM tbl_anestesi_checklist_keselamatan WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+$query_keselamatan = "SELECT COUNT(*) as total FROM tbl_anestesi_keselamatan_operasi WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
 $stmt_keselamatan = $db->prepare($query_keselamatan);
 $stmt_keselamatan->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $keselamatan_terisi = $stmt_keselamatan->fetch(PDO::FETCH_ASSOC)['total'] > 0;
@@ -69,6 +72,14 @@ include __DIR__ . '/../includes/header.php';
         </div>
         <div class="card-body">
             <div class="patient-info-grid">
+                <div class="info-item">
+                    <label>No. Rekam Medis</label>
+                    <div class="info-value"><?php echo htmlspecialchars($pasien['kode_rekam_medis'] ?? '-'); ?></div>
+                </div>
+                <div class="info-item">
+                    <label>Nama Pasien</label>
+                    <div class="info-value" style="font-weight: 600; color: #2c3e50;"><?php echo htmlspecialchars($pasien['nama'] ?? '-'); ?></div>
+                </div>
                 <div class="info-item">
                     <label>No. Rawat</label>
                     <div class="info-value"><?php echo htmlspecialchars($pasien['no_rawat']); ?></div>

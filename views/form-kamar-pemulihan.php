@@ -14,10 +14,13 @@ if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mula
     exit;
 }
 
-// Koneksi database untuk mendapatkan data booking
+// Koneksi database untuk mendapatkan data booking DAN data pasien
 $database = new Database();
 $db = $database->getConnection();
-$query = "SELECT * FROM booking_operasi WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+$query = "SELECT b.*, p.kode_rekam_medis, p.nama, p.tanggal_lahir, p.jenis_kelamin, p.alamat, p.no_hp, p.gol_darah, p.tempat_lahir
+          FROM booking_operasi b 
+          LEFT JOIN pasien p ON b.kd_pasien = p.kd_pasien 
+          WHERE b.no_rawat = ? AND b.kode_paket = ? AND b.tanggal = ? AND b.jam_mulai = ?";
 $stmt = $db->prepare($query);
 $stmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $booking = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -69,7 +72,15 @@ include __DIR__ . '/../includes/header.php';
     <!-- Data Masuk -->
     <div class="card">
         <h2>Data Masuk dan Kondisi Pasien</h2>
-        <form id="formKamarPemulihan" action="process/submit-kamar-pemulihan.php" method="POST">
+        <?php
+        // Get base URL for form action
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $base_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+        $base_url = $protocol . $host . $base_path;
+        $form_action = rtrim($base_url, '/') . '/process/submit-kamar-pemulihan.php';
+        ?>
+        <form id="formKamarPemulihan" action="<?php echo htmlspecialchars($form_action); ?>" method="POST" data-no-loading>
             <input type="hidden" name="no_rawat" value="<?php echo htmlspecialchars($no_rawat); ?>">
             <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
             <input type="hidden" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>">
@@ -315,20 +326,19 @@ include __DIR__ . '/../includes/header.php';
                             <option value="dokter1">Dokter 1</option>
                             <option value="dokter2">Dokter 2</option>
                         </select>
-                    </td>
                 </tr>
             </table>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Simpan Data Pemulihan</button>
-            <button type="reset" class="btn btn-secondary">Reset Form</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php?page=detail-pasien&no_rawat=<?php echo urlencode($no_rawat); ?>&kode_paket=<?php echo urlencode($kode_paket); ?>&tanggal=<?php echo urlencode($tanggal); ?>&jam_mulai=<?php echo urlencode($jam_mulai); ?>'">Kembali</button>
         </div>
         </form>
         <?php include __DIR__ . '/../includes/footer.php'; ?>
     </div>
 </div>
-
+<script src="/assets/js/autosave.js"></script>
 <script>
     const ctx = document.getElementById("vitalChart").getContext("2d");
     const vitalChart = new Chart(ctx, {
@@ -367,5 +377,13 @@ include __DIR__ . '/../includes/header.php';
 
     document.querySelectorAll("input").forEach(input => {
         input.addEventListener("input", updateChart);
+    });
+    
+    // Initialize AutoSave
+    AutoSave.init('formKamarPemulihan', {
+        debounce: 1000,
+        exclude: ['no_rawat', 'kode_paket', 'tanggal', 'jam_mulai'],
+        showNotification: true,
+        clearOnSubmit: true
     });
 </script>

@@ -14,10 +14,13 @@ if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mula
     exit;
 }
 
-// Koneksi database untuk mendapatkan data booking
+// Koneksi database untuk mendapatkan data booking DAN data pasien
 $database = new Database();
 $db = $database->getConnection();
-$query = "SELECT * FROM booking_operasi WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+$query = "SELECT b.*, p.kode_rekam_medis, p.nama, p.tanggal_lahir, p.jenis_kelamin, p.alamat, p.no_hp, p.gol_darah, p.tempat_lahir
+          FROM booking_operasi b 
+          LEFT JOIN pasien p ON b.kd_pasien = p.kd_pasien 
+          WHERE b.no_rawat = ? AND b.kode_paket = ? AND b.tanggal = ? AND b.jam_mulai = ?";
 $stmt = $db->prepare($query);
 $stmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $booking = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -65,6 +68,21 @@ include __DIR__ . '/../includes/header.php';
             </div>
         </div>
     </div>
+
+    <!-- Form dimulai di sini -->
+    <?php
+    // Get base URL for form action
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+    $host = $_SERVER['HTTP_HOST'];
+    $base_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+    $base_url = $protocol . $host . $base_path;
+    $form_action = rtrim($base_url, '/') . '/process/submit-persiapan-operasi.php';
+    ?>
+    <form id="formPersiapanOperasi" action="<?php echo htmlspecialchars($form_action); ?>" method="POST" data-no-loading>
+        <input type="hidden" name="no_rawat" value="<?php echo htmlspecialchars($no_rawat); ?>">
+        <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
+        <input type="hidden" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>">
+        <input type="hidden" name="jam_mulai" value="<?php echo htmlspecialchars($jam_mulai); ?>">
 
     <!-- Info Operasi -->
     <div class="card">
@@ -124,11 +142,6 @@ include __DIR__ . '/../includes/header.php';
     <!-- Checklist -->
     <div class="card">
         <h2>Checklist Persiapan Operasi</h2>
-        <form id="formPersiapanOperasi" action="process/submit-persiapan-operasi.php" method="POST">
-            <input type="hidden" name="no_rawat" value="<?php echo htmlspecialchars($no_rawat); ?>">
-            <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
-            <input type="hidden" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>">
-            <input type="hidden" name="jam_mulai" value="<?php echo htmlspecialchars($jam_mulai); ?>">
             <table>
                 <tr>
                     <th></th>
@@ -289,10 +302,23 @@ include __DIR__ . '/../includes/header.php';
             </table>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Simpan Checklist</button>
-                <button type="reset" class="btn btn-secondary">Reset Form</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php?page=detail-pasien&no_rawat=<?php echo urlencode($no_rawat); ?>&kode_paket=<?php echo urlencode($kode_paket); ?>&tanggal=<?php echo urlencode($tanggal); ?>&jam_mulai=<?php echo urlencode($jam_mulai); ?>'">Kembali</button>
             </div>
         </form>
     </div>
     <?php include __DIR__ . '/../includes/footer.php'; ?>
 </div>
+
+<script src="/assets/js/autosave.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize AutoSave
+        AutoSave.init('formPersiapanOperasi', {
+            debounce: 1000,
+            exclude: ['no_rawat', 'kode_paket', 'tanggal', 'jam_mulai'],
+            showNotification: true,
+            clearOnSubmit: true
+        });
+    });
+</script>
