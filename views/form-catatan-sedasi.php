@@ -1,7 +1,35 @@
 <?php
+session_start();
+
+// Tampilkan notifikasi
+if (isset($_SESSION['success'])) {
+    echo '<div class="alert alert-success">' . $_SESSION['success'] . '</div>';
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    echo '<div class="alert alert-danger">' . $_SESSION['error'] . '</div>';
+    unset($_SESSION['error']);
+}
 $page_title = "Catatan Sedasi dan Anestesi";
 $document_code = "RMOK-0003";
-require_once('../config/database.php');
+$configPaths = [
+  __DIR__ . '/../config/database.php',
+  $_SERVER['DOCUMENT_ROOT'] . '/SIMRS_JB/config/database.php',
+  'C:/FOLDER RIZKI/SIMRS_JB/config/database.php'
+];
+
+foreach ($configPaths as $path) {
+  if (file_exists($path)) {
+      require_once $path;
+      break;
+  }
+}
+
+// Jika masih tidak ditemukan, tampilkan error
+if (!class_exists('Database')) {
+  die("File database.php tidak ditemukan. Periksa konfigurasi.");
+}
 
 $no_rawat = $_GET['no_rawat'] ?? '';
 $kode_paket = $_GET['kode_paket'] ?? '';
@@ -83,6 +111,7 @@ include __DIR__ . '/../includes/header.php';
     <input type="hidden" name="kode_paket" value="<?= htmlspecialchars($kode_paket) ?>">
     <input type="hidden" name="tanggal" value="<?= htmlspecialchars($tanggal) ?>">
     <input type="hidden" name="jam_mulai" value="<?= htmlspecialchars($jam_mulai) ?>">
+    <input type="hidden" name="id" value="<?= htmlspecialchars($catatan['id'] ?? '') ?>">
 
     <div class="container">
       <div class="card">
@@ -368,6 +397,65 @@ include __DIR__ . '/../includes/header.php';
             </div>
           </td>
         </tr>
+        <tr>
+    <th colspan="4" style="text-align:center;">Posisi</th>
+    </tr>
+    <tr>
+      <td colspan="4">
+        <?php 
+          $checklist_data = isset($catatan['posisi']) ? explode(',', $catatan['posisi']) : [];
+          $opsi = [
+            "SUPINE","LITHOTOMI","PRONE","LATERAL",
+            "PERLINDUNGAN MATA","Lain-lain :"
+          ];
+        ?>
+        <div class="checkbox-group">
+          <?php foreach ($opsi as $o): ?>
+            <label><input type="checkbox" name="posisi[]" value="<?= $o ?>" class="posisi-checkbox" <?= in_array($o,$checklist_data)?'checked':''; ?>> <?= $o ?></label>
+          <?php endforeach; ?>
+        </div>
+        <div id="lain_lain_posisi_container" style="margin-top: 10px; display: none;">
+          <div class="input-container">
+            <input type="text" id="lain_lain_posisi" name="lain_lain_posisi" placeholder=" " value="<?= htmlspecialchars($catatan['lain_lain_posisi'] ?? '') ?>">
+            <label for="lain_lain_posisi" class="label-floating">Lain-lain Posisi</label>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+        <th colspan="4" style="text-align:center;">Premedikasi</th>
+    </tr>
+    <tr>
+        <td colspan="4">
+            <?php 
+              $checklist_data = isset($catatan['premedikasi']) ? explode(',', $catatan['premedikasi']) : [];
+              $opsi = [
+                "ORAL","I.M","I.V","Nama Obat :",
+                "Dosis Obat :"
+              ];
+            ?>
+            <div class="checkbox-group">
+              <?php foreach ($opsi as $o): ?>
+                <label><input type="checkbox" name="premedikasi[]" value="<?= $o ?>" class="premedikasi-checkbox" <?= in_array($o,$checklist_data)?'checked':''; ?>> <?= $o ?></label>
+              <?php endforeach; ?>
+            </div>
+            <!-- Input text untuk Nama Obat (muncul jika checkbox Nama Obat dicek) -->
+            <div id="premedik_nama_obat_container" style="margin-top: 10px; display: none;">
+              <div class="input-container">
+                <input type="text" id="premedik_nama_obat" name="premedik_nama_obat" placeholder=" " value="<?= htmlspecialchars($catatan['premedik_nama_obat'] ?? '') ?>">
+                <label for="premedik_nama_obat" class="label-floating">Nama Obat</label>
+              </div>
+            </div>
+            
+            <!-- Input text untuk Dosis Obat (muncul jika checkbox Dosis Obat dicek) -->
+            <div id="premedik_dosis_obat_container" style="margin-top: 10px; display: none;">
+              <div class="input-container">
+                <input type="text" id="premedik_dosis_obat" name="premedik_dosis_obat" placeholder=" " value="<?= htmlspecialchars($catatan['premedik_dosis_obat'] ?? '') ?>">
+                <label for="premedik_dosis_obat" class="label-floating">Dosis Obat</label>
+              </div>
+            </div>
+          </td>
+      </tr>
         </table>
 
         <!-- ANESTESI UMUM -->
@@ -376,6 +464,9 @@ include __DIR__ . '/../includes/header.php';
           <tr>
             <th colspan="4" style="text-align: right;"><strong>RMOK 1b Rev-01</strong></th>
           </tr>  
+          <tr>
+            <th colspan="4" style="text-align:center;">ANESTESI UMUM</th>
+          </tr>
           <tr>
             <?php
               $induksi_data = isset($catatan['induksi']) ? explode(',', $catatan['induksi']) : [];
@@ -635,8 +726,8 @@ include __DIR__ . '/../includes/header.php';
         </table>
 
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Simpan</button>
-          <a href="index.php" class="btn btn-secondary">Kembali</a>
+          <button type="submit" class="btn btn-primary"><?= isset($catatan['id']) ? 'Simpan Perubahan' : 'Simpan' ?></button>
+          <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>'">Kembali</button>
         </div>
 <script>
 // Validasi form sebelum submit
@@ -657,6 +748,68 @@ document.getElementById('formSedasi').addEventListener('submit', function(e) {
     e.preventDefault();
     alert('Harap lengkapi semua field yang wajib diisi!');
   }
+});
+
+// Toggle untuk Lain-lain Posisi
+document.addEventListener('DOMContentLoaded', function() {
+  function toggleLainLainPosisi() {
+    var checkboxes = document.querySelectorAll('.posisi-checkbox');
+    var container = document.getElementById('lain_lain_posisi_container');
+    var isChecked = false;
+    
+    checkboxes.forEach(function(checkbox) {
+      if (checkbox.value === 'Lain-lain :' && checkbox.checked) {
+        isChecked = true;
+      }
+    });
+    
+    if (container) {
+      container.style.display = isChecked ? 'block' : 'none';
+    }
+  }
+  
+  var posisiCheckboxes = document.querySelectorAll('.posisi-checkbox');
+  posisiCheckboxes.forEach(function(checkbox) {
+    checkbox.addEventListener('change', toggleLainLainPosisi);
+  });
+  
+  // Jalankan saat load untuk data existing
+  toggleLainLainPosisi();
+});
+
+// Toggle untuk Nama Obat dan Dosis Obat
+document.addEventListener('DOMContentLoaded', function() {
+  function togglePremedikasiInputs() {
+    var checkboxes = document.querySelectorAll('.premedikasi-checkbox');
+    var namaContainer = document.getElementById('premedik_nama_obat_container');
+    var dosisContainer = document.getElementById('premedik_dosis_obat_container');
+    var namaChecked = false;
+    var dosisChecked = false;
+    
+    checkboxes.forEach(function(checkbox) {
+      if (checkbox.value === 'Nama Obat :' && checkbox.checked) {
+        namaChecked = true;
+      }
+      if (checkbox.value === 'Dosis Obat :' && checkbox.checked) {
+        dosisChecked = true;
+      }
+    });
+    
+    if (namaContainer) {
+      namaContainer.style.display = namaChecked ? 'block' : 'none';
+    }
+    if (dosisContainer) {
+      dosisContainer.style.display = dosisChecked ? 'block' : 'none';
+    }
+  }
+  
+  var premedikasiCheckboxes = document.querySelectorAll('.premedikasi-checkbox');
+  premedikasiCheckboxes.forEach(function(checkbox) {
+    checkbox.addEventListener('change', togglePremedikasiInputs);
+  });
+  
+  // Jalankan saat load untuk data existing
+  togglePremedikasiInputs();
 });
 </script>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

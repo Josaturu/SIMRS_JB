@@ -1,4 +1,17 @@
 <?php
+session_start();
+
+// Tampilkan notifikasi
+if (isset($_SESSION['success'])) {
+    echo '<div class="alert alert-success">' . $_SESSION['success'] . '</div>';
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    echo '<div class="alert alert-danger">' . $_SESSION['error'] . '</div>';
+    unset($_SESSION['error']);
+}
+
 $page_title = "Informed Consent Tindakan Anestesi";
 $document_code = "RMC 4a Rev-01";
 
@@ -26,6 +39,13 @@ if (!$booking) {
     echo "Data booking tidak ditemukan.";
     exit;
 }
+
+// Cek apakah data informed consent sudah ada (untuk mode edit)
+$query_consent = "SELECT * FROM tbl_anestesi_informed_consent_anestesi 
+                  WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+$stmt_consent = $db->prepare($query_consent);
+$stmt_consent->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
+$consent = $stmt_consent->fetch(PDO::FETCH_ASSOC);
 
 include __DIR__ . '/../includes/header.php';
 ?>
@@ -64,30 +84,31 @@ include __DIR__ . '/../includes/header.php';
         </div>
 
         <!-- Informasi Identitas -->
-        <h2>Informasi Identitas</h2>
+        <h2>Pemberian Informasi</h2>
         <form id="formInformedConsent" action="process/process-informed-consent-anestesi.php" method="POST">
             <input type="hidden" name="no_rawat" value="<?php echo htmlspecialchars($no_rawat); ?>">
             <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
             <input type="hidden" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>">
             <input type="hidden" name="jam_mulai" value="<?php echo htmlspecialchars($jam_mulai); ?>">
+            <input type="hidden" name="id" value="<?php echo isset($consent['id']) ? htmlspecialchars($consent['id']) : ''; ?>">
             
             <div class="form-grid">
                 <div class="form-column">
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="ruang" name="ruang" placeholder=" " required>
+                            <input type="text" id="ruang" name="ruang" placeholder=" " value="<?= htmlspecialchars($consent['ruang'] ?? '') ?>" required>
                             <label for="ruang" class="label-floating">Ruang Perawatan</label>
                         </div>
                     </div>
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="dokter" name="dokter" placeholder=" " required>
+                            <input type="text" id="dokter" name="dokter" placeholder=" " value="<?= htmlspecialchars($consent['dokter_pelaksana'] ?? '') ?>" required>
                             <label for="dokter" class="label-floating">Dokter Pelaksana Tindakan</label>
                         </div>
                     </div>
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="pemberi" name="pemberi" placeholder=" " required>
+                            <input type="text" id="pemberi" name="pemberi" placeholder=" " value="<?= htmlspecialchars($consent['pemberi_info'] ?? '') ?>" required>
                             <label for="pemberi" class="label-floating">Nama Pemberi Informasi</label>
                         </div>
                     </div>
@@ -95,19 +116,19 @@ include __DIR__ . '/../includes/header.php';
                 <div class="form-column">
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="jabatan" name="jabatan" placeholder=" " required>
+                            <input type="text" id="jabatan" name="jabatan" placeholder=" " value="<?= htmlspecialchars($consent['jabatan'] ?? '') ?>" required>
                             <label for="jabatan" class="label-floating">Jabatan</label>
                         </div>
                     </div>
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="penerima" name="penerima" placeholder=" " required>
+                            <input type="text" id="penerima" name="penerima" placeholder=" " value="<?= htmlspecialchars($consent['penerima_info'] ?? '') ?>" required>
                             <label for="penerima" class="label-floating">Nama Penerima Informasi</label>
                         </div>
                     </div>
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="hubungan" name="hubungan" placeholder=" " required>
+                            <input type="text" id="hubungan" name="hubungan" placeholder=" " value="<?= htmlspecialchars($consent['hubungan_pasien'] ?? '') ?>" required>
                             <label for="hubungan" class="label-floating">Hubungan dengan Pasien</label>
                         </div>
                     </div>
@@ -116,6 +137,15 @@ include __DIR__ . '/../includes/header.php';
 
             <!-- Tabel Utama -->
             <h2>Informasi Tindakan Anestesi</h2>
+            <?php
+            // Explode data checkbox untuk auto-check saat edit
+            $jenis_anestesi_data = isset($consent['jenis_anestesi']) ? explode(', ', $consent['jenis_anestesi']) : [];
+            $indikasi_data = isset($consent['indikasi']) ? explode(', ', $consent['indikasi']) : [];
+            $tata_cara_data = isset($consent['tata_cara']) ? explode(', ', $consent['tata_cara']) : [];
+            $risiko_data = isset($consent['risiko']) ? explode(', ', $consent['risiko']) : [];
+            $status_fisik_data = isset($consent['status_fisik']) ? explode(', ', $consent['status_fisik']) : [];
+            $checkbox_confirm_data = isset($consent['checkbox_confirm']) ? explode(',', $consent['checkbox_confirm']) : [];
+            ?>
             <table>
                 <tr>
                     <th colspan="4" style="text-align: right;">RMC 4a Rev-01</th>
@@ -131,49 +161,49 @@ include __DIR__ . '/../includes/header.php';
                     <td>Nama Tindakan Operasi</td>
                     <td>
                         <div class="input-container">
-                            <input type="text" id="tindakanOperasi" name="tindakanOperasi" placeholder=" " required>
+                            <input type="text" id="tindakanOperasi" name="tindakanOperasi" placeholder=" " value="<?= htmlspecialchars($consent['tindakan_operasi'] ?? '') ?>" required>
                             <label for="tindakanOperasi" class="label-floating">Nama Tindakan Operasi</label>
                         </div>
                     </td>
-                    <td><input type="checkbox" name="cek1" value="1"></td>
+                    <td><input type="checkbox" name="cek1" value="1" <?= in_array('1', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
                 </tr>
                 <tr>
                     <td>2</td>
                     <td>Tindakan yang akan dilakukan</td>
                     <td>
                         <div class="checkbox-group">
-                            <label><input type="checkbox" name="jenisAnestesi[]" value="Anestesi Umum"> Anestesi Umum</label>
-                            <label><input type="checkbox" name="jenisAnestesi[]" value="Anestesi Spinal"> Anestesi Spinal</label>
-                            <label><input type="checkbox" name="jenisAnestesi[]" value="Anestesi Epidural"> Anestesi Epidural</label>
-                            <label><input type="checkbox" name="jenisAnestesi[]" value="Anestesi Kaudal"> Anestesi Kaudal</label>
-                            <label><input type="checkbox" name="jenisAnestesi[]" value="Kombinasi Spinal-Epidural"> Kombinasi Spinal-Epidural</label>
-                            <label><input type="checkbox" name="jenisAnestesi[]" value="Blok Saraf Perifer"> Blok Saraf Perifer</label>
-                            <label><input type="checkbox" name="jenisAnestesi[]" value="Sedasi"> Sedasi</label>
+                            <label><input type="checkbox" name="jenisAnestesi[]" value="Anestesi Umum" <?= in_array('Anestesi Umum', $jenis_anestesi_data) ? 'checked' : '' ?>> Anestesi Umum</label>
+                            <label><input type="checkbox" name="jenisAnestesi[]" value="Anestesi Spinal" <?= in_array('Anestesi Spinal', $jenis_anestesi_data) ? 'checked' : '' ?>> Anestesi Spinal</label>
+                            <label><input type="checkbox" name="jenisAnestesi[]" value="Anestesi Epidural" <?= in_array('Anestesi Epidural', $jenis_anestesi_data) ? 'checked' : '' ?>> Anestesi Epidural</label>
+                            <label><input type="checkbox" name="jenisAnestesi[]" value="Anestesi Kaudal" <?= in_array('Anestesi Kaudal', $jenis_anestesi_data) ? 'checked' : '' ?>> Anestesi Kaudal</label>
+                            <label><input type="checkbox" name="jenisAnestesi[]" value="Kombinasi Spinal-Epidural" <?= in_array('Kombinasi Spinal-Epidural', $jenis_anestesi_data) ? 'checked' : '' ?>> Kombinasi Spinal-Epidural</label>
+                            <label><input type="checkbox" name="jenisAnestesi[]" value="Blok Saraf Perifer" <?= in_array('Blok Saraf Perifer', $jenis_anestesi_data) ? 'checked' : '' ?>> Blok Saraf Perifer</label>
+                            <label><input type="checkbox" name="jenisAnestesi[]" value="Sedasi" <?= in_array('Sedasi', $jenis_anestesi_data) ? 'checked' : '' ?>> Sedasi</label>
                         </div>
                     </td>
-                    <td><input type="checkbox" name="cek2" value="1"></td>
+                    <td><input type="checkbox" name="cek2" value="1" <?= in_array('2', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
                 </tr>
                 <tr>
                     <td>3</td>
                     <td>Indikasi Tindakan</td>
                     <td>
                         <div class="checkbox-group">
-                            <label><input type="checkbox" name="indikasi[]" value="Menghilangkan kesadaran"> Menghilangkan kesadaran selama prosedur atau tindakan pembedahan</label>
-                            <label><input type="checkbox" name="indikasi[]" value="Menghilangkan nyeri"> Menghilangkan nyeri selama prosedur atau tindakan pembedahan</label>
+                            <label><input type="checkbox" name="indikasi[]" value="Menghilangkan kesadaran" <?= in_array('Menghilangkan kesadaran', $indikasi_data) ? 'checked' : '' ?>> Menghilangkan kesadaran selama prosedur atau tindakan pembedahan</label>
+                            <label><input type="checkbox" name="indikasi[]" value="Menghilangkan nyeri" <?= in_array('Menghilangkan nyeri', $indikasi_data) ? 'checked' : '' ?>> Menghilangkan nyeri selama prosedur atau tindakan pembedahan</label>
                         </div>
                     </td>
-                    <td><input type="checkbox" name="cek3" value="1"></td>
+                    <td><input type="checkbox" name="cek3" value="1" <?= in_array('3', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
                 </tr>
                 <tr>
                     <td>4</td>
                     <td>Tata Cara</td>
                     <td>
                         <div class="checkbox-group">
-                            <label><input type="checkbox" name="tataCara[]" value="Obat disuntikkan"> Obat disuntikkan ke dalam pembuluh darah, dihisap melalui paru-paru atau dengan dilakukan alat bantu napas</label>
-                            <label><input type="checkbox" name="tataCara[]" value="Obat melalui jarum"> Obat disuntikkan melalui jarum atau kateter yang ditempatkan ke dalam rongga belakang atau rongga didekatnya</label>
+                            <label><input type="checkbox" name="tataCara[]" value="Obat disuntikkan" <?= in_array('Obat disuntikkan', $tata_cara_data) ? 'checked' : '' ?>> Obat disuntikkan ke dalam pembuluh darah, dihisap melalui paru-paru atau dengan dilakukan alat bantu napas</label>
+                            <label><input type="checkbox" name="tataCara[]" value="Obat melalui jarum" <?= in_array('Obat melalui jarum', $tata_cara_data) ? 'checked' : '' ?>> Obat disuntikkan melalui jarum atau kateter yang ditempatkan ke dalam rongga belakang atau rongga didekatnya</label>
                         </div>
                     </td>
-                    <td><input type="checkbox" name="cek4" value="1"></td>
+                    <td><input type="checkbox" name="cek4" value="1" <?= in_array('4', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
                 </tr>
                 <tr>
                     <td>5</td>
@@ -183,92 +213,92 @@ include __DIR__ . '/../includes/header.php';
                             <label for="tujuan" style="text-align: left">Memfasilitasi tindakan pembedahan, agar pasien dan dokter operator aman dan nyaman</label>
                         </div>
                     </td>
-                    <td><input type="checkbox" name="cek5" value="1"></td>
+                    <td><input type="checkbox" name="cek5" value="1" <?= in_array('5', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
                 </tr>
                 <tr>
                     <td>6</td>
                     <td>Risiko Tindakan dan Komplikasi</td>
                     <td>
                         <div class="checkbox-grid">
-                            <label><input type="checkbox" name="risiko[]" value="Nyeri Tenggorokan"> Nyeri Tenggorokan</label>
-                            <label><input type="checkbox" name="risiko[]" value="Suara Serak"> Suara Serak</label>
-                            <label><input type="checkbox" name="risiko[]" value="Mual, Muntah"> Mual, Muntah</label>
-                            <label><input type="checkbox" name="risiko[]" value="Nyeri Otot"> Nyeri Otot</label>
-                            <label><input type="checkbox" name="risiko[]" value="Trauma pada daerah mata"> Trauma pada daerah mata</label>
-                            <label><input type="checkbox" name="risiko[]" value="Infeksi"> Infeksi</label>
-                            <label><input type="checkbox" name="risiko[]" value="Trauma pada gusi"> Trauma pada gusi</label>
-                            <label><input type="checkbox" name="risiko[]" value="Pendarahan"> Pendarahan</label>
-                            <label><input type="checkbox" name="risiko[]" value="Luka lecet"> Luka lecet pada daerah bibir, gusi dan lidah</label>
-                            <label><input type="checkbox" name="risiko[]" value="Gigi Patah"> Gigi Patah</label>
-                            <label><input type="checkbox" name="risiko[]" value="Stroke"> Stroke</label>
-                            <label><input type="checkbox" name="risiko[]" value="Penurunan tekanan darah"> Penurunan tekanan darah</label>
-                            <label><input type="checkbox" name="risiko[]" value="Peningkatan tekanan darah"> Peningkatan tekanan darah</label>
-                            <label><input type="checkbox" name="risiko[]" value="Reaksi Alergi"> Reaksi Alergi</label>
-                            <label><input type="checkbox" name="risiko[]" value="Penyempitan jalan nafas"> Penyempitan jalan nafas</label>
-                            <label><input type="checkbox" name="risiko[]" value="Henti Jantung"> Henti Jantung</label>
-                            <label><input type="checkbox" name="risiko[]" value="Sakit Punggung"> Sakit Punggung</label>
-                            <label><input type="checkbox" name="risiko[]" value="Kerusakan Pada Otak"> Kerusakan Pada Otak</label>
-                            <label><input type="checkbox" name="risiko[]" value="Kerusakan Pada Syaraf"> Kerusakan Pada Syaraf</label>
-                            <label><input type="checkbox" name="risiko[]" value="Kelumpuhan"> Kelumpuhan</label>
-                            <label><input type="checkbox" name="risiko[]" value="Serangan Jantung"> Serangan Jantung</label>
-                            <label><input type="checkbox" name="risiko[]" value="Gangguan Irama Jantung"> Gangguan Irama Jantung</label>
-                            <label><input type="checkbox" name="risiko[]" value="Pembentukan bekuan darah"> Pembentukan bekuan darah</label>
+                            <label><input type="checkbox" name="risiko[]" value="Nyeri Tenggorokan" <?= in_array('Nyeri Tenggorokan', $risiko_data) ? 'checked' : '' ?>> Nyeri Tenggorokan</label>
+                            <label><input type="checkbox" name="risiko[]" value="Suara Serak" <?= in_array('Suara Serak', $risiko_data) ? 'checked' : '' ?>> Suara Serak</label>
+                            <label><input type="checkbox" name="risiko[]" value="Mual, Muntah" <?= in_array('Mual, Muntah', $risiko_data) ? 'checked' : '' ?>> Mual, Muntah</label>
+                            <label><input type="checkbox" name="risiko[]" value="Nyeri Otot" <?= in_array('Nyeri Otot', $risiko_data) ? 'checked' : '' ?>> Nyeri Otot</label>
+                            <label><input type="checkbox" name="risiko[]" value="Trauma pada daerah mata" <?= in_array('Trauma pada daerah mata', $risiko_data) ? 'checked' : '' ?>> Trauma pada daerah mata</label>
+                            <label><input type="checkbox" name="risiko[]" value="Infeksi" <?= in_array('Infeksi', $risiko_data) ? 'checked' : '' ?>> Infeksi</label>
+                            <label><input type="checkbox" name="risiko[]" value="Trauma pada gusi" <?= in_array('Trauma pada gusi', $risiko_data) ? 'checked' : '' ?>> Trauma pada gusi</label>
+                            <label><input type="checkbox" name="risiko[]" value="Pendarahan" <?= in_array('Pendarahan', $risiko_data) ? 'checked' : '' ?>> Pendarahan</label>
+                            <label><input type="checkbox" name="risiko[]" value="Luka lecet" <?= in_array('Luka lecet', $risiko_data) ? 'checked' : '' ?>> Luka lecet pada daerah bibir, gusi dan lidah</label>
+                            <label><input type="checkbox" name="risiko[]" value="Gigi Patah" <?= in_array('Gigi Patah', $risiko_data) ? 'checked' : '' ?>> Gigi Patah</label>
+                            <label><input type="checkbox" name="risiko[]" value="Penurunan tekanan darah" <?= in_array('Penurunan tekanan darah', $risiko_data) ? 'checked' : '' ?>> Penurunan tekanan darah</label>
+                            <label><input type="checkbox" name="risiko[]" value="Peningkatan tekanan darah" <?= in_array('Peningkatan tekanan darah', $risiko_data) ? 'checked' : '' ?>> Peningkatan tekanan darah</label>
+                            <label><input type="checkbox" name="risiko[]" value="Reaksi Alergi" <?= in_array('Reaksi Alergi', $risiko_data) ? 'checked' : '' ?>> Reaksi Alergi</label>
+                            <label><input type="checkbox" name="risiko[]" value="Penyempitan jalan nafas" <?= in_array('Penyempitan jalan nafas', $risiko_data) ? 'checked' : '' ?>> Penyempitan jalan nafas</label>
+                            <label><input type="checkbox" name="risiko[]" value="Henti Jantung" <?= in_array('Henti Jantung', $risiko_data) ? 'checked' : '' ?>> Henti Jantung</label>
+                            <label><input type="checkbox" name="risiko[]" value="Stroke" <?= in_array('Stroke', $risiko_data) ? 'checked' : '' ?>> Stroke</label>
+                            <label><input type="checkbox" name="risiko[]" value="Sakit Punggung" <?= in_array('Sakit Punggung', $risiko_data) ? 'checked' : '' ?>> Sakit Punggung</label>
+                            <label><input type="checkbox" name="risiko[]" value="Kerusakan Pada Otak" <?= in_array('Kerusakan Pada Otak', $risiko_data) ? 'checked' : '' ?>> Kerusakan Pada Otak</label>
+                            <label><input type="checkbox" name="risiko[]" value="Kerusakan Pada Syaraf" <?= in_array('Kerusakan Pada Syaraf', $risiko_data) ? 'checked' : '' ?>> Kerusakan Pada Syaraf</label>
+                            <label><input type="checkbox" name="risiko[]" value="Kelumpuhan" <?= in_array('Kelumpuhan', $risiko_data) ? 'checked' : '' ?>> Kelumpuhan</label>
+                            <label><input type="checkbox" name="risiko[]" value="Serangan Jantung" <?= in_array('Serangan Jantung', $risiko_data) ? 'checked' : '' ?>> Serangan Jantung</label>
+                            <label><input type="checkbox" name="risiko[]" value="Gangguan Irama Jantung" <?= in_array('Gangguan Irama Jantung', $risiko_data) ? 'checked' : '' ?>> Gangguan Irama Jantung</label>
+                            <label><input type="checkbox" name="risiko[]" value="Pembentukan bekuan darah" <?= in_array('Pembentukan bekuan darah', $risiko_data) ? 'checked' : '' ?>> Pembentukan bekuan darah</label>
                         </div>
                     </td>
-                    <td><input type="checkbox" name="cek6" value="1"></td>
+                    <td><input type="checkbox" name="cek6" value="1" <?= in_array('6', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
                 </tr>
                 <tr>
                     <td>7</td>
                     <td>Status fisik</td>
                     <td>
                         <div class="checkbox-group">
-                            <label><input type="checkbox" name="statusFisik[]" value="ASA I"> ASA I</label>
-                            <label><input type="checkbox" name="statusFisik[]" value="ASA II"> ASA II</label>
-                            <label><input type="checkbox" name="statusFisik[]" value="ASA III"> ASA III</label>
-                            <label><input type="checkbox" name="statusFisik[]" value="ASA IV"> ASA IV</label>
-                            <label><input type="checkbox" name="statusFisik[]" value="ASA V"> ASA V</label>
+                            <label><input type="checkbox" name="statusFisik[]" value="ASA I" <?= in_array('ASA I', $status_fisik_data) ? 'checked' : '' ?>> ASA I</label>
+                            <label><input type="checkbox" name="statusFisik[]" value="ASA II" <?= in_array('ASA II', $status_fisik_data) ? 'checked' : '' ?>> ASA II</label>
+                            <label><input type="checkbox" name="statusFisik[]" value="ASA III" <?= in_array('ASA III', $status_fisik_data) ? 'checked' : '' ?>> ASA III</label>
+                            <label><input type="checkbox" name="statusFisik[]" value="ASA IV" <?= in_array('ASA IV', $status_fisik_data) ? 'checked' : '' ?>> ASA IV</label>
+                            <label><input type="checkbox" name="statusFisik[]" value="ASA V" <?= in_array('ASA V', $status_fisik_data) ? 'checked' : '' ?>> ASA V</label>
                         </div>
                     </td>
-                    <td><input type="checkbox" name="cek7" value="1"></td>
+                    <td><input type="checkbox" name="cek7" value="1" <?= in_array('7', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
                 </tr>
                 <tr>
                     <td>8</td>
                     <td>Prognosis</td>
                     <td>
                         <div class="input-container">
-                            <textarea id="prognosis" name="prognosis" rows="5" placeholder=" "></textarea>
+                            <textarea id="prognosis" name="prognosis" rows="5" placeholder=" "><?= htmlspecialchars($consent['prognosis'] ?? '') ?></textarea>
                             <label for="prognosis" class="label-floating">Prognosis</label>
                         </div>
                     </td>
-                    <td><input type="checkbox" name="cek8" value="1"></td>
+                    <td><input type="checkbox" name="cek8" value="1" <?= in_array('8', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
                 </tr>
                 <tr>
                     <td>9</td>
                     <td>Alternatif dan Resiko</td>
                     <td>
                         <div class="input-container">
-                            <textarea id="alternatif" name="alternatif" rows="5" placeholder=" "></textarea>
+                            <textarea id="alternatif" name="alternatif" rows="5" placeholder=" "><?= htmlspecialchars($consent['alternatif_resiko'] ?? '') ?></textarea>
                             <label for="alternatif" class="label-floating">Alternatif dan Resiko</label>
                         </div>
                     </td>
-                    <td><input type="checkbox" name="cek9" value="1"></td>
+                    <td><input type="checkbox" name="cek9" value="1" <?= in_array('9', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
                 </tr>
                 <tr>
                     <td>10</td>
                     <td>Lain-lain</td>
                     <td>
                         <div class="input-container">
-                            <textarea id="lainLain" name="lainLain" rows="5" placeholder=" "></textarea>
+                            <textarea id="lainLain" name="lainLain" rows="5" placeholder=" "><?= htmlspecialchars($consent['lain_lain'] ?? '') ?></textarea>
                             <label for="lainLain" class="label-floating">Lain-lain</label>
                         </div>
                     </td>
-                    <td><input type="checkbox" name="cek10" value="1"></td>
+                    <td><input type="checkbox" name="cek10" value="1" <?= in_array('10', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
                 </tr>
             </table>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Simpan Informed Consent</button>
-                <button type="reset" class="btn btn-secondary">Reset Form</button>
+                <button type="submit" class="btn btn-primary"><?= isset($consent['id']) ? 'Simpan Perubahan' : 'Simpan Informed Consent' ?></button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>'">Kembali</button>
             </div>
         </form>
     </div>

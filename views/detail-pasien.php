@@ -67,15 +67,42 @@ function isFormFilled($db, $table, $no_rawat, $kode_paket, $tanggal, $jam_mulai)
 }
 
 
-$persiapan_terisi  = isFormFilled($db, 'tbl_anestesi_persiapan_operasi', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
-$keselamatan_terisi = isFormFilled($db, 'tbl_anestesi_checklist_keselamatan', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
-$pemulihan_terisi   = isFormFilled($db, 'tbl_anestesi_kamar_pemulihan', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
-$catatan_terisi     = isFormFilled($db, 'tbl_anestesi_catatan_anestesi', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
+// Cek status setiap form (dengan error handling)
+function checkFormStatus($db, $table, $no_rawat, $kode_paket, $tanggal, $jam_mulai) {
+    try {
+        return isFormFilled($db, $table, $no_rawat, $kode_paket, $tanggal, $jam_mulai);
+    } catch (PDOException $e) {
+        // Table mungkin belum dibuat
+        error_log("Error checking $table: " . $e->getMessage());
+        return false;
+    }
+}
+
+$persiapan_terisi  = checkFormStatus($db, 'tbl_anestesi_persiapan_operasi', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
+$keselamatan_terisi = checkFormStatus($db, 'tbl_anestesi_keselamatan_operasi', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
+$pemulihan_terisi   = checkFormStatus($db, 'tbl_anestesi_kamar_pemulihan', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
+$catatan_terisi     = checkFormStatus($db, 'tbl_anestesi_catatan_anestesi', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
+$informed_terisi    = checkFormStatus($db, 'tbl_anestesi_informed_consent_anestesi', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
+$konsultasi_terisi  = checkFormStatus($db, 'tbl_anestesi_konsultasi_anestesi', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
 
 include __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container">
+    <?php
+    // Tampilkan notifikasi success atau error
+    if (isset($_GET['success'])) {
+        $message = $_GET['success'] === 'saved' ? 'Data berhasil disimpan!' : 'Data berhasil diperbarui!';
+        echo '<div class="alert alert-success" style="margin-bottom: 20px; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">
+                <i class="fas fa-check-circle"></i> ' . htmlspecialchars($message) . '
+              </div>';
+    }
+    if (isset($_GET['error'])) {
+        echo '<div class="alert alert-danger" style="margin-bottom: 20px; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; color: #721c24;">
+                <i class="fas fa-exclamation-circle"></i> Terjadi kesalahan saat menyimpan data. Silakan coba lagi.
+              </div>';
+    }
+    ?>
     <!-- Informasi Pasien -->
     <div class="card patient-info-card">
         <div class="card-header">
@@ -141,42 +168,48 @@ include __DIR__ . '/../includes/header.php';
                         'label' => 'Checklist Persiapan Operasi',
                         'desc' => 'Form persiapan pra-operasi',
                         'icon' => 'clipboard-list',
-                        'done' => $persiapan_terisi
+                        'done' => $persiapan_terisi,
+                        'pdf' => 'pdf-persiapan-operasi.php'
                     ],
                     [
                         'page' => 'keselamatan-operasi',
                         'label' => 'Checklist Keselamatan Operasi',
                         'desc' => 'Form keselamatan selama operasi',
                         'icon' => 'shield-alt',
-                        'done' => $keselamatan_terisi
+                        'done' => $keselamatan_terisi,
+                        'pdf' => 'pdf-keselamatan-operasi.php'
                     ],
                     [
                         'page' => 'kamar-pemulihan',
                         'label' => 'Catatan Kamar Pemulihan',
                         'desc' => 'Form monitoring pasca operasi',
                         'icon' => 'procedures',
-                        'done' => $pemulihan_terisi
+                        'done' => $pemulihan_terisi,
+                        'pdf' => 'pdf-kamar-pemulihan.php'
                     ],
                     [
                         'page' => 'form-catatan-sedasi',
                         'label' => 'Catatan Sedasi & Anestesi',
                         'desc' => 'Form catatan sedasi dan anestesi',
                         'icon' => 'notes-medical',
-                        'done' => $catatan_terisi
+                        'done' => $catatan_terisi,
+                        'pdf' => 'pdf-catatan-sedasi.php'
                     ],
                     [
                         'page' => 'informed-consent-anestesi',
                         'label' => 'Informed Consent Anestesi',
                         'desc' => 'Form persetujuan tindakan anestesi',
                         'icon' => 'file-signature',
-                        'done' => false
+                        'done' => $informed_terisi,
+                        'pdf' => 'pdf-informed-consent.php'
                     ],
                     [
                         'page' => 'konsultasi-anestesi',
                         'label' => 'Konsultasi Anestesi',
                         'desc' => 'Form konsultasi anestesi',
                         'icon' => 'user-md',
-                        'done' => false
+                        'done' => $konsultasi_terisi,
+                        'pdf' => 'pdf-konsultasi-anestesi.php'
                     ]
                 ];
 
@@ -193,9 +226,17 @@ include __DIR__ . '/../includes/header.php';
                         <h4><?= $step['label']; ?></h4>
                         <p><?= $step['desc']; ?></p>
                         <span class="step-status"><?= $step['done'] ? 'Sudah diisi' : 'Belum diisi'; ?></span>
-                        <span class="step-action-label">
-                            <i class="fas fa-<?= $actionIcon; ?>"></i> <?= $actionLabel; ?>
-                        </span>
+                        <div class="step-actions" style="margin-top: 8px; display: flex; gap: 8px;">
+                            <span class="step-action-label" style="padding: 6px 12px; background: <?= $step['done'] ? '#17a2b8' : '#007bff' ?>; color: white; border-radius: 4px; font-size: 11px; display: inline-block;">
+                                <i class="fas fa-<?= $actionIcon; ?>"></i> <?= $actionLabel; ?>
+                            </span>
+                            <?php if ($step['done'] && isset($step['pdf'])): ?>
+                            <span onclick="window.open('process/pdf/<?= $step['pdf'] ?>?no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>', '_blank'); event.preventDefault(); event.stopPropagation();" 
+                                  class="step-action-label" style="padding: 6px 12px; background: #28a745; color: white; border-radius: 4px; font-size: 11px; display: inline-block; cursor: pointer;">
+                                <i class="fas fa-print"></i> PDF
+                            </span>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </a>
                 <?php endforeach; ?>

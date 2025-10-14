@@ -39,14 +39,10 @@ switch($page) {
         break;
 
     case 'informed-consent-anestesi':
-        $page_title = "Informed Consent Tindakan Anestesi";
-        $document_code = "RMC 4a Rev-01";
         include 'views/form-informed-consent-anestesi.php';
         break;
         
     case 'konsultasi-anestesi':
-        $page_title = "Konsultasi Anestesi";
-        $document_code = "RMOK 3A";
         include 'views/form-konsultasi-anestesi.php';
         break;
         
