@@ -28,6 +28,8 @@ $stmt = $db->prepare($query);
 $stmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
+$pasien = $booking;
+
 if (!$booking) {
     echo "Data booking tidak ditemukan.";
     exit;

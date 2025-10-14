@@ -14,15 +14,27 @@ if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mula
     exit;
 }
 
-// Koneksi database untuk mendapatkan data booking
+// Koneksi database untuk mendapatkan data booking DAN data pasien
 $database = new Database();
 $db = $database->getConnection();
-$query = "SELECT * FROM booking_operasi WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+$query = "SELECT b.*, p.kode_rekam_medis, p.nama, p.tanggal_lahir, p.jenis_kelamin, p.alamat, p.no_hp, p.gol_darah, p.tempat_lahir
+          FROM booking_operasi b 
+          LEFT JOIN pasien p ON b.kd_pasien = p.kd_pasien 
+          WHERE b.no_rawat = ? AND b.kode_paket = ? AND b.tanggal = ? AND b.jam_mulai = ?";
 $stmt = $db->prepare($query);
 $stmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $pasien = $booking ? $booking : [];
+
+// Calculate umur from tanggal_lahir
+$umur = '';
+if (!empty($pasien['tanggal_lahir'])) {
+    $tgl_lahir = new DateTime($pasien['tanggal_lahir']);
+    $today = new DateTime();
+    $umur = $tgl_lahir->diff($today)->y . ' tahun';
+}
+$tgl_lahir_umur = (!empty($pasien['tanggal_lahir']) ? $pasien['tanggal_lahir'] : '') . ($umur ? ' (' . $umur . ')' : '');
 
 if (!$booking) {
     echo "Data booking tidak ditemukan.";
@@ -69,7 +81,15 @@ include __DIR__ . '/../includes/header.php';
     <!-- Info Pasien & Operator -->
     <div class="card">
         <h2>Keterangan Pasien & Operator</h2>
-        <form id="formKeselamatanOperasi" action="process/submit-keselamatan-operasi.php" method="POST">
+        <?php
+        // Get base URL for form action
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $base_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+        $base_url = $protocol . $host . $base_path;
+        $form_action = rtrim($base_url, '/') . '/process/submit-keselamatan-operasi.php';
+        ?>
+        <form id="formKeselamatanOperasi" action="<?php echo htmlspecialchars($form_action); ?>" method="POST" data-no-loading>
             <input type="hidden" name="no_rawat" value="<?php echo htmlspecialchars($no_rawat); ?>">
             <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
             <input type="hidden" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>">
@@ -80,25 +100,25 @@ include __DIR__ . '/../includes/header.php';
                     <h3><i class="fas fa-user-injured"></i> Informasi Pasien</h3>
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="namaPasien" name="namaPasien" placeholder=" " required>
+                            <input type="text" id="namaPasien" name="namaPasien" placeholder=" " value="<?php echo htmlspecialchars($pasien['nama'] ?? ''); ?>" required>
                             <label for="namaPasien" class="label-floating">Nama Pasien</label>
                         </div>
                     </div>
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="noRekamMedis" name="noRekamMedis" placeholder=" " required>
+                            <input type="text" id="noRekamMedis" name="noRekamMedis" placeholder=" " value="<?php echo htmlspecialchars($pasien['kode_rekam_medis'] ?? ''); ?>" required>
                             <label for="noRekamMedis" class="label-floating">No. Rekam Medis</label>
                         </div>
                     </div>
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="tglLahir" name="tglLahir" placeholder=" ">
+                            <input type="text" id="tglLahir" name="tglLahir" placeholder=" " value="<?php echo htmlspecialchars($tgl_lahir_umur); ?>">
                             <label for="tglLahir" class="label-floating">Tanggal Lahir / Umur</label>
                         </div>
                     </div>
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="alamat" name="alamat" placeholder=" ">
+                            <input type="text" id="alamat" name="alamat" placeholder=" " value="<?php echo htmlspecialchars($pasien['alamat'] ?? ''); ?>">
                             <label for="alamat" class="label-floating">Alamat</label>
                         </div>
                     </div>
@@ -336,8 +356,8 @@ include __DIR__ . '/../includes/header.php';
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Simpan Checklist</button>
-                    <button type="reset" class="btn btn-secondary">Reset Form</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php?page=detail-pasien&no_rawat=<?php echo urlencode($no_rawat); ?>&kode_paket=<?php echo urlencode($kode_paket); ?>&tanggal=<?php echo urlencode($tanggal); ?>&jam_mulai=<?php echo urlencode($jam_mulai); ?>'">Kembali</button>
                 </div>
             </div>
         </form>
@@ -345,6 +365,7 @@ include __DIR__ . '/../includes/header.php';
     <?php include __DIR__ . '/../includes/footer.php'; ?>
 </div>
 
+<script src="/assets/js/autosave.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Set tahun otomatis
@@ -368,6 +389,14 @@ include __DIR__ . '/../includes/header.php';
         
         timeInputs.forEach(input => {
             input.value = timeString;
+        });
+        
+        // Initialize AutoSave
+        AutoSave.init('formKeselamatanOperasi', {
+            debounce: 1000,
+            exclude: ['no_rawat', 'kode_paket', 'tanggal', 'jam_mulai'],
+            showNotification: true,
+            clearOnSubmit: true
         });
     });
 </script>

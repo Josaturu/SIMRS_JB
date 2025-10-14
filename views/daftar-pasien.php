@@ -6,28 +6,13 @@ require_once __DIR__ . '/../config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
-// Query JOIN untuk menampilkan nama pasien & kode rekam medis
-$query = "
-    SELECT 
-        b.no_rawat,
-        b.kode_paket,
-        b.tanggal,
-        b.jam_mulai,
-        b.kd_dokter,
-        b.kd_ruang_ok,
-        b.status,
-        p.nama AS nama_pasien,
-        p.kode_rekam_medis
-    FROM booking_operasi AS b
-    LEFT JOIN pasien AS p ON b.kd_pasien = p.kd_pasien
-    ORDER BY b.tanggal DESC, b.jam_mulai DESC
-";
+// Query untuk mengambil data booking operasi
+$query = "SELECT * FROM booking_operasi ORDER BY tanggal DESC, jam_mulai DESC";
 $stmt = $db->prepare($query);
 $stmt->execute();
 $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <link rel="stylesheet" href="/assets/css/style.css">
-
 <div class="header">
     <div class="logo">
         <img src="assets/images/logo.png" alt="Logo Rumah Sakit" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'">
@@ -37,7 +22,6 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
-
 <div class="container">
     <div class="header-actions">
         <h2>Daftar Pasien Booking Operasi</h2>
@@ -77,6 +61,7 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <thead>
             <tr>
                 <th>No. Rawat</th>
+                <th>Nama Pasien</th>
                 <th>Kode Paket</th>
                 <th>Kode RM</th>
                 <th>Nama Pasien</th>
@@ -92,14 +77,14 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php if (count($pasien_list) > 0): ?>
                 <?php foreach ($pasien_list as $pasien): ?>
                     <tr>
-                        <td><?= htmlspecialchars($pasien['no_rawat']); ?></td>
-                        <td><span class="kode-paket"><?= htmlspecialchars($pasien['kode_paket']); ?></span></td>
-                        <td><?= htmlspecialchars($pasien['kode_rekam_medis'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($pasien['nama_pasien'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($pasien['tanggal']); ?></td>
-                        <td><?= htmlspecialchars($pasien['jam_mulai']); ?></td>
-                        <td><?= htmlspecialchars($pasien['kd_dokter']); ?></td>
-                        <td><?= htmlspecialchars($pasien['kd_ruang_ok']); ?></td>
+                        <td><?php echo htmlspecialchars($pasien['no_rawat']); ?></td>
+                        <td>
+                            <span class="kode-paket"><?php echo htmlspecialchars($pasien['kode_paket']); ?></span>
+                        </td>
+                        <td><?php echo htmlspecialchars($pasien['tanggal']); ?></td>
+                        <td><?php echo htmlspecialchars($pasien['jam_mulai']); ?></td>
+                        <td><?php echo htmlspecialchars($pasien['kd_dokter']); ?></td>
+                        <td><?php echo htmlspecialchars($pasien['kd_ruang_ok']); ?></td>
                         <td>
                             <span class="status-badge status-<?= strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
                                 <?= htmlspecialchars($pasien['status']); ?>
@@ -113,7 +98,7 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="10" class="text-center">
+                    <td colspan="8" class="text-center">
                         <p>Belum ada data booking operasi.</p>
                         <a href="index.php?page=tambah-booking" class="btn btn-primary">Tambah Booking Pertama</a>
                     </td>

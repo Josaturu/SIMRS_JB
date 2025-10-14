@@ -1,7 +1,7 @@
 <?php
 class FormModel {
     private $conn;
-    private $table_persiapan = "tbl_anestesi_checklist_persiapan";
+    private $table_persiapan = "tbl_anestesi_persiapan_operasi";
     private $table_keselamatan = "tbl_anestesi_checklist_keselamatan";
     private $table_pemulihan = "tbl_anestesi_kamar_pemulihan";
     private $table_vital_pemulihan = "tbl_anestesi_vital_pemulihan";
