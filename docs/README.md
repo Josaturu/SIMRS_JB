@@ -146,5 +146,5 @@ Berisi dokumentasi migrasi database, merge, dan dokumentasi lama.
 ---
 
 **Last Updated:** 2025-10-15  
-**Maintained By:** Development Team  
+**Maintained By:** JB_Development Team  
 **Version:** 2.0 (Reorganized)
