@@ -6,22 +6,38 @@ require_once __DIR__ . '/../config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
-// Query untuk mengambil data booking operasi
-$query = "SELECT * FROM booking_operasi ORDER BY tanggal DESC, jam_mulai DESC";
+// Query untuk mengambil data booking operasi dengan JOIN ke tabel pasien
+$query = "SELECT 
+            b.no_rawat, 
+            b.kode_paket, 
+            b.tanggal, 
+            b.jam_mulai, 
+            b.jam_selesai,
+            b.status, 
+            b.kd_dokter, 
+            b.kd_ruang_ok,
+            b.kd_pasien,
+            p.nama as nama_pasien,
+            p.kode_rekam_medis,
+            p.alamat,
+            p.tanggal_lahir,
+            p.jenis_kelamin
+          FROM booking_operasi b
+          LEFT JOIN pasien p ON b.kd_pasien = p.kd_pasien
+          ORDER BY b.tanggal DESC, b.jam_mulai DESC";
 $stmt = $db->prepare($query);
 $stmt->execute();
 $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Variabel kosong untuk header (tidak perlu stiker pasien di daftar)
+$no_rawat = '';
+$kode_paket = '';
+$tanggal = '';
+$pasien = [];
+
+include __DIR__ . '/../includes/header.php';
 ?>
-<link rel="stylesheet" href="/assets/css/style.css">
-<div class="header">
-    <div class="logo">
-        <img src="assets/images/logo.png" alt="Logo Rumah Sakit" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'">
-        <div>
-            <strong>Rumah Sakit Umum</strong><br>
-            <span style="color:#396cf0; font-weight:bold;">PRASETYA BUNDA</span>
-        </div>
-    </div>
-</div>
+
 <div class="container">
     <div class="header-actions">
         <h2>Daftar Pasien Booking Operasi</h2>
@@ -63,8 +79,6 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>No. Rawat</th>
                 <th>Nama Pasien</th>
                 <th>Kode Paket</th>
-                <th>Kode RM</th>
-                <th>Nama Pasien</th>
                 <th>Tanggal Operasi</th>
                 <th>Jam Mulai</th>
                 <th>Dokter</th>
@@ -78,6 +92,7 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php foreach ($pasien_list as $pasien): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($pasien['no_rawat']); ?></td>
+                        <td><strong><?php echo htmlspecialchars($pasien['nama_pasien'] ?? '-'); ?></strong></td>
                         <td>
                             <span class="kode-paket"><?php echo htmlspecialchars($pasien['kode_paket']); ?></span>
                         </td>
@@ -86,19 +101,19 @@ $pasien_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?php echo htmlspecialchars($pasien['kd_dokter']); ?></td>
                         <td><?php echo htmlspecialchars($pasien['kd_ruang_ok']); ?></td>
                         <td>
-                            <span class="status-badge status-<?= strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
-                                <?= htmlspecialchars($pasien['status']); ?>
+                            <span class="status-badge status-<?php echo strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
+                                <?php echo htmlspecialchars($pasien['status']); ?>
                             </span>
                         </td>
                         <td>
-                            <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($pasien['no_rawat']); ?>&kode_paket=<?= urlencode($pasien['kode_paket']); ?>&tanggal=<?= urlencode($pasien['tanggal']); ?>&jam_mulai=<?= urlencode($pasien['jam_mulai']); ?>" 
+                            <a href="index.php?page=detail-pasien&no_rawat=<?php echo urlencode($pasien['no_rawat']); ?>&kode_paket=<?php echo urlencode($pasien['kode_paket']); ?>&tanggal=<?php echo urlencode($pasien['tanggal']); ?>&jam_mulai=<?php echo urlencode($pasien['jam_mulai']); ?>" 
                                class="btn btn-info btn-sm">Detail</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="8" class="text-center">
+                    <td colspan="9" class="text-center">
                         <p>Belum ada data booking operasi.</p>
                         <a href="index.php?page=tambah-booking" class="btn btn-primary">Tambah Booking Pertama</a>
                     </td>

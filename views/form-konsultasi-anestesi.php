@@ -809,6 +809,7 @@ if (isset($_SESSION['error'])) {
     </div>
 </div>
 
+<script src="/assets/js/autosave.js"></script>
 <script>
 // JavaScript untuk toggle show/hide field pengobatan
 function togglePengobatan() {
@@ -857,6 +858,14 @@ document.addEventListener('DOMContentLoaded', function() {
     togglePengobatan();
     toggleAlergiObat();
     toggleGerakanLeher();
+    
+    // Initialize AutoSave
+    AutoSave.init('formKonsultasiAnestesi', {
+        debounce: 1000,
+        exclude: ['no_rawat', 'kode_paket', 'tanggal', 'jam_mulai'],
+        showNotification: true,
+        clearOnSubmit: true
+    });
 });
 
 // Debug: Log form data sebelum submit

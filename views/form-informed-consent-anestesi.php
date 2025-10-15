@@ -306,4 +306,17 @@ include __DIR__ . '/../includes/header.php';
     </div>
 </div>
 
+<script src="/assets/js/autosave.js"></script>
+<script>
+// Initialize AutoSave
+document.addEventListener('DOMContentLoaded', function() {
+    AutoSave.init('formInformedConsent', {
+        debounce: 1000,
+        exclude: ['no_rawat', 'kode_paket', 'tanggal', 'jam_mulai'],
+        showNotification: true,
+        clearOnSubmit: true
+    });
+});
+</script>
+
 <?php include __DIR__ . '/../includes/footer.php'; ?>
