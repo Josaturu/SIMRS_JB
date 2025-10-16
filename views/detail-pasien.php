@@ -188,6 +188,14 @@ include __DIR__ . '/../includes/header.php';
                         'pdf' => 'pdf-kamar-pemulihan.php'
                     ],
                     [
+                        'page' => 'vital-sign',
+                        'label' => 'Vital Sign',
+                        'desc' => 'Form monitoring tanda vital intra/post',
+                        'icon' => 'heartbeat',
+                        'done' => checkFormStatus($db, 'tbl_anestesi_vital_sign', $no_rawat, $kode_paket, $tanggal, $jam_mulai),
+                        'pdf' => 'pdf-vital-sign.php'
+                    ],
+                    [
                         'page' => 'form-catatan-sedasi',
                         'label' => 'Catatan Sedasi & Anestesi',
                         'desc' => 'Form catatan sedasi dan anestesi',
