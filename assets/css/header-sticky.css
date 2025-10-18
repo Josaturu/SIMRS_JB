@@ -1,0 +1,420 @@
+/* ========================================
+   STICKY HEADER WITH MINIMAL BAR & TOOLTIP
+   Opsi E + G: Sticky header dengan info minimal + popover detail
+   ======================================== */
+
+/* ===== STICKY HEADER CONTAINER ===== */
+.header-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    transition: all 0.3s ease;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Scrolled state - shadow lebih dalam */
+.header-sticky.scrolled {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Logo section - larger */
+.header-sticky .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.header-sticky .logo img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+/* Hospital name styling */
+.hospital-name {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.hospital-name strong {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.3px;
+    display: block;
+}
+
+.hospital-brand {
+    font-size: 16px;
+    font-weight: 800;
+    color: #2d5aa6;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-top: 2px;
+}
+
+/* ===== PATIENT INFO BAR ===== */
+.patient-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+.info-items {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.info-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #333;
+}
+
+.info-item i {
+    font-size: 14px;
+    color: #666;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.info-separator {
+    color: #ccc;
+    font-size: 12px;
+    user-select: none;
+}
+
+/* Info toggle button */
+.info-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #666;
+}
+
+.info-toggle:hover {
+    background: #e8e8e8;
+    color: #333;
+    transform: scale(1.05);
+}
+
+.info-toggle:active {
+    transform: scale(0.95);
+}
+
+.info-toggle i {
+    font-size: 16px;
+}
+
+/* ===== POPOVER TOOLTIP ===== */
+.info-popover {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 280px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.info-popover.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Arrow indicator */
+.info-popover::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 12px;
+    width: 12px;
+    height: 12px;
+    background: white;
+    transform: rotate(45deg);
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.popover-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.popover-header strong {
+    font-size: 14px;
+    color: #333;
+}
+
+.popover-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #999;
+    transition: all 0.2s ease;
+}
+
+.popover-close:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.popover-body {
+    padding: 12px 16px;
+}
+
+.popover-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.popover-item:last-child {
+    border-bottom: none;
+}
+
+.popover-label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+}
+
+.popover-value {
+    font-size: 13px;
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+/* ===== PLACEHOLDER (no patient data) ===== */
+.info-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    color: #999;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.info-placeholder i {
+    font-size: 16px;
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media (max-width: 768px) {
+    .header-sticky {
+        height: auto;
+        min-height: 70px;
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .header-sticky .logo {
+        width: 100%;
+        justify-content: flex-start;
+        margin-bottom: 0;
+    }
+
+    .header-sticky .logo img {
+        width: 44px;
+        height: 44px;
+    }
+
+    .hospital-name strong {
+        font-size: 13px;
+    }
+
+    .hospital-brand {
+        font-size: 14px;
+    }
+
+    .patient-info-bar {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .info-items {
+        flex: 1;
+        font-size: 11px;
+        min-width: 0;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .info-item {
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+
+    .info-item i {
+        font-size: 11px;
+        flex-shrink: 0;
+    }
+
+    .info-value {
+        font-size: 11px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .info-separator {
+        font-size: 10px;
+    }
+
+    .info-toggle {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+    }
+
+    .info-toggle i {
+        font-size: 14px;
+    }
+
+    .info-popover {
+        width: calc(100vw - 32px);
+        right: -8px;
+        left: auto;
+    }
+
+    .info-placeholder {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-sticky {
+        padding: 10px 12px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .header-sticky .logo img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .hospital-name strong {
+        font-size: 12px;
+    }
+
+    .hospital-brand {
+        font-size: 13px;
+    }
+
+    .info-items {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        width: 100%;
+    }
+
+    .info-separator {
+        display: none;
+    }
+
+    .info-item {
+        width: 100%;
+        max-width: 100%;
+        font-size: 11px;
+    }
+
+    .patient-info-bar {
+        gap: 8px;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    .header-sticky {
+        position: relative;
+        background: white;
+        box-shadow: none;
+        backdrop-filter: none;
+        height: auto;
+        page-break-after: avoid;
+    }
+
+    .info-toggle {
+        display: none;
+    }
+
+    .info-popover {
+        display: none !important;
+    }
+
+    .patient-info-bar {
+        border: 1px solid #ddd;
+        padding: 8px;
+        border-radius: 4px;
+    }
+
+    .info-items {
+        display: block;
+    }
+
+    .info-item {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .info-separator {
+        display: none;
+    }
+}

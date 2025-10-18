@@ -6,42 +6,111 @@
     <title><?php echo isset($page_title) ? $page_title : 'Sistem Rumah Sakit'; ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/improvements.css">
+    <link rel="stylesheet" href="assets/css/header-sticky.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="header">
+    <div class="header header-sticky">
         <div class="logo">
-            <img src="assets/images/logo.png" alt="Logo Rumah Sakit" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'">
-            <div>
-                <strong>Rumah Sakit Umum</strong><br>
-                <span style="color:#396cf0; font-weight:bold;">PRASETYA BUNDA</span>
+            <img src="assets/images/logo-pb.png" alt="Logo Rumah Sakit Prasetya Bunda" onerror="this.src='assets/images/logo.png'">
+            <div class="hospital-name">
+                <strong>RUMAH SAKIT UMUM</strong>
+                <span class="hospital-brand">PRASETYA BUNDA</span>
             </div>
         </div>
-        <div class="sticker-box">
+        
         <?php
-        // Tampilkan info pasien jika variabel tersedia
-        if (!empty($no_rawat) && !empty($kode_paket) && !empty($tanggal)) {
-            echo '<b>Pasien:</b><br>';
-            echo 'No. Rawat: <span style="font-weight:600">' . htmlspecialchars($no_rawat) . '</span><br>';
-            echo 'Kode Paket: <span style="font-weight:600">' . htmlspecialchars($kode_paket) . '</span><br>';
-            echo 'Tgl Operasi: <span style="font-weight:600">' . htmlspecialchars($tanggal) . '</span><br>';
-            
-            // Cek dokter dari $pasien atau $booking
-            $dokter = '';
-            if (isset($pasien['kd_dokter'])) {
-                $dokter = $pasien['kd_dokter'];
-            } elseif (isset($booking['kd_dokter'])) {
-                $dokter = $booking['kd_dokter'];
-            }
-            
-            if (!empty($dokter)) {
-                echo 'Dokter: <span style="font-weight:600">' . htmlspecialchars($dokter) . '</span>';
-            }
-        } else {
-            echo 'Tempelkan Stiker Identitas Pasien';
+        // Cek dokter dan nama pasien dari $pasien atau $booking
+        $dokter = '';
+        $nama_pasien = '';
+        
+        if (isset($pasien['kd_dokter'])) {
+            $dokter = $pasien['kd_dokter'];
+        } elseif (isset($booking['kd_dokter'])) {
+            $dokter = $booking['kd_dokter'];
+        }
+        
+        if (isset($pasien['nama'])) {
+            $nama_pasien = $pasien['nama'];
+        } elseif (isset($booking['nm_pasien'])) {
+            $nama_pasien = $booking['nm_pasien'];
         }
         ?>
+        
+        <div class="patient-info-bar">
+            <?php if (!empty($no_rawat) && !empty($kode_paket) && !empty($tanggal)): ?>
+                <div class="info-items">
+                    <?php if (!empty($nama_pasien)): ?>
+                        <span class="info-item">
+                            <i class="fas fa-user"></i>
+                            <span class="info-value"><?= htmlspecialchars($nama_pasien) ?></span>
+                        </span>
+                        <span class="info-separator">•</span>
+                    <?php endif; ?>
+                    <span class="info-item">
+                        <i class="fas fa-id-card"></i>
+                        <span class="info-value"><?= htmlspecialchars($no_rawat) ?></span>
+                    </span>
+                    <span class="info-separator">•</span>
+                    <span class="info-item">
+                        <i class="fas fa-calendar"></i>
+                        <span class="info-value"><?= htmlspecialchars($tanggal) ?></span>
+                    </span>
+                    <?php if (!empty($dokter)): ?>
+                        <span class="info-separator">•</span>
+                        <span class="info-item">
+                            <i class="fas fa-user-md"></i>
+                            <span class="info-value"><?= htmlspecialchars($dokter) ?></span>
+                        </span>
+                    <?php endif; ?>
+                </div>
+                
+                <button class="info-toggle" id="patientInfoToggle" aria-label="Lihat detail pasien" title="Lihat detail lengkap">
+                    <i class="fas fa-circle-info"></i>
+                </button>
+                
+                <!-- Popover Detail -->
+                <div class="info-popover" id="patientInfoPopover" role="tooltip">
+                    <div class="popover-header">
+                        <strong>Detail Pasien</strong>
+                        <button class="popover-close" id="popoverClose" aria-label="Tutup">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="popover-body">
+                        <?php if (!empty($nama_pasien)): ?>
+                            <div class="popover-item">
+                                <span class="popover-label">Nama Pasien:</span>
+                                <span class="popover-value"><?= htmlspecialchars($nama_pasien) ?></span>
+                            </div>
+                        <?php endif; ?>
+                        <div class="popover-item">
+                            <span class="popover-label">No. Rawat:</span>
+                            <span class="popover-value"><?= htmlspecialchars($no_rawat) ?></span>
+                        </div>
+                        <div class="popover-item">
+                            <span class="popover-label">Kode Paket:</span>
+                            <span class="popover-value"><?= htmlspecialchars($kode_paket) ?></span>
+                        </div>
+                        <div class="popover-item">
+                            <span class="popover-label">Tgl Operasi:</span>
+                            <span class="popover-value"><?= htmlspecialchars($tanggal) ?></span>
+                        </div>
+                        <?php if (!empty($dokter)): ?>
+                            <div class="popover-item">
+                                <span class="popover-label">Dokter:</span>
+                                <span class="popover-value"><?= htmlspecialchars($dokter) ?></span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="info-placeholder">
+                    <i class="fas fa-id-badge"></i>
+                    <span>Tempelkan Stiker Identitas Pasien</span>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     
