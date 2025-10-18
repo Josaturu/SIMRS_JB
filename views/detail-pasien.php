@@ -88,169 +88,317 @@ $konsultasi_terisi  = checkFormStatus($db, 'tbl_anestesi_konsultasi_anestesi', $
 include __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="container">
+<!-- Load Detail Pasien CSS -->
+<link rel="stylesheet" href="assets/css/detail-pasien.css">
+
+<div class="detail-layout">
     <?php
     // Tampilkan notifikasi success atau error
     if (isset($_GET['success'])) {
         $message = $_GET['success'] === 'saved' ? 'Data berhasil disimpan!' : 'Data berhasil diperbarui!';
-        echo '<div class="alert alert-success" style="margin-bottom: 20px; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">
+        echo '<div class="alert alert-success" style="position: fixed; top: 90px; right: 20px; z-index: 9999; min-width: 300px;">
                 <i class="fas fa-check-circle"></i> ' . htmlspecialchars($message) . '
               </div>';
     }
     if (isset($_GET['error'])) {
-        echo '<div class="alert alert-danger" style="margin-bottom: 20px; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; color: #721c24;">
+        echo '<div class="alert alert-danger" style="position: fixed; top: 90px; right: 20px; z-index: 9999; min-width: 300px;">
                 <i class="fas fa-exclamation-circle"></i> Terjadi kesalahan saat menyimpan data. Silakan coba lagi.
               </div>';
     }
     ?>
-    <!-- Informasi Pasien -->
-    <div class="card patient-info-card">
-        <div class="card-header">
-            <h3><i class="fas fa-user-injured"></i> Informasi Pasien</h3>
+    <!-- Sidebar Patient Info -->
+    <aside class="patient-sidebar">
+        <div class="sidebar-card">
+            <div class="sidebar-header">
+                <div class="patient-avatar">
+                    <?= strtoupper(substr($pasien['nama_pasien'] ?? 'P', 0, 1)); ?>
+                </div>
+                <div class="patient-name"><?= htmlspecialchars($pasien['nama_pasien'] ?? '-'); ?></div>
+                <div class="patient-id">RM: <?= htmlspecialchars($pasien['kode_rekam_medis'] ?? '-'); ?></div>
+            </div>
+            
+            <div class="sidebar-info-item">
+                <span class="info-label">No. Rawat</span>
+                <span class="info-value"><?= htmlspecialchars($pasien['no_rawat']); ?></span>
+            </div>
+            
+            <div class="sidebar-info-item">
+                <span class="info-label">Kode Paket</span>
+                <span class="info-value"><?= htmlspecialchars($pasien['kode_paket']); ?></span>
+            </div>
+            
+            <div class="sidebar-info-item">
+                <span class="info-label">Tanggal Operasi</span>
+                <span class="info-value"><?= htmlspecialchars($pasien['tanggal']); ?></span>
+            </div>
+            
+            <div class="sidebar-info-item">
+                <span class="info-label">Jam Operasi</span>
+                <span class="info-value"><?= htmlspecialchars($pasien['jam_mulai']); ?></span>
+            </div>
+            
+            <div class="sidebar-info-item">
+                <span class="info-label">Dokter</span>
+                <span class="info-value"><?= htmlspecialchars($pasien['kd_dokter']); ?></span>
+            </div>
+            
+            <div class="sidebar-info-item">
+                <span class="info-label">Ruang OK</span>
+                <span class="info-value"><?= htmlspecialchars($pasien['kd_ruang_ok']); ?></span>
+            </div>
+            
+            <div class="sidebar-info-item">
+                <span class="info-label">Status</span>
+                <span class="info-value">
+                    <span class="status-badge-sidebar status-<?= strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
+                        <?= htmlspecialchars($pasien['status']); ?>
+                    </span>
+                </span>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="patient-info-grid">
-                <div class="info-item">
-                    <label>No. Rawat</label>
-                    <div class="info-value"><?= htmlspecialchars($pasien['no_rawat']); ?></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <?php
+        // Group forms by phase
+        $pra_operasi = [
+            [
+                'page' => 'konsultasi-anestesi',
+                'label' => 'Konsultasi Anestesi',
+                'desc' => 'Form konsultasi anestesi',
+                'icon' => 'user-md',
+                'done' => $konsultasi_terisi,
+                'pdf' => 'pdf-konsultasi-anestesi.php'
+            ],
+            [
+                'page' => 'informed-consent-anestesi',
+                'label' => 'Informed Consent',
+                'desc' => 'Persetujuan tindakan anestesi',
+                'icon' => 'file-signature',
+                'done' => $informed_terisi,
+                'pdf' => 'pdf-informed-consent.php'
+            ],
+            [
+                'page' => 'persiapan-operasi',
+                'label' => 'Persiapan Operasi',
+                'desc' => 'Checklist persiapan pra-operasi',
+                'icon' => 'clipboard-list',
+                'done' => $persiapan_terisi,
+                'pdf' => 'pdf-persiapan-operasi.php'
+            ]
+        ];
+        
+        $intra_operasi = [
+            [
+                'page' => 'keselamatan-operasi',
+                'label' => 'Keselamatan Operasi',
+                'desc' => 'Checklist keselamatan operasi',
+                'icon' => 'shield-alt',
+                'done' => $keselamatan_terisi,
+                'pdf' => 'pdf-keselamatan-operasi.php'
+            ],
+            [
+                'page' => 'vital-sign',
+                'label' => 'Vital Sign',
+                'desc' => 'Monitoring tanda vital',
+                'icon' => 'heartbeat',
+                'done' => checkFormStatus($db, 'tbl_anestesi_vital_sign', $no_rawat, $kode_paket, $tanggal, $jam_mulai),
+                'pdf' => 'pdf-vital-sign.php'
+            ],
+            [
+                'page' => 'form-catatan-sedasi',
+                'label' => 'Catatan Sedasi',
+                'desc' => 'Catatan sedasi & anestesi',
+                'icon' => 'notes-medical',
+                'done' => $catatan_terisi,
+                'pdf' => 'pdf-catatan-sedasi.php'
+            ]
+        ];
+        
+        $post_operasi = [
+            [
+                'page' => 'kamar-pemulihan',
+                'label' => 'Kamar Pemulihan',
+                'desc' => 'Monitoring pasca operasi',
+                'icon' => 'procedures',
+                'done' => $pemulihan_terisi,
+                'pdf' => 'pdf-kamar-pemulihan.php'
+            ]
+        ];
+        
+        // Calculate stats
+        $all_forms = array_merge($pra_operasi, $intra_operasi, $post_operasi);
+        $total_forms = count($all_forms);
+        $completed_forms = count(array_filter($all_forms, function($f) { return $f['done']; }));
+        $pending_forms = $total_forms - $completed_forms;
+        ?>
+        
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card progress">
+                <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+                <div class="stat-value"><?= $completed_forms ?>/<?= $total_forms ?></div>
+                <div class="stat-label">Progress</div>
+            </div>
+            <div class="stat-card completed">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-value"><?= $completed_forms ?></div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="stat-value"><?= $pending_forms ?></div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card updated">
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-value"><?= date('d/m/Y') ?></div>
+                <div class="stat-label">Last Updated</div>
+            </div>
+        </div>
+        
+        <!-- Tabs Container -->
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('pra')">
+                    <i class="fas fa-clipboard-check"></i> Pra-Operasi
+                </button>
+                <button class="tab-btn" onclick="switchTab('intra')">
+                    <i class="fas fa-procedures"></i> Intra-Operasi
+                </button>
+                <button class="tab-btn" onclick="switchTab('post')">
+                    <i class="fas fa-bed"></i> Post-Operasi
+                </button>
+            </div>
+            
+            <div class="tab-content">
+                <!-- Pra-Operasi Tab -->
+                <div id="tab-pra" class="tab-pane active">
+                    <div class="forms-grid">
+                        <?php foreach ($pra_operasi as $form): 
+                            $statusClass = $form['done'] ? 'completed' : 'pending';
+                            $statusIcon = $form['done'] ? 'check-circle' : 'clock';
+                            $formUrl = "index.php?page={$form['page']}&no_rawat=" . urlencode($no_rawat) . 
+                                      "&kode_paket=" . urlencode($kode_paket) . 
+                                      "&tanggal=" . urlencode($tanggal) . 
+                                      "&jam_mulai=" . urlencode($jam_mulai);
+                        ?>
+                        <a href="<?= $formUrl ?>" class="form-card <?= $statusClass ?>">
+                            <div class="form-status-icon <?= $statusClass ?>">
+                                <i class="fas fa-<?= $statusIcon ?>"></i>
+                            </div>
+                            <div class="form-card-title"><?= $form['label'] ?></div>
+                            <div class="form-card-desc"><?= $form['desc'] ?></div>
+                            <div class="form-card-actions">
+                                <span class="form-action-btn primary">
+                                    <i class="fas fa-<?= $form['done'] ? 'eye' : 'edit' ?>"></i>
+                                    <?= $form['done'] ? 'Lihat' : 'Isi Form' ?>
+                                </span>
+                                <?php if ($form['done'] && isset($form['pdf'])): ?>
+                                <span onclick="window.open('process/pdf/<?= $form['pdf'] ?>?no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>', '_blank'); event.preventDefault(); event.stopPropagation();" 
+                                      class="form-action-btn success">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </span>
+                                <?php endif; ?>
+                            </div>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <label>Kode Rekam Medis</label>
-                    <div class="info-value"><?= htmlspecialchars($pasien['kode_rekam_medis'] ?? '-'); ?></div>
+                
+                <!-- Intra-Operasi Tab -->
+                <div id="tab-intra" class="tab-pane">
+                    <div class="forms-grid">
+                        <?php foreach ($intra_operasi as $form): 
+                            $statusClass = $form['done'] ? 'completed' : 'pending';
+                            $statusIcon = $form['done'] ? 'check-circle' : 'clock';
+                            $formUrl = "index.php?page={$form['page']}&no_rawat=" . urlencode($no_rawat) . 
+                                      "&kode_paket=" . urlencode($kode_paket) . 
+                                      "&tanggal=" . urlencode($tanggal) . 
+                                      "&jam_mulai=" . urlencode($jam_mulai);
+                        ?>
+                        <a href="<?= $formUrl ?>" class="form-card <?= $statusClass ?>">
+                            <div class="form-status-icon <?= $statusClass ?>">
+                                <i class="fas fa-<?= $statusIcon ?>"></i>
+                            </div>
+                            <div class="form-card-title"><?= $form['label'] ?></div>
+                            <div class="form-card-desc"><?= $form['desc'] ?></div>
+                            <div class="form-card-actions">
+                                <span class="form-action-btn primary">
+                                    <i class="fas fa-<?= $form['done'] ? 'eye' : 'edit' ?>"></i>
+                                    <?= $form['done'] ? 'Lihat' : 'Isi Form' ?>
+                                </span>
+                                <?php if ($form['done'] && isset($form['pdf'])): ?>
+                                <span onclick="window.open('process/pdf/<?= $form['pdf'] ?>?no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>', '_blank'); event.preventDefault(); event.stopPropagation();" 
+                                      class="form-action-btn success">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </span>
+                                <?php endif; ?>
+                            </div>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <label>Nama Pasien</label>
-                    <div class="info-value"><?= htmlspecialchars($pasien['nama_pasien'] ?? '-'); ?></div>
-                </div>
-                <div class="info-item">
-                    <label>Kode Paket</label>
-                    <div class="info-value"><?= htmlspecialchars($pasien['kode_paket']); ?></div>
-                </div>
-                <div class="info-item">
-                    <label>Tanggal Operasi</label>
-                    <div class="info-value"><?= htmlspecialchars($pasien['tanggal']); ?></div>
-                </div>
-                <div class="info-item">
-                    <label>Jam Operasi</label>
-                    <div class="info-value"><?= htmlspecialchars($pasien['jam_mulai']); ?></div>
-                </div>
-                <div class="info-item">
-                    <label>Dokter</label>
-                    <div class="info-value"><?= htmlspecialchars($pasien['kd_dokter']); ?></div>
-                </div>
-                <div class="info-item">
-                    <label>Ruang OK</label>
-                    <div class="info-value"><?= htmlspecialchars($pasien['kd_ruang_ok']); ?></div>
-                </div>
-                <div class="info-item">
-                    <label>Status</label>
-                    <div class="info-value">
-                        <span class="status-badge status-<?= strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
-                            <?= htmlspecialchars($pasien['status']); ?>
-                        </span>
+                
+                <!-- Post-Operasi Tab -->
+                <div id="tab-post" class="tab-pane">
+                    <div class="forms-grid">
+                        <?php foreach ($post_operasi as $form): 
+                            $statusClass = $form['done'] ? 'completed' : 'pending';
+                            $statusIcon = $form['done'] ? 'check-circle' : 'clock';
+                            $formUrl = "index.php?page={$form['page']}&no_rawat=" . urlencode($no_rawat) . 
+                                      "&kode_paket=" . urlencode($kode_paket) . 
+                                      "&tanggal=" . urlencode($tanggal) . 
+                                      "&jam_mulai=" . urlencode($jam_mulai);
+                        ?>
+                        <a href="<?= $formUrl ?>" class="form-card <?= $statusClass ?>">
+                            <div class="form-status-icon <?= $statusClass ?>">
+                                <i class="fas fa-<?= $statusIcon ?>"></i>
+                            </div>
+                            <div class="form-card-title"><?= $form['label'] ?></div>
+                            <div class="form-card-desc"><?= $form['desc'] ?></div>
+                            <div class="form-card-actions">
+                                <span class="form-action-btn primary">
+                                    <i class="fas fa-<?= $form['done'] ? 'eye' : 'edit' ?>"></i>
+                                    <?= $form['done'] ? 'Lihat' : 'Isi Form' ?>
+                                </span>
+                                <?php if ($form['done'] && isset($form['pdf'])): ?>
+                                <span onclick="window.open('process/pdf/<?= $form['pdf'] ?>?no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>', '_blank'); event.preventDefault(); event.stopPropagation();" 
+                                      class="form-action-btn success">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </span>
+                                <?php endif; ?>
+                            </div>
+                        </a>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Progress Formulir -->
-    <div class="card progress-card">
-        <div class="card-header">
-            <h3><i class="fas fa-tasks"></i> Progress Formulir</h3>
-        </div>
-        <div class="card-body">
-            <div class="progress-steps">
-                <?php
-                $steps = [
-                    [
-                        'page' => 'persiapan-operasi',
-                        'label' => 'Checklist Persiapan Operasi',
-                        'desc' => 'Form persiapan pra-operasi',
-                        'icon' => 'clipboard-list',
-                        'done' => $persiapan_terisi,
-                        'pdf' => 'pdf-persiapan-operasi.php'
-                    ],
-                    [
-                        'page' => 'keselamatan-operasi',
-                        'label' => 'Checklist Keselamatan Operasi',
-                        'desc' => 'Form keselamatan selama operasi',
-                        'icon' => 'shield-alt',
-                        'done' => $keselamatan_terisi,
-                        'pdf' => 'pdf-keselamatan-operasi.php'
-                    ],
-                    [
-                        'page' => 'kamar-pemulihan',
-                        'label' => 'Catatan Kamar Pemulihan',
-                        'desc' => 'Form monitoring pasca operasi',
-                        'icon' => 'procedures',
-                        'done' => $pemulihan_terisi,
-                        'pdf' => 'pdf-kamar-pemulihan.php'
-                    ],
-                    [
-                        'page' => 'vital-sign',
-                        'label' => 'Vital Sign',
-                        'desc' => 'Form monitoring tanda vital intra/post',
-                        'icon' => 'heartbeat',
-                        'done' => checkFormStatus($db, 'tbl_anestesi_vital_sign', $no_rawat, $kode_paket, $tanggal, $jam_mulai),
-                        'pdf' => 'pdf-vital-sign.php'
-                    ],
-                    [
-                        'page' => 'form-catatan-sedasi',
-                        'label' => 'Catatan Sedasi & Anestesi',
-                        'desc' => 'Form catatan sedasi dan anestesi',
-                        'icon' => 'notes-medical',
-                        'done' => $catatan_terisi,
-                        'pdf' => 'pdf-catatan-sedasi.php'
-                    ],
-                    [
-                        'page' => 'informed-consent-anestesi',
-                        'label' => 'Informed Consent Anestesi',
-                        'desc' => 'Form persetujuan tindakan anestesi',
-                        'icon' => 'file-signature',
-                        'done' => $informed_terisi,
-                        'pdf' => 'pdf-informed-consent.php'
-                    ],
-                    [
-                        'page' => 'konsultasi-anestesi',
-                        'label' => 'Konsultasi Anestesi',
-                        'desc' => 'Form konsultasi anestesi',
-                        'icon' => 'user-md',
-                        'done' => $konsultasi_terisi,
-                        'pdf' => 'pdf-konsultasi-anestesi.php'
-                    ]
-                ];
-
-                foreach ($steps as $step):
-                    $statusClass = $step['done'] ? 'completed' : 'not-completed';
-                    $icon = $step['done'] ? 'check' : $step['icon'];
-                    $actionLabel = $step['done'] ? 'Lihat' : 'Isi';
-                    $actionIcon = $step['done'] ? 'eye' : 'edit';
-                ?>
-                <a href="index.php?page=<?= $step['page'] ?>&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>"
-                   class="progress-step progress-btn <?= $statusClass; ?>">
-                    <div class="step-icon"><i class="fas fa-<?= $icon; ?>"></i></div>
-                    <div class="step-info">
-                        <h4><?= $step['label']; ?></h4>
-                        <p><?= $step['desc']; ?></p>
-                        <span class="step-status"><?= $step['done'] ? 'Sudah diisi' : 'Belum diisi'; ?></span>
-                        <div class="step-actions" style="margin-top: 8px; display: flex; gap: 8px;">
-                            <span class="step-action-label" style="padding: 6px 12px; background: <?= $step['done'] ? '#17a2b8' : '#007bff' ?>; color: white; border-radius: 4px; font-size: 11px; display: inline-block;">
-                                <i class="fas fa-<?= $actionIcon; ?>"></i> <?= $actionLabel; ?>
-                            </span>
-                            <?php if ($step['done'] && isset($step['pdf'])): ?>
-                            <span onclick="window.open('process/pdf/<?= $step['pdf'] ?>?no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>', '_blank'); event.preventDefault(); event.stopPropagation();" 
-                                  class="step-action-label" style="padding: 6px 12px; background: #28a745; color: white; border-radius: 4px; font-size: 11px; display: inline-block; cursor: pointer;">
-                                <i class="fas fa-print"></i> PDF
-                            </span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </div>
-
-    <?php include __DIR__ . '/../includes/footer.php'; ?>
+    </main>
 </div>
+
+<script>
+function switchTab(tabName) {
+    // Remove active class from all tabs and panes
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+    
+    // Add active class to selected tab and pane
+    event.target.closest('.tab-btn').classList.add('active');
+    document.getElementById('tab-' + tabName).classList.add('active');
+}
+
+// Auto-hide notifications after 5 seconds
+setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        alert.style.transition = 'opacity 0.5s ease';
+        alert.style.opacity = '0';
+        setTimeout(() => alert.remove(), 500);
+    });
+}, 5000);
+</script>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>
