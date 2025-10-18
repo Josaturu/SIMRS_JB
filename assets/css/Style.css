@@ -587,11 +587,6 @@ table td:last-child {
 	/* width: 50px; */
 }
 
-table td:nth-child(2) {
-	/* width: 150px; */
-	/* font-weight: 500; */
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
 	.checkbox-grid {

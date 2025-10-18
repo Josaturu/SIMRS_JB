@@ -729,6 +729,7 @@ include __DIR__ . '/../includes/header.php';
           <button type="submit" class="btn btn-primary"><?= isset($catatan['id']) ? 'Simpan Perubahan' : 'Simpan' ?></button>
           <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>'">Kembali</button>
         </div>
+<script src="/assets/js/autosave.js"></script>
 <script>
 // Validasi form sebelum submit
 document.getElementById('formSedasi').addEventListener('submit', function(e) {
@@ -810,6 +811,14 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Jalankan saat load untuk data existing
   togglePremedikasiInputs();
+  
+  // Initialize AutoSave
+  AutoSave.init('formCatatanSedasi', {
+    debounce: 1000,
+    exclude: ['no_rawat', 'kode_paket', 'tanggal', 'jam_mulai'],
+    showNotification: true,
+    clearOnSubmit: true
+  });
 });
 </script>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

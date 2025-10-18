@@ -4,6 +4,7 @@ require_once '../config/database.php';
 require_once '../includes/functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    session_start();
     try {
         $database = new Database();
         $db = $database->getConnection();
@@ -17,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Helper function: convert checkbox to tinyint 1/0
         function checkboxToBool($value) {
-            return isset($value) ? 1 : 0;
+            return (!empty($value) && $value !== 'false') ? 1 : 0;
         }
         
         // Generate UUID untuk ID
@@ -62,7 +63,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $signout_1d = checkboxToBool($formData['signout_1d'] ?? null);
         $signout_2 = checkboxToBool($formData['signout_2'] ?? null);
         
-        // Prepare INSERT query
+        // Cek apakah data sudah ada
+        $check_query = "SELECT id FROM tbl_anestesi_keselamatan_operasi 
+                        WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+        $check_stmt = $db->prepare($check_query);
+        $check_stmt->execute([$formData['no_rawat'], $formData['kode_paket'], $formData['tanggal'], $formData['jam_mulai']]);
+        $existing = $check_stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($existing) {
+            // UPDATE existing data
+            $query = "UPDATE tbl_anestesi_keselamatan_operasi SET
+                       operasi = :operasi, tanggal_tindakan = :tanggal_tindakan,
+                       nama_pasien = :nama_pasien, no_rekam_medis = :no_rekam_medis, 
+                       tgl_lahir_umur = :tgl_lahir_umur, alamat = :alamat, operator = :operator,
+                       signin_time = :signin_time, signin_1a = :signin_1a, signin_1b = :signin_1b, 
+                       signin_1c = :signin_1c, signin_1d = :signin_1d, signin_2a = :signin_2a, 
+                       signin_2b = :signin_2b, signin_3 = :signin_3, signin_4 = :signin_4, 
+                       signin_5a = :signin_5a, signin_5b = :signin_5b, signin_6a = :signin_6a, 
+                       signin_6b = :signin_6b, signin_7a = :signin_7a, signin_7b = :signin_7b,
+                       dokter_anestesi_signin = :dokter_anestesi_signin, 
+                       perawat_anestesi_signin = :perawat_anestesi_signin, 
+                       perawat_sirkuler_signin = :perawat_sirkuler_signin,
+                       timeout_time = :timeout_time, timeout_1 = :timeout_1, timeout_2a = :timeout_2a, 
+                       timeout_2b = :timeout_2b, timeout_2c = :timeout_2c, timeout_3 = :timeout_3,
+                       catatan_dokter_bedah = :catatan_dokter_bedah, 
+                       catatan_dokter_anestesi = :catatan_dokter_anestesi, 
+                       catatan_perawat = :catatan_perawat,
+                       timeout_5a = :timeout_5a, timeout_5b = :timeout_5b, 
+                       perawat_sirkuler_timeout = :perawat_sirkuler_timeout,
+                       signout_time = :signout_time, signout_1a = :signout_1a, signout_1b = :signout_1b, 
+                       signout_1c = :signout_1c, signout_1d = :signout_1d, signout_2 = :signout_2,
+                       tanggal_keluar = :tanggal_keluar, tahun_keluar = :tahun_keluar,
+                       perawat_sirkuler_signout = :perawat_sirkuler_signout, 
+                       dokter_anestesi_signout = :dokter_anestesi_signout, 
+                       operator_signout = :operator_signout
+                      WHERE no_rawat = :no_rawat AND kode_paket = :kode_paket 
+                        AND tanggal = :tanggal AND jam_mulai = :jam_mulai";
+        } else {
+            // INSERT new data
+            $id = sprintf(
+                '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+                mt_rand(0, 0xffff),
+                mt_rand(0, 0x0fff) | 0x4000,
+                mt_rand(0, 0x3fff) | 0x8000,
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            );
+        }
+        
+        // Prepare query (INSERT or UPDATE)
+        if (!$existing) {
         $query = "INSERT INTO tbl_anestesi_keselamatan_operasi (
                    id, no_rawat, kode_paket, tanggal, jam_mulai, operasi, tanggal_tindakan,
                    nama_pasien, no_rekam_medis, tgl_lahir_umur, alamat, operator,
@@ -90,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    :tanggal_keluar, :tahun_keluar,
                    :perawat_sirkuler_signout, :dokter_anestesi_signout, :operator_signout
                   )";
+        }
         
         $stmt = $db->prepare($query);
         
@@ -98,7 +149,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         // Bind parameters - Metadata
-        $stmt->bindParam(':id', $id);
+        if (!$existing) {
+            $stmt->bindParam(':id', $id);
+        }
         $stmt->bindParam(':no_rawat', $formData['no_rawat']);
         $stmt->bindParam(':kode_paket', $formData['kode_paket']);
         $stmt->bindParam(':tanggal', $formData['tanggal']);
@@ -162,16 +215,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Execute query
         if ($stmt->execute()) {
-            // Redirect to detail pasien dengan status sukses
-            header("Location: ../index.php?page=detail-pasien&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}&status=sukses");
+            $_SESSION['success'] = $existing ? 'Data berhasil diperbarui!' : 'Data berhasil disimpan!';
+            header("Location: ../index.php?page=keselamatan-operasi&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}");
         } else {
             $errorInfo = $stmt->errorInfo();
-            header("Location: ../index.php?page=keselamatan-operasi&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}&status=gagal&error=" . urlencode($errorInfo[2]));
+            $_SESSION['error'] = 'Gagal menyimpan data: ' . $errorInfo[2];
+            header("Location: ../index.php?page=keselamatan-operasi&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}");
         }
         
     } catch (Exception $e) {
         error_log("Error submitting keselamatan operasi: " . $e->getMessage());
-        header("Location: ../index.php?page=keselamatan-operasi&status=error&msg=" . urlencode($e->getMessage()));
+        $_SESSION['error'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        header("Location: ../index.php?page=keselamatan-operasi&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}");
     }
     exit;
 } else {
