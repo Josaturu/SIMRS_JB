@@ -13,6 +13,25 @@ if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mula
 $database = new Database();
 $db = $database->getConnection();
 
+// Ambil data pasien untuk header
+$query_pasien = "SELECT bo.*, p.nama AS nama_pasien, p.kode_rekam_medis
+                  FROM booking_operasi bo
+                  LEFT JOIN pasien p ON bo.kd_pasien = p.kd_pasien
+                  WHERE bo.no_rawat = :no_rawat AND bo.kode_paket = :kode_paket 
+                  AND bo.tanggal = :tanggal AND bo.jam_mulai = :jam_mulai";
+$stmt_pasien = $db->prepare($query_pasien);
+$stmt_pasien->bindParam(':no_rawat', $no_rawat);
+$stmt_pasien->bindParam(':kode_paket', $kode_paket);
+$stmt_pasien->bindParam(':tanggal', $tanggal);
+$stmt_pasien->bindParam(':jam_mulai', $jam_mulai);
+$stmt_pasien->execute();
+$pasien = $stmt_pasien->fetch(PDO::FETCH_ASSOC);
+
+if (!$pasien) {
+    echo "<div style='padding:20px;color:red;'>❌ Data pasien tidak ditemukan.</div>";
+    exit;
+}
+
 // Query data vital sign untuk grafik
 $query_vital = "SELECT waktu, respirasi, nadi, td_sistolik, td_diastolik, spo2 
                 FROM tbl_anestesi_vital_sign 

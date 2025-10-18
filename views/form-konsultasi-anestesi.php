@@ -28,18 +28,13 @@ $stmt = $db->prepare($query);
 $stmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$pasien = $booking;
-
 if (!$booking) {
     echo "Data booking tidak ditemukan.";
     exit;
 }
 
-// Ambil jenis kelamin dari data pasien
-$pasien = [
-    'jenis_kelamin' => $booking['jenis_kelamin'] ?? 'Laki-laki',
-    'kd_dokter' => $booking['kd_dokter'] ?? ''
-];
+// Set $pasien untuk header (jangan overwrite!)
+$pasien = $booking;
 
 // Debug: Log jenis kelamin dari database
 error_log("DEBUG FORM - Jenis Kelamin dari DB: " . ($booking['jenis_kelamin'] ?? 'NULL'));

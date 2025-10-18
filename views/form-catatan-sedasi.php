@@ -45,7 +45,7 @@ $database = new Database();
 $db = $database->getConnection();
 
 // Ambil data booking beserta data pasien
-$query = "SELECT bo.*, p.kode_rekam_medis, p.nama, p.tanggal_lahir, p.alamat, p.jenis_kelamin, 
+$query = "SELECT bo.*, p.kode_rekam_medis, p.nama AS nama_pasien, p.tanggal_lahir, p.alamat, p.jenis_kelamin, 
                  p.tempat_lahir, p.no_hp, p.gol_darah
           FROM booking_operasi bo 
           LEFT JOIN pasien p ON bo.kd_pasien = p.kd_pasien 
@@ -58,6 +58,9 @@ if (!$booking) {
     echo "❌ Data pasien tidak ditemukan.";
     exit;
 }
+
+// Set $pasien untuk header
+$pasien = $booking;
 
 // Ambil data vital sign
 $q_vs = "SELECT COUNT(*) AS total 
@@ -90,7 +93,7 @@ $catatan = $stmt_cat->fetch(PDO::FETCH_ASSOC);
 if (!$catatan) {
     $catatan = [
         'no_rm' => $booking['kode_rekam_medis'] ?? '',
-        'nama' => $booking['nama'] ?? '',
+        'nama' => $booking['nama_pasien'] ?? '',
         'tgl_lahir' => $booking['tanggal_lahir'] ?? '',
         'golongan_darah' => $booking['gol_darah'] ?? ''
     ];

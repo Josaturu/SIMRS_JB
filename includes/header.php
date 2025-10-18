@@ -31,10 +31,15 @@
             $dokter = $booking['kd_dokter'];
         }
         
-        if (isset($pasien['nama'])) {
+        // Cek berbagai kemungkinan field nama pasien
+        if (isset($pasien['nama_pasien'])) {
+            $nama_pasien = $pasien['nama_pasien'];
+        } elseif (isset($pasien['nama'])) {
             $nama_pasien = $pasien['nama'];
         } elseif (isset($booking['nm_pasien'])) {
             $nama_pasien = $booking['nm_pasien'];
+        } elseif (isset($booking['nama_pasien'])) {
+            $nama_pasien = $booking['nama_pasien'];
         }
         ?>
         

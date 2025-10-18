@@ -27,10 +27,13 @@ if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mula
     exit;
 }
 
-// Koneksi database untuk mendapatkan data booking
+// Koneksi database untuk mendapatkan data booking dan pasien
 $database = new Database();
 $db = $database->getConnection();
-$query = "SELECT * FROM booking_operasi WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+$query = "SELECT bo.*, p.nama AS nama_pasien, p.kode_rekam_medis, p.tanggal_lahir, p.jenis_kelamin
+          FROM booking_operasi bo
+          LEFT JOIN pasien p ON bo.kd_pasien = p.kd_pasien
+          WHERE bo.no_rawat = ? AND bo.kode_paket = ? AND bo.tanggal = ? AND bo.jam_mulai = ?";
 $stmt = $db->prepare($query);
 $stmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $booking = $stmt->fetch(PDO::FETCH_ASSOC);
