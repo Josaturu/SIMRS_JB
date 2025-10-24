@@ -1,14 +1,63 @@
 <?php
 session_start();
 
-// Tampilkan notifikasi
+// ANTI-LOOP PROTECTION
+$current_url = $_SERVER['REQUEST_URI'];
+$loop_key = 'page_load_' . md5($current_url);
+
+if (isset($_SESSION[$loop_key])) {
+    $load_count = $_SESSION[$loop_key];
+    if ($load_count > 3) {
+        // Terlalu banyak reload, clear semua session dan stop
+        echo '<div style="padding:20px; background:#ff0000; color:#fff; font-size:18px; text-align:center;">
+            <h2>⚠️ INFINITE LOOP DETECTED!</h2>
+            <p>Halaman ini sudah di-load ' . $load_count . ' kali.</p>
+            <p>Session telah di-clear. <a href="' . htmlspecialchars($current_url) . '" style="color:#fff; text-decoration:underline;">Klik di sini untuk reload</a></p>
+        </div>';
+        session_destroy();
+        exit;
+    }
+    $_SESSION[$loop_key]++;
+} else {
+    $_SESSION[$loop_key] = 1;
+}
+
+// Reset counter setelah 5 detik (jika user normal browsing)
+if (isset($_SESSION[$loop_key . '_time'])) {
+    if (time() - $_SESSION[$loop_key . '_time'] > 5) {
+        $_SESSION[$loop_key] = 1;
+    }
+}
+$_SESSION[$loop_key . '_time'] = time();
+
+// Tampilkan notifikasi dengan auto-hide
 if (isset($_SESSION['success'])) {
-    echo '<div class="alert alert-success">' . $_SESSION['success'] . '</div>';
+    echo '<div class="alert alert-success" id="successAlert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; color: #155724; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: slideInRight 0.3s ease-out;">' . 
+         '<strong>✓ Berhasil!</strong> ' . htmlspecialchars($_SESSION['success']) . 
+         '</div>';
+    echo '<script>setTimeout(function(){ 
+        var alert = document.getElementById("successAlert");
+        if(alert) { 
+            alert.style.animation = "slideOutRight 0.3s ease-out";
+            setTimeout(function(){ alert.remove(); }, 300);
+    }, 3000);</script>';
     unset($_SESSION['success']);
 }
 
 if (isset($_SESSION['error'])) {
-    echo '<div class="alert alert-danger">' . $_SESSION['error'] . '</div>';
+    $errorMsg = $_SESSION['error'];
+    echo '<div class="alert alert-danger" style="margin:20px; padding:15px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; border-radius:5px; max-height:200px; overflow-y:auto;">
+        ❌ <strong>ERROR:</strong><br>' . nl2br(htmlspecialchars($errorMsg)) . '
+    </div><script>
+    console.error("Database Error:", ' . json_encode($errorMsg) . ');
+    setTimeout(function(){
+        var alert = document.querySelector(".alert-danger");
+        if(alert) {
+            alert.style.opacity = "0";
+            alert.style.transition = "opacity 0.3s";
+            setTimeout(function(){ alert.remove(); }, 300);
+        }
+    }, 10000);</script>';
     unset($_SESSION['error']);
 }
 $page_title = "Catatan Sedasi dan Anestesi";
@@ -62,19 +111,8 @@ if (!$booking) {
 // Set $pasien untuk header
 $pasien = $booking;
 
-// Ambil data vital sign
-$q_vs = "SELECT COUNT(*) AS total 
-         FROM tbl_anestesi_vital_sign 
-         WHERE no_rawat = :no_rawat AND kode_paket = :kode_paket AND tanggal = :tanggal AND jam_mulai = :jam_mulai";
-$stmt_vs = $db->prepare($q_vs);
-$stmt_vs->execute([
-  ':no_rawat' => $no_rawat,
-  ':kode_paket' => $kode_paket,
-  ':tanggal' => $tanggal,
-  ':jam_mulai' => $jam_mulai
-]);
-$vs = $stmt_vs->fetch(PDO::FETCH_ASSOC);
-$vs_done = $vs['total'] > 0;
+// Debug parameter pencarian
+error_log("DEBUG SEARCH PARAMS - no_rawat: '$no_rawat', kode_paket: '$kode_paket', tanggal: '$tanggal', jam_mulai: '$jam_mulai'");
 
 // Ambil data catatan anestesi jika sudah pernah disimpan
 $q_catatan = "SELECT * FROM tbl_anestesi_catatan_anestesi 
@@ -89,6 +127,21 @@ $stmt_cat->execute([
 ]);
 $catatan = $stmt_cat->fetch(PDO::FETCH_ASSOC);
 
+// Debug: Log data yang ditemukan
+error_log("DEBUG FORM CATATAN SEDASI - Data ditemukan: " . ($catatan ? 'YES' : 'NO'));
+error_log("DEBUG - Row count: " . $stmt_cat->rowCount());
+if ($catatan) {
+    error_log("DEBUG - ID: " . ($catatan['id'] ?? 'NULL'));
+    error_log("DEBUG - Nama: " . ($catatan['nama'] ?? 'NULL'));
+    error_log("DEBUG - Total fields: " . count($catatan));
+} else {
+    // Coba query tanpa parameter untuk debug
+    $debug_query = "SELECT COUNT(*) as total FROM tbl_anestesi_catatan_anestesi";
+    $debug_stmt = $db->query($debug_query);
+    $total = $debug_stmt->fetch(PDO::FETCH_ASSOC);
+    error_log("DEBUG - Total records in table: " . ($total['total'] ?? '0'));
+}
+
 // Gunakan data pasien dari booking jika catatan belum ada
 if (!$catatan) {
     $catatan = [
@@ -97,19 +150,63 @@ if (!$catatan) {
         'tgl_lahir' => $booking['tanggal_lahir'] ?? '',
         'golongan_darah' => $booking['gol_darah'] ?? ''
     ];
+    error_log("DEBUG - Menggunakan data dari booking");
 }
 
 include __DIR__ . '/../includes/header.php';
 ?>
-<link rel="stylesheet" href="/assets/css/style.css">
+<!-- Prevent browser cache -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<!-- Force reload: <?= time() ?> -->
+
+<!-- CSS untuk memastikan layout tetap rapi -->
+<style>
+  /* Perbaikan untuk notifikasi agar tidak menggeser layout */
+  .alert-success, .alert-danger {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 9999 !important;
+    max-width: 400px !important;
+  }
+  
+  /* Animasi smooth */
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+</style>
+
+<!-- Debug console log dihapus untuk performa lebih baik -->
 
 <div class="container">
   <div class="title">
     <div style="color:#004d80;">CATATAN SEDASI DAN ANESTESI</div>
     <div>RMOK 1a Rev-01</div>
   </div>
+  
+  <!-- Notifikasi EDIT/INSERT dihapus untuk tampilan yang lebih bersih -->
 
-  <form action="../process/process-simpan-catatan-sedasi.php" method="POST" id="formSedasi">
+  <form action="../process/process-simpan-catatan-sedasi.php" method="POST" id="formCatatanSedasi">
     <input type="hidden" name="no_rawat" value="<?= htmlspecialchars($no_rawat) ?>">
     <input type="hidden" name="kode_paket" value="<?= htmlspecialchars($kode_paket) ?>">
     <input type="hidden" name="tanggal" value="<?= htmlspecialchars($tanggal) ?>">
@@ -354,7 +451,10 @@ include __DIR__ . '/../includes/header.php';
         <tr>
           <td colspan="4">
             <?php 
-              $checklist_data = isset($catatan['checklist_sebelum_induksi']) ? explode(',', $catatan['checklist_sebelum_induksi']) : [];
+              // Explode dan trim spasi dari setiap item
+              $checklist_raw = isset($catatan['checklist_sebelum_induksi']) ? $catatan['checklist_sebelum_induksi'] : '';
+              $checklist_data = array_map('trim', explode(',', $checklist_raw));
+              
               $opsi = [
                 "Ijin Operasi & Anestesi","Antibiotika profilaksis","EKG Lead","SpO₂",
                 "Urine Catheter","Cek mesin Anestesi","Cek suction unit","NIBP","Temp",
@@ -387,14 +487,20 @@ include __DIR__ . '/../includes/header.php';
         </tr>
         <tr>
           <?php 
-            $infus_data = isset($catatan['infus']) ? explode(',', $catatan['infus']) : ["","",""];
+            // Explode dan trim spasi dari setiap item
+            $infus_raw = isset($catatan['infus_perifer']) ? $catatan['infus_perifer'] : '';
+            $infus_data = array_map('trim', explode(',', $infus_raw));
+            // Pastikan minimal 3 item
+            while (count($infus_data) < 3) {
+              $infus_data[] = '';
+            }
           ?>
           <td colspan="4">
             <div class="list-inputs">
               <?php for ($i=0; $i<3; $i++): ?>
                 <div class="input-container">
-                  <input type="text" id="infus<?= $i+1 ?>" name="infus[]" placeholder=" " value="<?= htmlspecialchars($infus_data[$i] ?? '') ?>">
-                  <label for="infus<?= $i+1 ?>" class="label-floating"><?= $i+1 ?>.</label>
+                  <input type="text" id="infus_perifer<?= $i+1 ?>" name="infus_perifer[]" placeholder=" " value="<?= htmlspecialchars($infus_data[$i] ?? '') ?>">
+                  <label for="infus_perifer<?= $i+1 ?>" class="label-floating"><?= $i+1 ?>.</label>
                 </div>
               <?php endfor; ?>
             </div>
@@ -406,7 +512,9 @@ include __DIR__ . '/../includes/header.php';
     <tr>
       <td colspan="4">
         <?php 
-          $checklist_data = isset($catatan['posisi']) ? explode(',', $catatan['posisi']) : [];
+          // Explode dan trim spasi dari setiap item
+          $posisi_raw = isset($catatan['posisi']) ? $catatan['posisi'] : '';
+          $checklist_data = array_map('trim', explode(',', $posisi_raw));
           $opsi = [
             "SUPINE","LITHOTOMI","PRONE","LATERAL",
             "PERLINDUNGAN MATA","Lain-lain :"
@@ -431,7 +539,9 @@ include __DIR__ . '/../includes/header.php';
     <tr>
         <td colspan="4">
             <?php 
-              $checklist_data = isset($catatan['premedikasi']) ? explode(',', $catatan['premedikasi']) : [];
+              // Explode dan trim spasi dari setiap item
+              $premedikasi_raw = isset($catatan['premedikasi']) ? $catatan['premedikasi'] : '';
+              $checklist_data = array_map('trim', explode(',', $premedikasi_raw));
               $opsi = [
                 "ORAL","I.M","I.V","Nama Obat :",
                 "Dosis Obat :"
@@ -472,10 +582,11 @@ include __DIR__ . '/../includes/header.php';
           </tr>
           <tr>
             <?php
-              $induksi_data = isset($catatan['induksi']) ? explode(',', $catatan['induksi']) : [];
-              $jalan_data = isset($catatan['jalan_nafas']) ? explode(',', $catatan['jalan_nafas']) : [];
-              $ventilasi_data = isset($catatan['ventilasi']) ? explode(',', $catatan['ventilasi']) : [];
-              $ventilator_data = isset($catatan['ventilator']) ? explode(',', $catatan['ventilator']) : [];
+              // Explode dan trim spasi dari setiap item
+              $induksi_data = array_map('trim', explode(',', isset($catatan['induksi']) ? $catatan['induksi'] : ''));
+              $jalan_data = array_map('trim', explode(',', isset($catatan['jalan_nafas']) ? $catatan['jalan_nafas'] : ''));
+              $ventilasi_data = array_map('trim', explode(',', isset($catatan['ventilasi']) ? $catatan['ventilasi'] : ''));
+              $ventilator_data = array_map('trim', explode(',', isset($catatan['ventilator']) ? $catatan['ventilator'] : ''));
             ?>
             <td>
               <label>Induksi</label>
@@ -540,7 +651,10 @@ include __DIR__ . '/../includes/header.php';
             <th colspan="2" style="text-align:center;">ANESTESI REGIONAL</th>
             <th colspan="2" style="text-align:center;">HASIL</th>
           </tr>
-          <?php $hasil_regional = isset($catatan['hasil_regional']) ? explode(',', $catatan['hasil_regional']) : []; ?>
+          <?php 
+            // Explode dan trim spasi dari setiap item
+            $hasil_regional = array_map('trim', explode(',', isset($catatan['hasil_regional']) ? $catatan['hasil_regional'] : ''));
+          ?>
           <tr>
             <td colspan="2">
               <div class="input-container">
@@ -669,16 +783,6 @@ include __DIR__ . '/../includes/header.php';
           </tr>
         </table>
 
-       <!-- Tombol untuk menuju halaman Vital Sign -->
-        <div class="vital-sign-access" style="margin:20px 0; text-align:center;">
-          <?php if (!empty($vs_done)): ?>
-              <a href="index.php?page=vital-sign&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
-                  class="btn btn-success">✅ Vital Sign Sudah Diisi</a>
-          <?php else: ?>
-              <a href="index.php?page=vital-sign&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
-                  class="btn btn-primary">➕ Isi Vital Sign</a>
-          <?php endif; ?>
-        </div>
 
         <h2>Waktu Prosedur Anestesi & Pembedahan</h2>
         <div class="time-form" style="margin-top:20px;">
@@ -730,12 +834,22 @@ include __DIR__ . '/../includes/header.php';
 
         <div class="form-actions">
           <button type="submit" class="btn btn-primary"><?= isset($catatan['id']) ? 'Simpan Perubahan' : 'Simpan' ?></button>
-          <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>'">Kembali</button>
+          <button type="button" class="btn btn-secondary" onclick="window.location.href='/index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>'">Kembali</button>
         </div>
 <script src="/assets/js/autosave.js"></script>
 <script>
+// Debug log dihapus - form sudah stabil
+
+// Prevent accidental form submission
+let formSubmitted = false;
+
 // Validasi form sebelum submit
-document.getElementById('formSedasi').addEventListener('submit', function(e) {
+document.getElementById('formCatatanSedasi').addEventListener('submit', function(e) {
+  if (formSubmitted) {
+    e.preventDefault();
+    return false;
+  }
+  
   let isValid = true;
   const requiredFields = this.querySelectorAll('[required]');
   
@@ -751,6 +865,11 @@ document.getElementById('formSedasi').addEventListener('submit', function(e) {
   if (!isValid) {
     e.preventDefault();
     alert('Harap lengkapi semua field yang wajib diisi!');
+    return false;
+  } else {
+    formSubmitted = true;
+    // Clear autosave data setelah submit
+    localStorage.removeItem('autosave_formCatatanSedasi');
   }
 });
 
@@ -759,6 +878,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function toggleLainLainPosisi() {
     var checkboxes = document.querySelectorAll('.posisi-checkbox');
     var container = document.getElementById('lain_lain_posisi_container');
+    var inputField = document.getElementById('lain_lain_posisi');
     var isChecked = false;
     
     checkboxes.forEach(function(checkbox) {
@@ -769,6 +889,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (container) {
       container.style.display = isChecked ? 'block' : 'none';
+    }
+    
+    // Hapus value input jika checkbox di-uncheck
+    if (!isChecked && inputField) {
+      inputField.value = '';
     }
   }
   
@@ -815,13 +940,15 @@ document.addEventListener('DOMContentLoaded', function() {
   // Jalankan saat load untuk data existing
   togglePremedikasiInputs();
   
-  // Initialize AutoSave
-  AutoSave.init('formCatatanSedasi', {
-    debounce: 1000,
-    exclude: ['no_rawat', 'kode_paket', 'tanggal', 'jam_mulai'],
-    showNotification: true,
-    clearOnSubmit: true
-  });
+  // Cek apakah data sudah ada di database (mode EDIT)
+  const hasExistingData = <?= json_encode(isset($catatan['id']) && !empty($catatan['id'])) ?>;
+  
+  if (hasExistingData) {
+    // Mode EDIT: Clear localStorage agar tidak override data dari database
+    localStorage.removeItem('form_formCatatanSedasi');
+  }
+  
+  // AutoSave disabled - form sudah stabil
 });
 </script>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

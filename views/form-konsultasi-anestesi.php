@@ -247,15 +247,19 @@ if (isset($_SESSION['error'])) {
                         </div>
                     </div>
                     <div class="form-item">
-                        <label>Jenis Kelamin</label>
+                        <label>Jenis Kelamin <span style="color: red;">*</span></label>
                         <div class="radio-group">
                             <?php 
                             // Prioritas: 1. Data konsultasi, 2. Data pasien, 3. Default
-                            $jk = $konsul['jenis_kelamin'] ?? $pasien['jenis_kelamin'] ?? 'Laki-laki';
+                            $jk = $konsul['jenis_kelamin'] ?? $pasien['jenis_kelamin'] ?? '';
                             error_log("DEBUG FORM - Final jenis_kelamin: $jk");
+                            
+                            // Normalisasi nilai jenis kelamin
+                            $is_laki = ($jk == 'Laki-laki' || $jk == 'L' || $jk == 'Laki-Laki');
+                            $is_perempuan = ($jk == 'Perempuan' || $jk == 'Wanita' || $jk == 'P');
                             ?>
-                            <label><input type="radio" name="jenis_kelamin" value="Laki-laki" <?= $jk == 'Laki-laki' || $jk == 'L' ? 'checked' : '' ?> required> Laki-laki</label>
-                            <label><input type="radio" name="jenis_kelamin" value="Perempuan" <?= $jk == 'Perempuan' || $jk == 'Wanita' || $jk == 'P' ? 'checked' : '' ?>> Perempuan</label>
+                            <label><input type="radio" name="jenis_kelamin" value="Laki-laki" <?= $is_laki ? 'checked' : '' ?> required> Laki-laki</label>
+                            <label><input type="radio" name="jenis_kelamin" value="Perempuan" <?= $is_perempuan ? 'checked' : '' ?> required> Perempuan</label>
                         </div>
                     </div>
                 </div>
@@ -288,7 +292,7 @@ if (isset($_SESSION['error'])) {
                                 <label><input type="radio" name="has_pengobatan" value="Tidak" <?= isset($konsul['has_pengobatan']) && $konsul['has_pengobatan'] == 'Tidak' ? 'checked' : '' ?> onchange="togglePengobatan()"> Tidak</label>
                             </div>
                         </div>
-                        <div class="form-item" id="pengobatanDetail" style="display: <?= isset($konsul['has_pengobatan']) && $konsul['has_pengobatan'] == 'Ya' ? 'block' : 'none' ?>;">
+                        <div class="form-item" id="pengobatanDetail" style="display: <?= isset($konsul['has_pengobatan']) && $konsul['has_pengobatan'] == 'Ya' ? 'block' : 'none' ?>; margin-top: 15px;">
                             <div class="input-container">
                                 <textarea id="pengobatan" name="pengobatan" placeholder=" " rows="2"><?= htmlspecialchars($konsul['pengobatan'] ?? '') ?></textarea>
                                 <label for="pengobatan" class="label-floating">Sebutkan dosis atau jumlah pil per hari</label>
@@ -306,7 +310,7 @@ if (isset($_SESSION['error'])) {
                                 <label><input type="radio" name="has_alergi_obat" value="Tidak" <?= isset($konsul['has_alergi_obat']) && $konsul['has_alergi_obat'] == 'Tidak' ? 'checked' : '' ?> onchange="toggleAlergiObat()"> Tidak</label>
                             </div>
                         </div>
-                        <div class="form-item" id="alergiObatDetail" style="display: <?= isset($konsul['has_alergi_obat']) && $konsul['has_alergi_obat'] == 'Ya' ? 'block' : 'none' ?>;">
+                        <div class="form-item" id="alergiObatDetail" style="display: <?= isset($konsul['has_alergi_obat']) && $konsul['has_alergi_obat'] == 'Ya' ? 'block' : 'none' ?>; margin-top: 15px;">
                             <div class="input-container">
                                 <textarea id="daftarAlergiObat" name="daftarAlergiObat" placeholder=" " rows="2"><?= htmlspecialchars($konsul['daftar_alergi_obat'] ?? '') ?></textarea>
                                 <label for="daftarAlergiObat" class="label-floating">Daftar Obat & Tipe Reaksi</label>
@@ -548,17 +552,24 @@ if (isset($_SESSION['error'])) {
                 <div class="form-row">
                     <label>Jalan Nafas</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="jalan_nafas" value="Normal" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Normal' ? 'checked' : '' ?>> Normal</label>
-                        <label><input type="radio" name="jalan_nafas" value="Buka mulut" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Buka mulut' ? 'checked' : '' ?>> Buka mulut > 2 jari</label>
-                        <label><input type="radio" name="jalan_nafas" value="Jarak Thyrimental" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Jarak Thyrimental' ? 'checked' : '' ?>> Jarak Thyrimental > 3 jari</label>
-                        <label><input type="radio" name="jalan_nafas" value="Mallampati" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Mallampati' ? 'checked' : '' ?>> Mallampati I / II / III / IV</label>
+                        <label><input type="radio" name="jalan_nafas" value="Normal" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Normal' ? 'checked' : '' ?> onchange="toggleJalanNafas()"> Normal</label>
+                        <label><input type="radio" name="jalan_nafas" value="Buka mulut" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Buka mulut' ? 'checked' : '' ?> onchange="toggleJalanNafas()"> Buka mulut > 2 jari</label>
+                        <label><input type="radio" name="jalan_nafas" value="Jarak Thyrimental" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Jarak Thyrimental' ? 'checked' : '' ?> onchange="toggleJalanNafas()"> Jarak Thyrimental > 3 jari</label>
                     </div>
                     <div class="radio-group">
-                        <label><input type="radio" name="gerakan_leher" value="Maksimal" <?= isset($konsul['gerakan_leher']) && $konsul['gerakan_leher'] == 'Maksimal' ? 'checked' : '' ?>> Gerakan leher Maksimal</label>
-                        <label><input type="radio" name="gerakan_leher" value="Abnormal" <?= isset($konsul['gerakan_leher']) && $konsul['gerakan_leher'] == 'Abnormal' ? 'checked' : '' ?>> Abnormal</label>
+                        <label><input type="radio" name="jalan_nafas" value="Mallampati I" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Mallampati I' ? 'checked' : '' ?> onchange="toggleJalanNafas()"> Mallampati I</label>
+                        <label><input type="radio" name="jalan_nafas" value="Mallampati II" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Mallampati II' ? 'checked' : '' ?> onchange="toggleJalanNafas()"> Mallampati II</label>
+                        <label><input type="radio" name="jalan_nafas" value="Mallampati III" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Mallampati III' ? 'checked' : '' ?> onchange="toggleJalanNafas()"> Mallampati III</label>
+                        <label><input type="radio" name="jalan_nafas" value="Mallampati IV" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Mallampati IV' ? 'checked' : '' ?> onchange="toggleJalanNafas()"> Mallampati IV</label>
+                    </div>
+                    <div class="radio-group">
+                        <label><input type="radio" name="jalan_nafas" value="Gerakan leher Maksimal" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Gerakan leher Maksimal' ? 'checked' : '' ?> onchange="toggleJalanNafas()"> Gerakan leher Maksimal</label>
+                        <label><input type="radio" name="jalan_nafas" value="Abnormal" <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Abnormal' ? 'checked' : '' ?> onchange="toggleJalanNafas()"> Abnormal</label>
+                    </div>
+                    <div class="form-item" id="jalanNafasKeteranganDetail" style="display: <?= isset($konsul['jalan_nafas']) && $konsul['jalan_nafas'] == 'Abnormal' ? 'block' : 'none' ?>; margin-top: 15px;">
                         <div class="input-container">
-                            <input type="text" id="gerakanLeherAbnormal" name="gerakanLeherAbnormal" placeholder=" " value="<?= htmlspecialchars($konsul['gerakan_leher_keterangan'] ?? '') ?>">
-                            <label for="gerakanLeherAbnormal" class="label-floating">Keterangan</label>
+                            <input type="text" id="jalanNafasKeterangan" name="jalanNafasKeterangan" placeholder=" " value="<?= htmlspecialchars($konsul['jalan_nafas_keterangan'] ?? '') ?>">
+                            <label for="jalanNafasKeterangan" class="label-floating">Keterangan Abnormal</label>
                         </div>
                     </div>
                 </div>
@@ -697,8 +708,8 @@ if (isset($_SESSION['error'])) {
                         <label><input type="radio" name="emergency" value="Ya" <?= isset($konsul['emergency']) && $konsul['emergency'] == 'Ya' ? 'checked' : '' ?>> Ya</label>
                         <label><input type="radio" name="emergency" value="Tidak" <?= !isset($konsul['emergency']) || $konsul['emergency'] == 'Tidak' ? 'checked' : '' ?>> Tidak</label>
                     </div>
-                    <div><strong>C. Lain - lain</strong></div>
-                    <div class="input-container">
+                    <div style="margin-top: 15px;"><strong>C. Lain - lain</strong></div>
+                    <div class="input-container" style="margin-top: 10px;">
                         <input type="text" id="diagnosisLain" name="diagnosisLain" placeholder=" " value="<?= htmlspecialchars($konsul['rekomendasi_anestesi'] ?? '') ?>">
                         <label for="diagnosisLain" class="label-floating">Keterangan lain-lain</label>
                     </div>
@@ -743,9 +754,9 @@ if (isset($_SESSION['error'])) {
                     </div>
                 </div>
 
-                <div class="form-row">
+                <div class="form-row" style="margin-top: 20px;">
                     <label>SARAN</label>
-                    <div class="input-container">
+                    <div class="input-container" style="margin-top: 10px;">
                         <textarea id="saran" name="saran" placeholder=" " rows="3"><?= htmlspecialchars($konsul['saran'] ?? '') ?></textarea>
                         <label for="saran" class="label-floating">Saran</label>
                     </div>
@@ -799,7 +810,7 @@ if (isset($_SESSION['error'])) {
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Simpan Konsultasi</button>
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>'">Kembali</button>            </div>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>'">Kembali</button>            </div>
         </form>
     </div>
 </div>
@@ -834,17 +845,26 @@ function toggleAlergiObat() {
     }
 }
 
-// JavaScript untuk toggle show/hide field gerakan leher abnormal
-function toggleGerakanLeher() {
-    var gerakanLeher = document.querySelector('input[name="gerakan_leher"]:checked');
-    var gerakanLeherDetail = document.getElementById('gerakanLeherDetail');
+// JavaScript untuk toggle show/hide field jalan nafas abnormal
+function toggleJalanNafas() {
+    var jalanNafas = document.querySelector('input[name="jalan_nafas"]:checked');
+    var jalanNafasKeteranganDetail = document.getElementById('jalanNafasKeteranganDetail');
     
-    if (gerakanLeher && gerakanLeher.value === 'Abnormal') {
-        gerakanLeherDetail.style.display = 'block';
+    console.log('toggleJalanNafas called');
+    console.log('Selected value:', jalanNafas ? jalanNafas.value : 'none');
+    console.log('Element found:', jalanNafasKeteranganDetail);
+    
+    if (jalanNafas && jalanNafas.value === 'Abnormal') {
+        console.log('Showing keterangan');
+        jalanNafasKeteranganDetail.style.display = 'block';
     } else {
-        gerakanLeherDetail.style.display = 'none';
+        console.log('Hiding keterangan');
+        jalanNafasKeteranganDetail.style.display = 'none';
         // Clear value jika bukan "Abnormal"
-        document.getElementById('gerakanLeherAbnormal').value = '';
+        var inputKeterangan = document.getElementById('jalanNafasKeterangan');
+        if (inputKeterangan) {
+            inputKeterangan.value = '';
+        }
     }
 }
 
@@ -852,7 +872,7 @@ function toggleGerakanLeher() {
 document.addEventListener('DOMContentLoaded', function() {
     togglePengobatan();
     toggleAlergiObat();
-    toggleGerakanLeher();
+    toggleJalanNafas();
     
     // Initialize AutoSave
     AutoSave.init('formKonsultasiAnestesi', {
@@ -875,3 +895,4 @@ document.getElementById('formKonsultasiAnestesi').addEventListener('submit', fun
     console.log('diabetes:', formData.get('diabetes'));
     console.log('======================');
 });
+</script>

@@ -72,7 +72,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
     if (form) {
         form.addEventListener('submit', function(e) {
-            console.log('Form submit triggered');
+            console.log('=== FORM SUBMIT TRIGGERED ===');
+            console.log('Form action:', this.action);
+            console.log('Form method:', this.method);
             
             // Pastikan field duplikat tersinkronisasi
             if (tinggiBadanTop && tinggiBadanBottom) {
@@ -105,6 +107,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     missingFields.push(field.label);
                 }
             });
+            
+            // Cek Jenis Kelamin
+            const jenisKelaminChecked = document.querySelector('input[name="jenis_kelamin"]:checked');
+            if (!jenisKelaminChecked) {
+                missingFields.push('Jenis Kelamin');
+            }
             
             // Cek ASA Status
             const asaChecked = document.querySelector('input[name="asa"]:checked');
@@ -190,12 +198,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.warn('Empty fields:', emptyFields);
             }
             
-            // Log field penting
-            console.log('=== FIELD PENTING ===');
+            // Log field penting dengan highlight untuk jenis_kelamin
+            console.log('%c=== FIELD PENTING ===', 'color: blue; font-weight: bold; font-size: 14px;');
             console.log('tinggiBadan:', formData.get('tinggiBadan'));
             console.log('beratBadan:', formData.get('beratBadan'));
             console.log('tb:', formData.get('tb'));
             console.log('bb:', formData.get('bb'));
+            
+            // Highlight jenis_kelamin
+            const jenisKelamin = formData.get('jenis_kelamin');
+            if (jenisKelamin) {
+                console.log('%cjenis_kelamin: ' + jenisKelamin, 'background: yellow; color: black; font-weight: bold; padding: 2px 5px;');
+            } else {
+                console.log('%cjenis_kelamin: NULL/KOSONG', 'background: red; color: white; font-weight: bold; padding: 2px 5px;');
+            }
+            
+            console.log('menikah:', formData.get('menikah'));
             console.log('kesadaran:', formData.get('kesadaran'));
             console.log('td:', formData.get('td'));
             console.log('nadi:', formData.get('nadi'));
@@ -208,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('regional:', formData.get('regional'));
             console.log('combined:', formData.get('combined'));
             console.log('sedasi:', formData.get('sedasi'));
-            console.log('=====================');
+            console.log('%c=====================', 'color: blue; font-weight: bold;');
         });
     }
     
@@ -249,6 +267,43 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     highlightEmptyRequiredFields();
+    
+    // ============================================
+    // 7. VISUAL FEEDBACK UNTUK JENIS KELAMIN
+    // ============================================
+    
+    /**
+     * Highlight jenis kelamin jika belum dipilih
+     */
+    const jenisKelaminRadios = document.querySelectorAll('input[name="jenis_kelamin"]');
+    if (jenisKelaminRadios.length > 0) {
+        // Cek apakah ada yang sudah dipilih
+        const isChecked = Array.from(jenisKelaminRadios).some(radio => radio.checked);
+        
+        if (!isChecked) {
+            // Tambahkan border merah pada container jika belum dipilih
+            const container = jenisKelaminRadios[0].closest('.form-item');
+            if (container) {
+                container.style.border = '2px solid #ff6b6b';
+                container.style.padding = '10px';
+                container.style.borderRadius = '5px';
+                container.style.backgroundColor = '#fff5f5';
+            }
+        }
+        
+        // Event listener untuk menghilangkan highlight saat dipilih
+        jenisKelaminRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const container = this.closest('.form-item');
+                if (container) {
+                    container.style.border = '';
+                    container.style.padding = '';
+                    container.style.backgroundColor = '';
+                }
+                console.log('Jenis Kelamin dipilih:', this.value);
+            });
+        });
+    }
     
     console.log('Form Konsultasi Anestesi - All fixes applied');
 });

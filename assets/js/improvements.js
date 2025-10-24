@@ -105,7 +105,12 @@ const Loading = {
 };
 
 // ===== 3. FORM SUBMISSION WITH LOADING =====
+// DISABLED: Loading overlay memperlambat submit form
 function setupFormWithLoading() {
+    // DISABLED - Loading overlay menyebabkan form lambat
+    // Jika ingin aktifkan lagi, uncomment code di bawah
+    
+    /*
     const forms = document.querySelectorAll('form[id]');
     
     forms.forEach(form => {
@@ -129,6 +134,7 @@ function setupFormWithLoading() {
             // If form is regular submit, loading will be hidden when page reloads
         });
     });
+    */
 }
 
 // ===== 4. BACK TO TOP BUTTON =====

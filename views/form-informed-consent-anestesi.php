@@ -148,7 +148,7 @@ include __DIR__ . '/../includes/header.php';
             $indikasi_data = isset($consent['indikasi']) ? explode(', ', $consent['indikasi']) : [];
             $tata_cara_data = isset($consent['tata_cara']) ? explode(', ', $consent['tata_cara']) : [];
             $risiko_data = isset($consent['risiko']) ? explode(', ', $consent['risiko']) : [];
-            $status_fisik_data = isset($consent['status_fisik']) ? explode(', ', $consent['status_fisik']) : [];
+            $status_fisik_data = isset($consent['status_fisik']) ? $consent['status_fisik'] : '';
             $checkbox_confirm_data = isset($consent['checkbox_confirm']) ? explode(',', $consent['checkbox_confirm']) : [];
             ?>
             <table>
@@ -256,12 +256,12 @@ include __DIR__ . '/../includes/header.php';
                     <td>7</td>
                     <td>Status fisik</td>
                     <td>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="statusFisik[]" value="ASA I" <?= in_array('ASA I', $status_fisik_data) ? 'checked' : '' ?>> ASA I</label>
-                            <label><input type="checkbox" name="statusFisik[]" value="ASA II" <?= in_array('ASA II', $status_fisik_data) ? 'checked' : '' ?>> ASA II</label>
-                            <label><input type="checkbox" name="statusFisik[]" value="ASA III" <?= in_array('ASA III', $status_fisik_data) ? 'checked' : '' ?>> ASA III</label>
-                            <label><input type="checkbox" name="statusFisik[]" value="ASA IV" <?= in_array('ASA IV', $status_fisik_data) ? 'checked' : '' ?>> ASA IV</label>
-                            <label><input type="checkbox" name="statusFisik[]" value="ASA V" <?= in_array('ASA V', $status_fisik_data) ? 'checked' : '' ?>> ASA V</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="statusFisik" value="ASA I" <?= $status_fisik_data == 'ASA I' ? 'checked' : '' ?>> ASA I</label>
+                            <label><input type="radio" name="statusFisik" value="ASA II" <?= $status_fisik_data == 'ASA II' ? 'checked' : '' ?>> ASA II</label>
+                            <label><input type="radio" name="statusFisik" value="ASA III" <?= $status_fisik_data == 'ASA III' ? 'checked' : '' ?>> ASA III</label>
+                            <label><input type="radio" name="statusFisik" value="ASA IV" <?= $status_fisik_data == 'ASA IV' ? 'checked' : '' ?>> ASA IV</label>
+                            <label><input type="radio" name="statusFisik" value="ASA V" <?= $status_fisik_data == 'ASA V' ? 'checked' : '' ?>> ASA V</label>
                         </div>
                     </td>
                     <td><input type="checkbox" name="cek7" value="1" <?= in_array('7', $checkbox_confirm_data) ? 'checked' : '' ?>></td>
@@ -303,23 +303,27 @@ include __DIR__ . '/../includes/header.php';
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary"><?= isset($consent['id']) ? 'Simpan Perubahan' : 'Simpan Informed Consent' ?></button>
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>'">Kembali</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>'">Kembali</button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- AUTOSAVE DISABLED: Fitur autosave dinonaktifkan untuk meningkatkan performa
 <script src="/assets/js/autosave.js"></script>
 <script>
-// Initialize AutoSave
+// Initialize AutoSave - OPTIMIZED
 document.addEventListener('DOMContentLoaded', function() {
     AutoSave.init('formInformedConsent', {
-        debounce: 1000,
+        debounce: 3000,  // Ubah dari 1000 ke 3000ms (save setiap 3 detik, lebih jarang)
         exclude: ['no_rawat', 'kode_paket', 'tanggal', 'jam_mulai'],
-        showNotification: true,
+        showNotification: false,  // Disable notifikasi untuk performa lebih baik
         clearOnSubmit: true
     });
+    
+    console.log('✅ AutoSave initialized (optimized: 3s debounce, no notification)');
 });
 </script>
+-->
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -2,6 +2,13 @@
 // process/process-simpan-catatan-sedasi.php
 session_start();
 
+// PROTECTION: Hanya proses jika method POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $_SESSION['error'] = "Invalid request method. Form harus di-submit dengan POST.";
+    header("Location: ../views/form-catatan-sedasi.php?" . http_build_query($_GET));
+    exit;
+}
+
 // Cek config path
 $configPaths = [
     __DIR__ . '/../config/database.php',
@@ -75,10 +82,16 @@ $resiko = $_POST['resiko'] ?? '';
 $checklist_sebelum_induksi = isset($_POST['checklist_sebelum_induksi']) ? 
     implode(', ', $_POST['checklist_sebelum_induksi']) : '';
 $teknik_anestesi = $_POST['teknik_anestesi'] ?? '';
-$infus_perifer = isset($_POST['infus']) ? implode(', ', array_filter($_POST['infus'])) : '';
+$infus_perifer = isset($_POST['infus_perifer']) ? implode(', ', array_filter($_POST['infus_perifer'])) : '';
 
 // Handle posisi (checkbox array)
 $posisi = isset($_POST['posisi']) ? implode(', ', $_POST['posisi']) : '';
+
+// Handle lain_lain_posisi (text input, bukan checkbox array)
+// Hanya simpan jika checkbox "Lain-lain :" dicentang
+$posisi_array = isset($_POST['posisi']) ? $_POST['posisi'] : [];
+$lain_lain_checked = in_array('Lain-lain :', $posisi_array);
+$lain_lain_posisi = ($lain_lain_checked && isset($_POST['lain_lain_posisi'])) ? $_POST['lain_lain_posisi'] : '';
 
 // Handle premedikasi (checkbox array)
 $premedikasi = isset($_POST['premedikasi']) ? implode(', ', $_POST['premedikasi']) : '';
@@ -121,8 +134,38 @@ $ekstubasi_pukul = $_POST['ekstubasi_pukul'] ?? '';
 $pasien_keluar_ok = $_POST['pasien_keluar_ok'] ?? '';
 
 try {
-    // Query INSERT ... ON DUPLICATE KEY UPDATE
-    $query = "INSERT INTO tbl_anestesi_catatan_anestesi (
+    // Cek apakah data sudah ada berdasarkan composite key
+    $checkQuery = "SELECT id FROM tbl_anestesi_catatan_anestesi 
+                   WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+    $checkStmt = $db->prepare($checkQuery);
+    $checkStmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
+    $existingData = $checkStmt->fetch(PDO::FETCH_ASSOC);
+    
+    $isUpdate = !empty($existingData);
+    $id = $existingData['id'] ?? ($_POST['id'] ?? generateUUID());
+    
+    if ($isUpdate) {
+        // UPDATE existing record
+        $query = "UPDATE tbl_anestesi_catatan_anestesi SET
+            no_rm = ?, nama = ?, tgl_lahir = ?, ruang_perawatan = ?, dokter_merawat = ?,
+            dokter_anestesi = ?, perawat_anestesi = ?, diagnosa_pra_bedah = ?, nama_tindakan = ?,
+            diagnosa_pasca_bedah = ?, asessment_pra_anestesi = ?, jenis_anestesi = ?, keterangan = ?,
+            tanggal_anestesi = ?, pukul = ?, dokter_bedah = ?, perawat_bedah = ?, jenis_pembedahan = ?,
+            bb = ?, td = ?, suhu = ?, respirasi = ?, hb = ?, tb = ?, nadi = ?, gcs = ?, golongan_darah = ?,
+            skrining_nyeri = ?, status_fisik_asa = ?, penyulit_pra_anestesi = ?, resiko = ?,
+            checklist_sebelum_induksi = ?, teknik_anestesi = ?, infus_perifer = ?, posisi = ?, lain_lain_posisi = ?,
+            premedikasi = ?, premedik_nama_obat = ?, premedik_dosis_obat = ?, induksi = ?, jalan_nafas = ?,
+            ventilasi = ?, ventilator = ?, ukuran_balon = ?, jenis_balon = ?, posisi_ett = ?, lokasi_regional = ?,
+            jarum_regional = ?, kateter_regional = ?, obat_anestesi_lokal = ?, hasil_regional = ?, obat = ?,
+            cairan_infus = ?, cairan_output = ?, masalah_selama_anestesi = ?, tindakan = ?,
+            perawat_menyerahkan = ?, perawat_menerima = ?, dokter_anestesi_ttd = ?,
+            mulai_anestesi = ?, selesai_anestesi = ?, mulai_pembedahan = ?, selesai_pembedahan = ?,
+            keterangan_waktu = ?, induksi_pukul = ?, pasien_siap_insisi = ?, insisi_mulai_pukul = ?,
+            operasi_mulai_pukul = ?, ekstubasi_pukul = ?, pasien_keluar_ok = ?, lain_lain_balon = ?
+            WHERE id = ?";
+    } else {
+        // INSERT new record
+        $query = "INSERT INTO tbl_anestesi_catatan_anestesi (
         id, no_rawat, kode_paket, tanggal, jam_mulai, no_rm, nama, tgl_lahir, 
         ruang_perawatan, dokter_merawat, dokter_anestesi, perawat_anestesi,
         diagnosa_pra_bedah, nama_tindakan, diagnosa_pasca_bedah, asessment_pra_anestesi,
@@ -138,89 +181,53 @@ try {
         mulai_pembedahan, selesai_pembedahan, keterangan_waktu, induksi_pukul,
         pasien_siap_insisi, insisi_mulai_pukul, operasi_mulai_pukul, ekstubasi_pukul,
         pasien_keluar_ok, lain_lain_balon
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE
-        no_rm = VALUES(no_rm), nama = VALUES(nama), tgl_lahir = VALUES(tgl_lahir),
-        ruang_perawatan = VALUES(ruang_perawatan), dokter_merawat = VALUES(dokter_merawat),
-        dokter_anestesi = VALUES(dokter_anestesi), perawat_anestesi = VALUES(perawat_anestesi),
-        diagnosa_pra_bedah = VALUES(diagnosa_pra_bedah), nama_tindakan = VALUES(nama_tindakan),
-        diagnosa_pasca_bedah = VALUES(diagnosa_pasca_bedah), asessment_pra_anestesi = VALUES(asessment_pra_anestesi),
-        jenis_anestesi = VALUES(jenis_anestesi), keterangan = VALUES(keterangan),
-        tanggal_anestesi = VALUES(tanggal_anestesi), pukul = VALUES(pukul),
-        dokter_bedah = VALUES(dokter_bedah), perawat_bedah = VALUES(perawat_bedah),
-        jenis_pembedahan = VALUES(jenis_pembedahan), bb = VALUES(bb), td = VALUES(td),
-        suhu = VALUES(suhu), respirasi = VALUES(respirasi), hb = VALUES(hb), tb = VALUES(tb),
-        nadi = VALUES(nadi), gcs = VALUES(gcs), golongan_darah = VALUES(golongan_darah),
-        skrining_nyeri = VALUES(skrining_nyeri), status_fisik_asa = VALUES(status_fisik_asa),
-        penyulit_pra_anestesi = VALUES(penyulit_pra_anestesi), resiko = VALUES(resiko),
-        checklist_sebelum_induksi = VALUES(checklist_sebelum_induksi), teknik_anestesi = VALUES(teknik_anestesi),
-        infus_perifer = VALUES(infus_perifer), posisi = VALUES(posisi), lain_lain_posisi = VALUES(lain_lain_posisi),
-        premedikasi = VALUES(premedikasi), premedik_nama_obat = VALUES(premedik_nama_obat), 
-        premedik_dosis_obat = VALUES(premedik_dosis_obat), induksi = VALUES(induksi), 
-        jalan_nafas = VALUES(jalan_nafas), ventilasi = VALUES(ventilasi), ventilator = VALUES(ventilator),
-        ukuran_balon = VALUES(ukuran_balon), jenis_balon = VALUES(jenis_balon), posisi_ett = VALUES(posisi_ett),
-        lokasi_regional = VALUES(lokasi_regional), jarum_regional = VALUES(jarum_regional),
-        kateter_regional = VALUES(kateter_regional), obat_anestesi_lokal = VALUES(obat_anestesi_lokal),
-        hasil_regional = VALUES(hasil_regional), obat = VALUES(obat), cairan_infus = VALUES(cairan_infus),
-        cairan_output = VALUES(cairan_output), masalah_selama_anestesi = VALUES(masalah_selama_anestesi),
-        tindakan = VALUES(tindakan), perawat_menyerahkan = VALUES(perawat_menyerahkan),
-        perawat_menerima = VALUES(perawat_menerima), dokter_anestesi_ttd = VALUES(dokter_anestesi_ttd),
-        mulai_anestesi = VALUES(mulai_anestesi), selesai_anestesi = VALUES(selesai_anestesi),
-        mulai_pembedahan = VALUES(mulai_pembedahan), selesai_pembedahan = VALUES(selesai_pembedahan),
-        keterangan_waktu = VALUES(keterangan_waktu), induksi_pukul = VALUES(induksi_pukul),
-        pasien_siap_insisi = VALUES(pasien_siap_insisi), insisi_mulai_pukul = VALUES(insisi_mulai_pukul),
-        operasi_mulai_pukul = VALUES(operasi_mulai_pukul), ekstubasi_pukul = VALUES(ekstubasi_pukul),
-        pasien_keluar_ok = VALUES(pasien_keluar_ok), lain_lain_balon = VALUES(lain_lain_balon),
-        updated_at = CURRENT_TIMESTAMP";
-
-    $stmt = $db->prepare($query);
-    
-    // Generate UUID untuk ID baru atau gunakan ID yang ada
-    $existing_id = $_POST['id'] ?? '';
-    
-    // Cek apakah data sudah ada di database berdasarkan composite key
-    if (empty($existing_id)) {
-        $checkQuery = "SELECT id FROM tbl_anestesi_catatan_anestesi 
-                       WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
-        $checkStmt = $db->prepare($checkQuery);
-        $checkStmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
-        $existingData = $checkStmt->fetch(PDO::FETCH_ASSOC);
-        $id = $existingData['id'] ?? generateUUID();
-    } else {
-        $id = $existing_id;
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     }
     
-    // Parameter array untuk execute - SESUAI URUTAN DI QUERY
-    $params = [
-        $id, $no_rawat, $kode_paket, $tanggal, $jam_mulai, 
-        $no_rm, $nama, $tgl_lahir, $ruang_perawatan, 
-        $dokter_merawat, $dokter_anestesi, $perawat_anestesi,
-        $diagnosa_pra_bedah, $nama_tindakan, $diagnosa_pasca_bedah, 
-        $asessment_pra_anestesi, $jenis_anestesi, $keterangan, 
-        $tanggal_anestesi, $pukul, $dokter_bedah, $perawat_bedah,
-        $jenis_pembedahan, $bb, $td, $suhu, $respirasi, $hb, $tb, 
-        $nadi, $gcs, $golongan_darah, $skrining_nyeri, $status_fisik_asa, 
-        $penyulit_pra_anestesi, $resiko, $checklist_sebelum_induksi, 
-        $teknik_anestesi, $infus_perifer, 
-        // Kolom baru dari database
-        $posisi,
-        $_POST['lain_lain_posisi'] ?? '',
-        $premedikasi, 
-        $premedik_nama_obat, 
-        $premedik_dosis_obat,
-        // Lanjutan
-        $induksi, $jalan_nafas, $ventilasi, $ventilator,
-        $ukuran_balon, $jenis_balon, $posisi_ett, $lokasi_regional,
-        $jarum_regional, $kateter_regional, $obat_anestesi_lokal, $hasil_regional,
-        $obat, $cairan_infus, $cairan_output, $masalah_selama_anestesi, $tindakan,
+    $stmt = $db->prepare($query);
+    
+    // Parameter array untuk execute
+    if ($isUpdate) {
+        // Parameter untuk UPDATE (semua field SET, lalu id di WHERE)
+        $params = [
+        $no_rm, $nama, $tgl_lahir, $ruang_perawatan, $dokter_merawat,
+        $dokter_anestesi, $perawat_anestesi, $diagnosa_pra_bedah, $nama_tindakan,
+        $diagnosa_pasca_bedah, $asessment_pra_anestesi, $jenis_anestesi, $keterangan,
+        $tanggal_anestesi, $pukul, $dokter_bedah, $perawat_bedah, $jenis_pembedahan,
+        $bb, $td, $suhu, $respirasi, $hb, $tb, $nadi, $gcs, $golongan_darah,
+        $skrining_nyeri, $status_fisik_asa, $penyulit_pra_anestesi, $resiko,
+        $checklist_sebelum_induksi, $teknik_anestesi, $infus_perifer, $posisi, $lain_lain_posisi,
+        $premedikasi, $premedik_nama_obat, $premedik_dosis_obat, $induksi, $jalan_nafas,
+        $ventilasi, $ventilator, $ukuran_balon, $jenis_balon, $posisi_ett, $lokasi_regional,
+        $jarum_regional, $kateter_regional, $obat_anestesi_lokal, $hasil_regional, $obat,
+        $cairan_infus, $cairan_output, $masalah_selama_anestesi, $tindakan,
         $perawat_menyerahkan, $perawat_menerima, $dokter_anestesi_ttd,
-        $mulai_anestesi, $selesai_anestesi, $mulai_pembedahan, 
-        $selesai_pembedahan, $keterangan_waktu, $induksi_pukul,
-        $pasien_siap_insisi, $insisi_mulai_pukul, $operasi_mulai_pukul, 
-        $ekstubasi_pukul, $pasien_keluar_ok,
-        // Kolom lain_lain_balon
-        $_POST['lain-lain_balon'] ?? ''
-    ];
+        $mulai_anestesi, $selesai_anestesi, $mulai_pembedahan, $selesai_pembedahan,
+        $keterangan_waktu, $induksi_pukul, $pasien_siap_insisi, $insisi_mulai_pukul,
+        $operasi_mulai_pukul, $ekstubasi_pukul, $pasien_keluar_ok, $_POST['lain_lain_balon'] ?? '',
+        $id  // WHERE id = ?
+        ];
+    } else {
+        // Parameter untuk INSERT (semua field termasuk id di awal)
+        $params = [
+        $id, $no_rawat, $kode_paket, $tanggal, $jam_mulai,
+        $no_rm, $nama, $tgl_lahir, $ruang_perawatan, $dokter_merawat,
+        $dokter_anestesi, $perawat_anestesi, $diagnosa_pra_bedah, $nama_tindakan,
+        $diagnosa_pasca_bedah, $asessment_pra_anestesi, $jenis_anestesi, $keterangan,
+        $tanggal_anestesi, $pukul, $dokter_bedah, $perawat_bedah, $jenis_pembedahan,
+        $bb, $td, $suhu, $respirasi, $hb, $tb, $nadi, $gcs, $golongan_darah,
+        $skrining_nyeri, $status_fisik_asa, $penyulit_pra_anestesi, $resiko,
+        $checklist_sebelum_induksi, $teknik_anestesi, $infus_perifer, $posisi, $lain_lain_posisi,
+        $premedikasi, $premedik_nama_obat, $premedik_dosis_obat, $induksi, $jalan_nafas,
+        $ventilasi, $ventilator, $ukuran_balon, $jenis_balon, $posisi_ett, $lokasi_regional,
+        $jarum_regional, $kateter_regional, $obat_anestesi_lokal, $hasil_regional, $obat,
+        $cairan_infus, $cairan_output, $masalah_selama_anestesi, $tindakan,
+        $perawat_menyerahkan, $perawat_menerima, $dokter_anestesi_ttd,
+        $mulai_anestesi, $selesai_anestesi, $mulai_pembedahan, $selesai_pembedahan,
+        $keterangan_waktu, $induksi_pukul, $pasien_siap_insisi, $insisi_mulai_pukul,
+        $operasi_mulai_pukul, $ekstubasi_pukul, $pasien_keluar_ok, $_POST['lain_lain_balon'] ?? ''
+        ];
+    }
 
     // Validasi jumlah parameter
     $tokenCount = substr_count($query, '?');
@@ -235,16 +242,10 @@ try {
     if ($result) {
         $affectedRows = $stmt->rowCount();
         
-        // Tentukan apakah ini operasi insert atau update
-        $isUpdate = !empty($_POST['id']);
-        
-        if ($affectedRows === 1) {
-            $_SESSION['success'] = "Data catatan sedasi berhasil disimpan!";
-        } elseif ($affectedRows === 2) {
+        if ($isUpdate) {
             $_SESSION['success'] = "Data catatan sedasi berhasil diperbarui!";
         } else {
-            // rowCount = 0 berarti data sama, tidak ada perubahan
-            $_SESSION['success'] = $isUpdate ? "Data catatan sedasi berhasil disimpan (tidak ada perubahan)." : "Data catatan sedasi berhasil disimpan!";
+            $_SESSION['success'] = "Data catatan sedasi berhasil disimpan!";
         }
     } else {
         $_SESSION['error'] = "Gagal menyimpan data.";
@@ -253,6 +254,8 @@ try {
 } catch (Exception $e) {
     $_SESSION['error'] = "Error: " . $e->getMessage();
     error_log("Database Error: " . $e->getMessage());
+    error_log("Query: " . ($query ?? 'N/A'));
+    error_log("Param count: " . (isset($params) ? count($params) : 0));
 }
 
 // Redirect kembali ke form

@@ -297,6 +297,42 @@ body {
 	gap: 10px;
 }
 
+.radio-group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.radio-group label {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	cursor: pointer;
+	padding: 5px 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	transition: all 0.2s;
+}
+
+.radio-group label:hover {
+	background-color: #f0f8ff;
+	border-color: #4285f4;
+}
+
+.radio-group input[type="radio"] {
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+}
+
+.radio-group input[type="radio"]:checked + label,
+.radio-group label:has(input[type="radio"]:checked) {
+	background-color: #e3f2fd;
+	border-color: #4285f4;
+	color: #4285f4;
+	font-weight: 600;
+}
+
 /* Typography */
 h2 {
 	font-size: 16px;

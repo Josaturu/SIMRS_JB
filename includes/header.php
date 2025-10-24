@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($page_title) ? $page_title : 'Sistem Rumah Sakit'; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/improvements.css">
-    <link rel="stylesheet" href="assets/css/header-sticky.css">
+    <link rel="stylesheet" href="/assets/css/Style.css">
+    <link rel="stylesheet" href="/assets/css/improvements.css">
+    <link rel="stylesheet" href="/assets/css/header-sticky.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="header header-sticky">
         <div class="logo">
-            <img src="assets/images/logo-pb.png" alt="Logo Rumah Sakit Prasetya Bunda" onerror="this.src='assets/images/logo.png'">
+            <img src="/assets/images/logo.png" alt="Logo Rumah Sakit Prasetya Bunda" onerror="this.style.display='none'">
             <div class="hospital-name">
                 <strong>RUMAH SAKIT UMUM</strong>
                 <span class="hospital-brand">PRASETYA BUNDA</span>
@@ -140,7 +140,7 @@
                 </span>
             </div>
             <div class="nav-links">
-                <a href="index.php" class="nav-link <?php echo ($page == '') ? 'active' : ''; ?>">
+                <a href="/index.php" class="nav-link <?php echo ($page == '') ? 'active' : ''; ?>">
                     <i class="fas fa-list"></i>
                     <span>Daftar Pasien</span>
                 </a>

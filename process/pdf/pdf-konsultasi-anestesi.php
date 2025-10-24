@@ -334,11 +334,12 @@ ob_start();
         </div>
         <div class="data-grid-item">
             <div class="label">Jalan Nafas</div>
-            <div class="value"><?= displayValue($konsul['jalan_nafas']) ?></div>
-        </div>
-        <div class="data-grid-item">
-            <div class="label">Gerakan Leher</div>
-            <div class="value"><?= displayValue($konsul['gerakan_leher']) ?></div>
+            <div class="value">
+                <?= displayValue($konsul['jalan_nafas']) ?>
+                <?php if ($konsul['jalan_nafas'] == 'Abnormal' && !empty($konsul['jalan_nafas_keterangan'])): ?>
+                    <br><small style="color: #e74c3c; font-weight: 600;">Keterangan: <?= displayValue($konsul['jalan_nafas_keterangan']) ?></small>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
     
