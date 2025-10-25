@@ -34,6 +34,20 @@ if (!$booking) {
     exit;
 }
 
+// Hitung umur dari tanggal lahir
+$umur = 0;
+if (!empty($pasien['tanggal_lahir'])) {
+    $tanggal_lahir = new DateTime($pasien['tanggal_lahir']);
+    $today = new DateTime('today');
+    $umur = $tanggal_lahir->diff($today)->y;
+}
+
+// Data pasien untuk form
+$no_rm = $pasien['kode_rekam_medis'] ?? '';
+$nama_pasien = $pasien['nama'] ?? '';
+$jenis_kelamin = $pasien['jenis_kelamin'] ?? '';
+$tanggal_lahir_pasien = $pasien['tanggal_lahir'] ?? '';
+
 // Cek apakah data checklist sudah ada
 $query_checklist = "SELECT * FROM tbl_anestesi_persiapan_operasi 
                     WHERE no_rawat = ? AND kode_paket = ?";
@@ -85,50 +99,68 @@ include __DIR__ . '/../includes/header.php';
 <link rel="stylesheet" href="/assets/css/style.css">
 
 <div class="container">
-    <?php
-    // Tampilkan notifikasi
-    if (isset($_SESSION['success'])) {
-        echo '<div class="alert alert-success" style="padding: 15px; margin-bottom: 20px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px;">' . $_SESSION['success'] . '</div>';
-        unset($_SESSION['success']);
-    }
-    if (isset($_SESSION['error'])) {
-        echo '<div class="alert alert-danger" style="padding: 15px; margin-bottom: 20px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">' . $_SESSION['error'] . '</div>';
-        unset($_SESSION['error']);
-    }
-    if (isset($_GET['status']) && $_GET['status'] == 'sukses') {
-        echo '<div class="alert alert-success" style="padding: 15px; margin-bottom: 20px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px;">Data berhasil disimpan!</div>';
-    }
-    if (isset($_GET['status']) && $_GET['status'] == 'gagal') {
-        echo '<div class="alert alert-danger" style="padding: 15px; margin-bottom: 20px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">Gagal menyimpan data: ' . htmlspecialchars($_GET['error'] ?? 'Unknown error') . '</div>';
-    }
-    ?>
     <div class="title">
         <div style="color: #004d80;">CHECKLIST PERSIAPAN OPERASI</div>
         <div>RMO-1 a</div>
     </div>
     
-    <!-- Form Data Booking -->
-    <div class="card">
-        <h2>Data Booking Operasi</h2>
-        <div class="form-grid">
-            <div class="form-column">
-                <div class="input-container">
-                    <input type="text" id="no_rawat" name="no_rawat" placeholder=" " value="<?php echo htmlspecialchars($no_rawat); ?>" readonly>
-                    <label for="no_rawat" class="label-floating">No. Rawat</label>
+    <!-- Informasi Pasien & Data Booking Operasi -->
+    <div class="card" style="background: #e3f2fd; border-left: 4px solid #2196F3;">
+        <h2 style="margin-bottom: 20px;">
+            <i class="fas fa-user-circle"></i> Informasi Pasien & Data Booking Operasi
+        </h2>
+        
+        <!-- Informasi Pasien -->
+        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #bbdefb;">
+            <h3 style="color: #1976d2; font-size: 16px; margin-bottom: 15px; border-bottom: 2px solid #2196F3; padding-bottom: 8px;">
+                Data Pasien
+            </h3>
+            <div class="form-grid">
+                <div class="form-column">
+                    <div class="input-container">
+                        <input type="text" id="display_nama" placeholder=" " value="<?php echo htmlspecialchars($nama_pasien); ?>" readonly style="background: #f5f5f5;">
+                        <label for="display_nama" class="label-floating">Nama Lengkap</label>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="display_no_rm" placeholder=" " value="<?php echo htmlspecialchars($no_rm); ?>" readonly style="background: #f5f5f5;">
+                            <label for="display_no_rm" class="label-floating">No. Rekam Medis</label>
+                        </div>
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="no_rawat" name="no_rawat" placeholder=" " value="<?php echo htmlspecialchars($no_rawat); ?>" readonly style="background: #f5f5f5;">
+                            <label for="no_rawat" class="label-floating">No. Rawat</label>
+                        </div>
+                        <div class="input-container" style="flex: 1;">
+                            <input type="date" id="tanggal" name="tanggal" placeholder=" " value="<?php echo htmlspecialchars($tanggal); ?>" readonly style="background: #f5f5f5;">
+                            <label for="tanggal" class="label-floating">Tanggal Booking</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="input-container">
-                    <input type="text" id="kode_paket" name="kode_paket" placeholder=" " value="<?php echo htmlspecialchars($kode_paket); ?>" readonly>
-                    <label for="kode_paket" class="label-floating">Kode Paket</label>
-                </div>
-            </div>
-            <div class="form-column">
-                <div class="input-container">
-                    <input type="date" id="tanggal" name="tanggal" placeholder=" " value="<?php echo htmlspecialchars($tanggal); ?>" readonly>
-                    <label for="tanggal" class="label-floating">Tanggal Booking</label>
-                </div>
-                <div class="input-container">
-                    <input type="time" id="jam_mulai" name="jam_mulai" placeholder=" " value="<?php echo htmlspecialchars($jam_mulai); ?>" readonly>
-                    <label for="jam_mulai" class="label-floating">Jam Mulai</label>
+                <div class="form-column">
+                    <div style="display: flex; gap: 10px;">
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="kode_paket" name="kode_paket" placeholder=" " value="<?php echo htmlspecialchars($kode_paket); ?>" readonly style="background: #f5f5f5;">
+                            <label for="kode_paket" class="label-floating">Kode Paket</label>
+                        </div>
+                        <div class="input-container" style="flex: 1;">
+                            <input type="time" id="jam_mulai" name="jam_mulai" placeholder=" " value="<?php echo htmlspecialchars($jam_mulai); ?>" readonly style="background: #f5f5f5;">
+                            <label for="jam_mulai" class="label-floating">Jam Mulai</label>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="display_umur" placeholder=" " value="<?php echo $umur . ' Tahun'; ?>" readonly style="background: #f5f5f5;">
+                            <label for="display_umur" class="label-floating">Umur</label>
+                        </div>
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="display_tgl_lahir" placeholder=" " value="<?php echo !empty($tanggal_lahir_pasien) ? date('d/m/Y', strtotime($tanggal_lahir_pasien)) : '-'; ?>" readonly style="background: #f5f5f5;">
+                            <label for="display_tgl_lahir" class="label-floating">Tanggal Lahir</label>
+                        </div>
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="display_jk" placeholder=" " value="<?php echo $jenis_kelamin == 'L' ? 'Laki-laki' : ($jenis_kelamin == 'P' ? 'Perempuan' : '-'); ?>" readonly style="background: #f5f5f5;">
+                            <label for="display_jk" class="label-floating">Jenis Kelamin</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,6 +180,13 @@ include __DIR__ . '/../includes/header.php';
         <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
         <input type="hidden" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>">
         <input type="hidden" name="jam_mulai" value="<?php echo htmlspecialchars($jam_mulai); ?>">
+        
+        <!-- Hidden fields untuk data pasien -->
+        <input type="hidden" name="no_rm" value="<?php echo htmlspecialchars($no_rm); ?>">
+        <input type="hidden" name="nama" value="<?php echo htmlspecialchars($nama_pasien); ?>">
+        <input type="hidden" name="jenis_kelamin" value="<?php echo htmlspecialchars($jenis_kelamin); ?>">
+        <input type="hidden" name="umur" value="<?php echo htmlspecialchars($umur); ?>">
+        <input type="hidden" name="tanggal_lahir" value="<?php echo htmlspecialchars($tanggal_lahir_pasien); ?>">
 
     <!-- Info Operasi -->
     <div class="card">

@@ -481,29 +481,14 @@ include __DIR__ . '/../includes/header.php';
         }
     }
     
-    // Toast notification
+    // Toast notification - use global Notification system
     function showToast(message) {
-        const toast = document.createElement('div');
-        toast.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #323232;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 5px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 10000;
-            font-size: 14px;
-            animation: slideIn 0.3s ease;
-        `;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => document.body.removeChild(toast), 300);
-        }, 3000);
+        if (typeof Notification !== 'undefined' && Notification.info) {
+            Notification.info(message, 3000);
+        } else {
+            // Fallback if global notification not loaded
+            console.log(message);
+        }
     }
     
     // Initialize on page load

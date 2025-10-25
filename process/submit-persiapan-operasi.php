@@ -175,6 +175,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($existing) {
             // UPDATE existing data
             $query = "UPDATE tbl_anestesi_persiapan_operasi SET
+                      no_rm = :no_rm, nama = :nama, jenis_kelamin = :jenis_kelamin,
+                      umur = :umur, tanggal_lahir = :tanggal_lahir,
                       tanggal_operasi = :tanggal_operasi, macam_operasi = :macam_operasi,
                       dpjp = :dpjp,
                       tinggi_badan = :tinggi_badan, berat_badan = :berat_badan, 
@@ -237,7 +239,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // INSERT new data
             $query = "INSERT INTO tbl_anestesi_persiapan_operasi 
-                  (no_rawat, kode_paket, tanggal_operasi, macam_operasi, dpjp,
+                  (no_rawat, kode_paket, 
+                   no_rm, nama, jenis_kelamin, umur, tanggal_lahir,
+                   tanggal_operasi, macam_operasi, dpjp,
                    tinggi_badan, berat_badan, gol_darah, riwayat_alergi,
                    program_ke_ubs, rawat_program_ke_ubs,
                    persetujuan_operasi, rawat_persetujuan_operasi,
@@ -282,7 +286,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    visit_dokter_konsul_2, rawat_visit_dokter_konsul_2,
                    visit_dokter_konsul_3, rawat_visit_dokter_konsul_3)
                   VALUES 
-                  (:no_rawat, :kode_paket, :tanggal_operasi, :macam_operasi, :dpjp,
+                  (:no_rawat, :kode_paket, 
+                   :no_rm, :nama, :jenis_kelamin, :umur, :tanggal_lahir,
+                   :tanggal_operasi, :macam_operasi, :dpjp,
                    :tinggi_badan, :berat_badan, :gol_darah, :riwayat_alergi,
                    :program_ke_ubs, :rawat_program_ke_ubs,
                    :persetujuan_operasi, :rawat_persetujuan_operasi,
@@ -337,6 +343,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Bind parameters
         $stmt->bindParam(':no_rawat', $formData['no_rawat']);
         $stmt->bindParam(':kode_paket', $formData['kode_paket']);
+        
+        // Bind data pasien (dari hidden fields)
+        $stmt->bindParam(':no_rm', $formData['no_rm']);
+        $stmt->bindParam(':nama', $formData['nama']);
+        $stmt->bindParam(':jenis_kelamin', $formData['jenis_kelamin']);
+        $stmt->bindParam(':umur', $formData['umur']);
+        $stmt->bindParam(':tanggal_lahir', $formData['tanggal_lahir']);
+        
         $stmt->bindParam(':tanggal_operasi', $formData['tglOperasi']);
         $stmt->bindParam(':macam_operasi', $formData['macamOperasi']);
         $stmt->bindParam(':dpjp', $formData['dpjp']);

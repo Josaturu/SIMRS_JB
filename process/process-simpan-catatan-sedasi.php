@@ -17,8 +17,10 @@ foreach ($configPaths as $path) {
 }
 
 if (!class_exists('Database')) {
-    $_SESSION['error'] = "File database.php tidak ditemukan. Periksa konfigurasi.";
-    header("Location: ../views/form-catatan-sedasi.php?" . http_build_query($_GET));
+    $params = $_GET;
+    $params['status'] = 'error';
+    $params['msg'] = 'File database.php tidak ditemukan. Periksa konfigurasi.';
+    header("Location: ../views/form-catatan-sedasi.php?" . http_build_query($params));
     exit;
 }
 
@@ -33,8 +35,10 @@ $jam_mulai = $_POST['jam_mulai'] ?? '';
 
 // Validasi data wajib
 if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mulai)) {
-    $_SESSION['error'] = "Data wajib tidak lengkap";
-    header("Location: ../views/form-catatan-sedasi.php?" . http_build_query($_GET));
+    $params = $_GET;
+    $params['status'] = 'error';
+    $params['msg'] = 'Data wajib tidak lengkap';
+    header("Location: ../views/form-catatan-sedasi.php?" . http_build_query($params));
     exit;
 }
 
@@ -238,28 +242,32 @@ try {
         // Tentukan apakah ini operasi insert atau update
         $isUpdate = !empty($_POST['id']);
         
-        if ($affectedRows === 1) {
-            $_SESSION['success'] = "Data catatan sedasi berhasil disimpan!";
-        } elseif ($affectedRows === 2) {
-            $_SESSION['success'] = "Data catatan sedasi berhasil diperbarui!";
-        } else {
-            // rowCount = 0 berarti data sama, tidak ada perubahan
-            $_SESSION['success'] = $isUpdate ? "Data catatan sedasi berhasil disimpan (tidak ada perubahan)." : "Data catatan sedasi berhasil disimpan!";
-        }
+        $action = ($affectedRows === 2 || $isUpdate) ? 'updated' : 'saved';
+        $status = 'sukses';
     } else {
-        $_SESSION['error'] = "Gagal menyimpan data.";
+        $status = 'gagal';
+        $error = 'Gagal menyimpan data.';
     }
 
 } catch (Exception $e) {
-    $_SESSION['error'] = "Error: " . $e->getMessage();
+    $status = 'error';
+    $error = $e->getMessage();
     error_log("Database Error: " . $e->getMessage());
 }
 
-// Redirect kembali ke form
+// Redirect kembali ke form with URL params
 $redirect_url = "../views/form-catatan-sedasi.php?no_rawat=" . urlencode($no_rawat) . 
                 "&kode_paket=" . urlencode($kode_paket) . 
                 "&tanggal=" . urlencode($tanggal) . 
-                "&jam_mulai=" . urlencode($jam_mulai);
+                "&jam_mulai=" . urlencode($jam_mulai) . 
+                "&status=" . $status;
+
+if ($status === 'sukses') {
+    $redirect_url .= "&action=" . $action;
+} else {
+    $redirect_url .= "&error=" . urlencode($error ?? 'Terjadi kesalahan');
+}
+
 header("Location: " . $redirect_url);
 exit;
 

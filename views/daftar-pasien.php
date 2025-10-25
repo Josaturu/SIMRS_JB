@@ -52,26 +52,6 @@ include __DIR__ . '/../includes/header.php';
         }
     }
     ?>
-    <?php if ($show_notif): ?>
-        <div class="alert <?php echo $_GET['status'] == 'sukses' ? 'alert-success' : 'alert-danger'; ?>" id="notif-alert">
-            <?php
-            if ($_GET['status'] == 'sukses') {
-                $kode_paket = $_GET['kode_paket'] ?? '';
-                echo "Booking berhasil dibuat! Kode Paket: <strong>" . htmlspecialchars($kode_paket) . "</strong>";
-            } elseif ($_GET['status'] == 'gagal') {
-                echo "Booking gagal dibuat! Mohon periksa kembali inputan Anda.";
-            } elseif ($_GET['status'] == 'error') {
-                echo "Terjadi kesalahan sistem! Data gagal masuk ke database.";
-            }
-            ?>
-        </div>
-        <script>
-        setTimeout(function() {
-            var notif = document.getElementById('notif-alert');
-            if (notif) notif.style.display = 'none';
-        }, 3000);
-        </script>
-    <?php endif; ?>
 
     <table class="table">
         <thead>

@@ -105,30 +105,13 @@ const Loading = {
 };
 
 // ===== 3. FORM SUBMISSION WITH LOADING =====
+// DISABLED: Using global LoadingSkeleton instead
 function setupFormWithLoading() {
-    const forms = document.querySelectorAll('form[id]');
+    // Old loading system disabled - now using global LoadingSkeleton from loading-skeleton.js
+    console.log('[Improvements] Form loading disabled - using global LoadingSkeleton');
     
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            // Skip jika form punya data-no-loading attribute
-            if (this.hasAttribute('data-no-loading')) return;
-
-            const submitBtn = this.querySelector('button[type="submit"]');
-            
-            if (submitBtn) {
-                // Disable button
-                submitBtn.disabled = true;
-                submitBtn.dataset.originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
-            }
-
-            // Show loading overlay
-            Loading.show('Menyimpan data...');
-
-            // If form is AJAX, ensure to call Loading.hide() in success/error callbacks
-            // If form is regular submit, loading will be hidden when page reloads
-        });
-    });
+    // Keep this function for backward compatibility but don't add loading
+    // Global LoadingSkeleton will handle all form loading
 }
 
 // ===== 4. BACK TO TOP BUTTON =====

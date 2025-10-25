@@ -92,20 +92,6 @@ include __DIR__ . '/../includes/header.php';
 <link rel="stylesheet" href="assets/css/detail-pasien.css">
 
 <div class="detail-layout">
-    <?php
-    // Tampilkan notifikasi success atau error
-    if (isset($_GET['success'])) {
-        $message = $_GET['success'] === 'saved' ? 'Data berhasil disimpan!' : 'Data berhasil diperbarui!';
-        echo '<div class="alert alert-success" style="position: fixed; top: 90px; right: 20px; z-index: 9999; min-width: 300px;">
-                <i class="fas fa-check-circle"></i> ' . htmlspecialchars($message) . '
-              </div>';
-    }
-    if (isset($_GET['error'])) {
-        echo '<div class="alert alert-danger" style="position: fixed; top: 90px; right: 20px; z-index: 9999; min-width: 300px;">
-                <i class="fas fa-exclamation-circle"></i> Terjadi kesalahan saat menyimpan data. Silakan coba lagi.
-              </div>';
-    }
-    ?>
     <!-- Sidebar Patient Info -->
     <aside class="patient-sidebar">
         <div class="sidebar-card">

@@ -278,12 +278,11 @@ if ($_POST) {
         $is_update = ($stmt->rowCount() > 0 && $db->lastInsertId() == 0);
         
         if ($success) {
-            $_SESSION['success'] = $is_update ? 'Data konsultasi berhasil diperbarui!' : 'Data konsultasi berhasil disimpan!';
-            header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai));
+            $action = $is_update ? 'updated' : 'saved';
+            header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai) . "&status=sukses&action={$action}");
             exit;
         } else {
-            $_SESSION['error'] = 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.';
-            header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai));
+            header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai) . "&status=gagal&error=" . urlencode('Terjadi kesalahan saat menyimpan data'));
             exit;
         }
     } catch (PDOException $e) {
@@ -298,12 +297,12 @@ if ($_POST) {
             error_log("Placeholder count in query: " . $placeholder_count);
             error_log("Parameter count in execute: 96");
             
-            $_SESSION['error'] = 'Parameter mismatch! Query memiliki ' . $placeholder_count . ' placeholder, tapi execute() memiliki 96 parameter. Periksa query INSERT.';
+            $errorMsg = 'Parameter mismatch! Query memiliki ' . $placeholder_count . ' placeholder, tapi execute() memiliki 96 parameter. Periksa query INSERT.';
         } else {
-            $_SESSION['error'] = 'Terjadi kesalahan database: ' . $e->getMessage();
+            $errorMsg = 'Terjadi kesalahan database: ' . $e->getMessage();
         }
         
-        header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai));
+        header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai) . "&status=error&msg=" . urlencode($errorMsg));
         exit;
     }
 }

@@ -82,12 +82,11 @@ if ($_POST) {
     ]);
     
     if ($success) {
-        $_SESSION['success'] = $is_update ? 'Data berhasil diperbarui!' : 'Data berhasil disimpan!';
-        header("Location: ../index.php?page=informed-consent-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai));
+        $action = $is_update ? 'updated' : 'saved';
+        header("Location: ../index.php?page=informed-consent-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai) . "&status=sukses&action={$action}");
         exit;
     } else {
-        $_SESSION['error'] = 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.';
-        header("Location: ../index.php?page=informed-consent-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai));
+        header("Location: ../index.php?page=informed-consent-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai) . "&status=gagal&error=" . urlencode('Terjadi kesalahan saat menyimpan data'));
         exit;
     }
 }

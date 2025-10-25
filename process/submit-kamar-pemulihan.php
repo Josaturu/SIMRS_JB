@@ -20,15 +20,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             return (isset($array) && is_array($array) && in_array($value, $array)) ? 1 : 0;
         }
         
-        // Generate UUID untuk ID
-        $id = sprintf(
-            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-        );
+        // ===== CHECK IF RECORD EXISTS =====
+        $checkQuery = "SELECT id FROM tbl_anestesi_kamar_pemulihan 
+                       WHERE no_rawat = :no_rawat 
+                       AND kode_paket = :kode_paket 
+                       AND tanggal = :tanggal 
+                       AND jam_mulai = :jam_mulai";
+        
+        $checkStmt = $db->prepare($checkQuery);
+        $checkStmt->bindParam(':no_rawat', $formData['no_rawat']);
+        $checkStmt->bindParam(':kode_paket', $formData['kode_paket']);
+        $checkStmt->bindParam(':tanggal', $formData['tanggal']);
+        $checkStmt->bindParam(':jam_mulai', $formData['jam_mulai']);
+        $checkStmt->execute();
+        
+        $existingRecord = $checkStmt->fetch(PDO::FETCH_ASSOC);
+        $isUpdate = ($existingRecord !== false);
+        
+        // Get ID (use existing or generate new)
+        if ($isUpdate) {
+            $id = $existingRecord['id'];
+        } else {
+            // Generate UUID untuk ID baru
+            $id = sprintf(
+                '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+                mt_rand(0, 0xffff),
+                mt_rand(0, 0x0fff) | 0x4000,
+                mt_rand(0, 0x3fff) | 0x8000,
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            );
+        }
         
         // Mapping Data Masuk & Kondisi Pasien (9 checkboxes)
         $jalan_nafas_bersih = checkboxArrayToBool($formData['jalanNafas'] ?? null, 'bersih_lapang');
@@ -46,8 +68,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pernapasan_text = implode(', ', $formData['pernapasan'] ?? []);
         $kesadaran_text = implode(', ', $formData['kesadaran'] ?? []);
         
-        // Prepare INSERT query
-        $query = "INSERT INTO tbl_anestesi_kamar_pemulihan (
+        // ===== PREPARE QUERY (INSERT or UPDATE) =====
+        if ($isUpdate) {
+            // UPDATE existing record
+            $query = "UPDATE tbl_anestesi_kamar_pemulihan SET
+                       jam_masuk = :jam_masuk, tgl_masuk = :tgl_masuk,
+                       jalan_nafas = :jalan_nafas, pernapasan = :pernapasan, kesadaran = :kesadaran,
+                       jalan_nafas_bersih = :jalan_nafas_bersih, pernapasan_spontan = :pernapasan_spontan, pernapasan_dibantu = :pernapasan_dibantu,
+                       spontan_adekuat = :spontan_adekuat, spontan_penyumbatan = :spontan_penyumbatan, spontan_alat = :spontan_alat,
+                       kesadaran_sadar = :kesadaran_sadar, kesadaran_belum_sadar = :kesadaran_belum_sadar, kesadaran_tidur_dalam = :kesadaran_tidur_dalam,
+                       nadi_1 = :nadi_1, nadi_2 = :nadi_2, nadi_3 = :nadi_3,
+                       sistol_1 = :sistol_1, sistol_2 = :sistol_2, sistol_3 = :sistol_3,
+                       diastol_1 = :diastol_1, diastol_2 = :diastol_2, diastol_3 = :diastol_3,
+                       respirasi_1 = :respirasi_1, respirasi_2 = :respirasi_2, respirasi_3 = :respirasi_3,
+                       nyeri_1 = :nyeri_1, nyeri_2 = :nyeri_2, nyeri_3 = :nyeri_3,
+                       pemantauan_setiap = :pemantauan_setiap, pemantauan_selama = :pemantauan_selama,
+                       analgesia = :analgesia, anti_muntah = :anti_muntah, antibiotik = :antibiotik,
+                       posisi_pasien = :posisi_pasien, obat_lain = :obat_lain, diet_nutrisi = :diet_nutrisi, lain_lain = :lain_lain,
+                       jam_keluar = :jam_keluar, td_keluar = :td_keluar, n_keluar = :n_keluar, r_keluar = :r_keluar, s_keluar = :s_keluar, spo2_keluar = :spo2_keluar,
+                       skrining_nyeri = :skrining_nyeri, tujuan_keluar = :tujuan_keluar, catatan_khusus = :catatan_khusus,
+                       aldrete_score = :aldrete_score, bromage_score = :bromage_score, steward_score = :steward_score,
+                       nama_penanggungjawab = :nama_penanggungjawab, perawat_menyerahkan = :perawat_menyerahkan, perawat_menerima = :perawat_menerima, dokter_anestesi = :dokter_anestesi
+                      WHERE id = :id";
+        } else {
+            // INSERT new record
+            $query = "INSERT INTO tbl_anestesi_kamar_pemulihan (
                    id, no_rawat, kode_paket, tanggal, jam_mulai,
                    jam_masuk, tgl_masuk, 
                    jalan_nafas, pernapasan, kesadaran,
@@ -86,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    :aldrete_score, :bromage_score, :steward_score,
                    :nama_penanggungjawab, :perawat_menyerahkan, :perawat_menerima, :dokter_anestesi
                   )";
+        }
         
         $stmt = $db->prepare($query);
         
@@ -95,10 +141,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Bind parameters - Metadata
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':no_rawat', $formData['no_rawat']);
-        $stmt->bindParam(':kode_paket', $formData['kode_paket']);
-        $stmt->bindParam(':tanggal', $formData['tanggal']);
-        $stmt->bindParam(':jam_mulai', $formData['jam_mulai']);
+        
+        // Bind no_rawat, kode_paket, tanggal, jam_mulai only for INSERT
+        if (!$isUpdate) {
+            $stmt->bindParam(':no_rawat', $formData['no_rawat']);
+            $stmt->bindParam(':kode_paket', $formData['kode_paket']);
+            $stmt->bindParam(':tanggal', $formData['tanggal']);
+            $stmt->bindParam(':jam_mulai', $formData['jam_mulai']);
+        }
         
         // Bind parameters - Data Masuk
         $stmt->bindParam(':jam_masuk', $formData['jamMasuk']);
@@ -192,8 +242,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Execute query
         if ($stmt->execute()) {
-            // Redirect to detail pasien dengan status sukses
-            header("Location: ../index.php?page=detail-pasien&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}&status=sukses");
+            // Redirect back to form with success status (like form keselamatan)
+            $action = $isUpdate ? 'updated' : 'saved';
+            header("Location: ../index.php?page=kamar-pemulihan&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}&status=sukses&action={$action}");
         } else {
             $errorInfo = $stmt->errorInfo();
             header("Location: ../index.php?page=kamar-pemulihan&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}&status=gagal&error=" . urlencode($errorInfo[2]));
@@ -201,7 +252,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
     } catch (Exception $e) {
         error_log("Error submitting kamar pemulihan: " . $e->getMessage());
-        header("Location: ../index.php?page=kamar-pemulihan&status=error&msg=" . urlencode($e->getMessage()));
+        // Redirect back to form with error and parameters
+        $params = http_build_query([
+            'page' => 'kamar-pemulihan',
+            'no_rawat' => $formData['no_rawat'] ?? '',
+            'kode_paket' => $formData['kode_paket'] ?? '',
+            'tanggal' => $formData['tanggal'] ?? '',
+            'jam_mulai' => $formData['jam_mulai'] ?? '',
+            'status' => 'error',
+            'msg' => $e->getMessage()
+        ]);
+        header("Location: ../index.php?{$params}");
     }
     exit;
 } else {

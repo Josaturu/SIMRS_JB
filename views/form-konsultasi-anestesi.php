@@ -57,37 +57,6 @@ include __DIR__ . '/../includes/header.php';
 ?>
 <link rel="stylesheet" href="/assets/css/style.css">
 
-<?php
-// Tampilkan notifikasi
-if (isset($_SESSION['success'])) {
-    echo '<div class="alert alert-success" style="position: fixed; top: 80px; right: 20px; z-index: 9999; min-width: 300px; animation: slideInRight 0.3s ease-out;">' . 
-         '<strong>✓ Berhasil!</strong> ' . htmlspecialchars($_SESSION['success']) . 
-         '</div>';
-    echo '<script>setTimeout(function(){ 
-        var alert = document.querySelector(".alert-success");
-        if(alert) { 
-            alert.style.animation = "slideOutRight 0.3s ease-out";
-            setTimeout(function(){ alert.remove(); }, 300);
-        }
-    }, 3000);</script>';
-    unset($_SESSION['success']);
-}
-
-if (isset($_SESSION['error'])) {
-    echo '<div class="alert alert-danger" style="position: fixed; top: 80px; right: 20px; z-index: 9999; min-width: 300px; animation: slideInRight 0.3s ease-out;">' . 
-         '<strong>✗ Error!</strong> ' . htmlspecialchars($_SESSION['error']) . 
-         '</div>';
-    echo '<script>setTimeout(function(){ 
-        var alert = document.querySelector(".alert-danger");
-        if(alert) { 
-            alert.style.animation = "slideOutRight 0.3s ease-out";
-            setTimeout(function(){ alert.remove(); }, 300);
-        }
-    }, 5000);</script>';
-    unset($_SESSION['error']);
-}
-?>
-
 <style>
 @keyframes slideInRight {
     from { transform: translateX(400px); opacity: 0; }

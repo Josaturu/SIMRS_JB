@@ -10,7 +10,12 @@ $jam_mulai = $_GET['jam_mulai'] ?? '';
 
 // Jika tidak ada parameter, redirect ke daftar pasien
 if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mulai)) {
-    header("Location: index.php");
+    // Show error message if available
+    $errorMsg = isset($_GET['msg']) ? htmlspecialchars($_GET['msg']) : 'Parameter tidak lengkap';
+    echo "<div style='padding: 20px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 5px; margin: 20px;'>";
+    echo "<strong>❌ Error:</strong> {$errorMsg}<br>";
+    echo "<a href='index.php?page=daftar-pasien' style='color: #004085;'>← Kembali ke Daftar Pasien</a>";
+    echo "</div>";
     exit;
 }
 
@@ -32,19 +37,120 @@ if (!$booking) {
     exit;
 }
 
+// Hitung umur dari tanggal lahir
+$umur = 0;
+if (!empty($pasien['tanggal_lahir'])) {
+    $tanggal_lahir = new DateTime($pasien['tanggal_lahir']);
+    $today = new DateTime('today');
+    $umur = $tanggal_lahir->diff($today)->y;
+}
+
+// Data pasien untuk display
+$no_rm = $pasien['kode_rekam_medis'] ?? '';
+$nama_pasien = $pasien['nama'] ?? '';
+$jenis_kelamin = $pasien['jenis_kelamin'] ?? '';
+$tanggal_lahir_pasien = $pasien['tanggal_lahir'] ?? '';
+
+// ===== LOAD EXISTING DATA (if any) =====
+$existingData = null;
+$isEdit = false;
+
+$queryExisting = "SELECT * FROM tbl_anestesi_kamar_pemulihan 
+                  WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+$stmtExisting = $db->prepare($queryExisting);
+$stmtExisting->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
+$existingData = $stmtExisting->fetch(PDO::FETCH_ASSOC);
+
+if ($existingData) {
+    $isEdit = true;
+}
+
+// Helper function untuk checked checkbox
+function isChecked($existingData, $field) {
+    return ($existingData && isset($existingData[$field]) && $existingData[$field]) ? 'checked' : '';
+}
+
+// Helper function untuk value input
+function getValue($existingData, $field, $default = '') {
+    return $existingData[$field] ?? $default;
+}
+
 include __DIR__ . '/../includes/header.php';
 ?>
 <link rel="stylesheet" href="/assets/css/style.css">
 
 <div class="container">
     <div class="title">
-        <div style="color: #004d80;">CATATAN KAMAR PEMULIHAN</div>
+        <div style="color: #004d80;">
+            CATATAN KAMAR PEMULIHAN
+        </div>
         <div>RMOK - 30</div>
     </div>
 
-    <!-- Form Data Booking -->
-    <div class="card">
-        <h2>Data Booking Operasi</h2>
+    <!-- Informasi Pasien & Data Booking Operasi -->
+    <div class="card" style="background: #e3f2fd; border-left: 4px solid #2196F3;">
+        <h2 style="margin-bottom: 20px;">
+            <i class="fas fa-user-circle"></i> Informasi Pasien & Data Booking Operasi
+        </h2>
+        
+        <!-- Data Pasien -->
+        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #bbdefb;">
+            <h3 style="color: #1976d2; font-size: 16px; margin-bottom: 15px; border-bottom: 2px solid #2196F3; padding-bottom: 8px;">
+                Data Pasien
+            </h3>
+            <div class="form-grid">
+                <div class="form-column">
+                    <div class="input-container">
+                        <input type="text" id="display_nama" placeholder=" " value="<?php echo htmlspecialchars($nama_pasien); ?>" readonly style="background: #f5f5f5;">
+                        <label for="display_nama" class="label-floating">Nama Lengkap</label>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="display_no_rm" placeholder=" " value="<?php echo htmlspecialchars($no_rm); ?>" readonly style="background: #f5f5f5;">
+                            <label for="display_no_rm" class="label-floating">No. Rekam Medis</label>
+                        </div>
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="no_rawat" name="no_rawat" placeholder=" " value="<?php echo htmlspecialchars($no_rawat); ?>" readonly style="background: #f5f5f5;">
+                            <label for="no_rawat" class="label-floating">No. Rawat</label>
+                        </div>
+                        <div class="input-container" style="flex: 1;">
+                            <input type="date" id="tanggal" name="tanggal" placeholder=" " value="<?php echo htmlspecialchars($tanggal); ?>" readonly style="background: #f5f5f5;">
+                            <label for="tanggal" class="label-floating">Tanggal Booking</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-column">
+                    <div style="display: flex; gap: 10px;">
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="kode_paket" name="kode_paket" placeholder=" " value="<?php echo htmlspecialchars($kode_paket); ?>" readonly style="background: #f5f5f5;">
+                            <label for="kode_paket" class="label-floating">Kode Paket</label>
+                        </div>
+                        <div class="input-container" style="flex: 1;">
+                            <input type="time" id="jam_mulai" name="jam_mulai" placeholder=" " value="<?php echo htmlspecialchars($jam_mulai); ?>" readonly style="background: #f5f5f5;">
+                            <label for="jam_mulai" class="label-floating">Jam Mulai</label>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="display_umur" placeholder=" " value="<?php echo $umur . ' Tahun'; ?>" readonly style="background: #f5f5f5;">
+                            <label for="display_umur" class="label-floating">Umur</label>
+                        </div>
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="display_tgl_lahir" placeholder=" " value="<?php echo !empty($tanggal_lahir_pasien) ? date('d/m/Y', strtotime($tanggal_lahir_pasien)) : '-'; ?>" readonly style="background: #f5f5f5;">
+                            <label for="display_tgl_lahir" class="label-floating">Tanggal Lahir</label>
+                        </div>
+                        <div class="input-container" style="flex: 1;">
+                            <input type="text" id="display_jk" placeholder=" " value="<?php echo $jenis_kelamin == 'L' ? 'Laki-laki' : ($jenis_kelamin == 'P' ? 'Perempuan' : '-'); ?>" readonly style="background: #f5f5f5;">
+                            <label for="display_jk" class="label-floating">Jenis Kelamin</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Data Booking (REMOVED - merged above) -->
+    <div style="display: none;">
         <div class="form-grid">
             <div class="form-column">
                 <div class="input-container">
@@ -90,23 +196,23 @@ include __DIR__ . '/../includes/header.php';
                 <div class="form-column">
                     <div class="keterangan-pasien">
                         <label for="jamMasuk"><strong>Jam Masuk:</strong></label>
-                        <input type="time" id="jamMasuk" name="jamMasuk" style="width: 100px" required />
+                        <input type="time" id="jamMasuk" name="jamMasuk" style="width: 100px" value="<?php echo $existingData['jam_masuk'] ?? ''; ?>" required />
                         <label for="tglMasuk" style="margin-left:10px;"><strong>Tanggal Masuk:</strong></label>
-                        <input type="date" id="tglMasuk" name="tglMasuk" style="width: 140px" required />
+                        <input type="date" id="tglMasuk" name="tglMasuk" style="width: 140px" value="<?php echo $existingData['tgl_masuk'] ?? ''; ?>" required />
                     </div>
 
                     <div class="keterangan-pasien">
                         <label><strong>Jalan Nafas:</strong></label>
                         <div class="checkbox-group">
-                            <label><input type="checkbox" name="jalanNafas[]" value="bersih_lapang" /> Bersih & lapang</label>
+                            <label><input type="checkbox" name="jalanNafas[]" value="bersih_lapang" <?php echo isChecked($existingData, 'jalan_nafas_bersih'); ?> /> Bersih & lapang</label>
                         </div>
                     </div>
 
                     <div class="keterangan-pasien">
                         <label><strong>Pernapasan:</strong></label>
                         <div class="checkbox-group">
-                            <label><input type="checkbox" name="pernapasan[]" value="spontan" /> Spontan</label>
-                            <label><input type="checkbox" name="pernapasan[]" value="dibantu" /> Dibantu</label>
+                            <label><input type="checkbox" name="pernapasan[]" value="spontan" <?php echo isChecked($existingData, 'pernapasan_spontan'); ?> /> Spontan</label>
+                            <label><input type="checkbox" name="pernapasan[]" value="dibantu" <?php echo isChecked($existingData, 'pernapasan_dibantu'); ?> /> Dibantu</label>
                         </div>
                     </div>
                 </div>
@@ -763,8 +869,51 @@ include __DIR__ . '/../includes/header.php';
     // Make deleteVitalRecord global
     window.deleteVitalRecord = deleteVitalRecord;
     
+    // Populate existing data
+    function populateExistingData() {
+        <?php if ($existingData): ?>
+        const data = <?php echo json_encode($existingData); ?>;
+        
+        // Populate checkboxes
+        if (data.spontan_adekuat) document.querySelector('input[name="spontan[]"][value="adekuat"]')?.setAttribute('checked', 'checked');
+        if (data.spontan_penyumbatan) document.querySelector('input[name="spontan[]"][value="penyumbatan"]')?.setAttribute('checked', 'checked');
+        if (data.spontan_alat) document.querySelector('input[name="spontan[]"][value="alat"]')?.setAttribute('checked', 'checked');
+        if (data.kesadaran_sadar) document.querySelector('input[name="kesadaran[]"][value="sadar_betul"]')?.setAttribute('checked', 'checked');
+        if (data.kesadaran_belum_sadar) document.querySelector('input[name="kesadaran[]"][value="belum_sadar"]')?.setAttribute('checked', 'checked');
+        if (data.kesadaran_tidur_dalam) document.querySelector('input[name="kesadaran[]"][value="tidur_dalam"]')?.setAttribute('checked', 'checked');
+        
+        // Populate text inputs
+        const fields = ['pemantauan_setiap', 'pemantauan_selama', 'analgesia', 'anti_muntah', 'antibiotik', 
+                       'posisi_pasien', 'obat_lain', 'diet_nutrisi', 'lain_lain', 'jam_keluar', 'td_keluar',
+                       'n_keluar', 'r_keluar', 's_keluar', 'spo2_keluar', 'skrining_nyeri', 'tujuan_keluar',
+                       'catatan_khusus', 'aldrete_score', 'bromage_score', 'steward_score',
+                       'nama_penanggungjawab', 'perawat_menyerahkan', 'perawat_menerima', 'dokter_anestesi'];
+        
+        fields.forEach(field => {
+            const input = document.querySelector(`[name="${field}"]`);
+            if (input && data[field]) {
+                input.value = data[field];
+            }
+        });
+        
+        // Populate vital signs (nadi, sistol, diastol, respirasi, nyeri)
+        for (let i = 1; i <= 3; i++) {
+            ['nadi', 'sistol', 'diastol', 'respirasi', 'nyeri'].forEach(type => {
+                const field = `${type}_${i}`;
+                const input = document.querySelector(`[name="${field}"]`);
+                if (input && data[field]) {
+                    input.value = data[field];
+                }
+            });
+        }
+        <?php endif; ?>
+    }
+    
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
+        // Populate existing data first
+        populateExistingData();
+        
         // Set initial time
         setCurrentTime();
         
@@ -777,8 +926,10 @@ include __DIR__ . '/../includes/header.php';
         // Initialize chart
         initChart();
         
-        // Restore vital signs from autosave
+        // Restore vital signs from autosave (only if not editing)
+        <?php if (!$isEdit): ?>
         restoreVitalSigns();
+        <?php endif; ?>
         
         // Initialize AutoSave
         AutoSave.init('formKamarPemulihan', {

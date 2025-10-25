@@ -1,0 +1,263 @@
+/**
+ * Loading Skeleton Styles
+ * Beautiful loading animations
+ */
+
+/* Skeleton Overlay */
+.loading-skeleton-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.loading-skeleton-overlay.show {
+    opacity: 1;
+}
+
+.loading-skeleton-overlay.hide {
+    opacity: 0;
+}
+
+/* Spinner Container */
+.skeleton-spinner-container {
+    text-align: center;
+}
+
+/* Spinner */
+.skeleton-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+.skeleton-spinner.saving {
+    border-top-color: #10b981;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Spinner Text */
+.skeleton-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.skeleton-subtext {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* Page Skeleton */
+.loading-skeleton-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #f9fafb;
+    z-index: 9998;
+    overflow: auto;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.loading-skeleton-page.show {
+    opacity: 1;
+}
+
+.loading-skeleton-page.hide {
+    opacity: 0;
+}
+
+/* Skeleton Container */
+.skeleton-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Skeleton Elements */
+.skeleton-line {
+    background: linear-gradient(
+        90deg,
+        #e5e7eb 0%,
+        #f3f4f6 50%,
+        #e5e7eb 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Skeleton Header */
+.skeleton-header {
+    margin-bottom: 30px;
+}
+
+.skeleton-title {
+    height: 32px;
+    width: 300px;
+    margin-bottom: 12px;
+}
+
+.skeleton-subtitle {
+    height: 20px;
+    width: 200px;
+}
+
+/* Skeleton Card */
+.skeleton-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.skeleton-heading {
+    height: 24px;
+    width: 200px;
+    margin-bottom: 20px;
+}
+
+/* Skeleton Form Grid */
+.skeleton-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.skeleton-form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.skeleton-input {
+    height: 48px;
+    width: 100%;
+}
+
+/* Skeleton Buttons */
+.skeleton-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.skeleton-button {
+    height: 44px;
+    width: 120px;
+}
+
+/* Skeleton Table */
+.skeleton-table {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.skeleton-table-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.skeleton-table-cell {
+    height: 40px;
+    flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .skeleton-form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .skeleton-title {
+        width: 200px;
+    }
+    
+    .skeleton-buttons {
+        flex-direction: column;
+    }
+    
+    .skeleton-button {
+        width: 100%;
+    }
+}
+
+/* Pulse Animation (alternative) */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.skeleton-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Wave Animation (alternative) */
+@keyframes wave {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.skeleton-wave {
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-wave::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.5),
+        transparent
+    );
+    animation: wave 1.5s infinite;
+}

@@ -215,18 +215,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Execute query
         if ($stmt->execute()) {
-            $_SESSION['success'] = $existing ? 'Data berhasil diperbarui!' : 'Data berhasil disimpan!';
-            header("Location: ../index.php?page=keselamatan-operasi&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}");
+            // Redirect with URL params (not SESSION) for global notification
+            $action = $existing ? 'updated' : 'saved';
+            header("Location: ../index.php?page=keselamatan-operasi&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}&status=sukses&action={$action}");
         } else {
             $errorInfo = $stmt->errorInfo();
-            $_SESSION['error'] = 'Gagal menyimpan data: ' . $errorInfo[2];
-            header("Location: ../index.php?page=keselamatan-operasi&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}");
+            header("Location: ../index.php?page=keselamatan-operasi&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}&status=gagal&error=" . urlencode($errorInfo[2]));
         }
         
     } catch (Exception $e) {
         error_log("Error submitting keselamatan operasi: " . $e->getMessage());
-        $_SESSION['error'] = 'Terjadi kesalahan: ' . $e->getMessage();
-        header("Location: ../index.php?page=keselamatan-operasi&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}");
+        header("Location: ../index.php?page=keselamatan-operasi&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}&status=error&msg=" . urlencode($e->getMessage()));
     }
     exit;
 } else {
