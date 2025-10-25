@@ -15,7 +15,7 @@ if ($_POST) {
     $indikasi = isset($_POST['indikasi']) ? implode(', ', $_POST['indikasi']) : '';
     $tata_cara = isset($_POST['tataCara']) ? implode(', ', $_POST['tataCara']) : '';
     $risiko = isset($_POST['risiko']) ? implode(', ', $_POST['risiko']) : '';
-    $status_fisik = isset($_POST['statusFisik']) ? implode(', ', $_POST['statusFisik']) : '';
+    $status_fisik = isset($_POST['statusFisik']) ? $_POST['statusFisik'] : ''; // Radio button (single value)
     
     // Generate checkbox_confirm dari cek1-cek10
     $checkbox_confirm_array = [];

@@ -2,6 +2,12 @@
 session_start();
 include_once '../config/database.php';
 
+// Log semua POST data untuk debugging
+error_log("=== PROCESS KONSULTASI ANESTESI DIPANGGIL ===");
+error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
+error_log("POST Data Count: " . count($_POST));
+error_log("POST Keys: " . implode(', ', array_keys($_POST)));
+
 if ($_POST) {
     $database = new Database();
     $db = $database->getConnection();
@@ -15,6 +21,8 @@ if ($_POST) {
     $kode_paket = $_POST['kode_paket'];
     $tanggal = $_POST['tanggal'];
     $jam_mulai = $_POST['jam_mulai'];
+    
+    error_log("Booking Info: no_rawat=$no_rawat, kode_paket=$kode_paket, tanggal=$tanggal, jam_mulai=$jam_mulai");
     
     // Semua parameter lainnya
     $ruang_perawatan = $_POST['ruang'] ?? '';
@@ -36,10 +44,14 @@ if ($_POST) {
     $merokok = $_POST['merokok'] ?? null;
     $alkohol = $_POST['alkohol'] ?? null;
     
-    // Debug log
-    error_log("DEBUG - jenis_kelamin: " . ($jenis_kelamin ?? 'NULL'));
-    error_log("DEBUG - merokok: " . ($merokok ?? 'NULL'));
-    error_log("DEBUG - alkohol: " . ($alkohol ?? 'NULL'));
+    // Debug log - PENTING untuk tracking
+    error_log("=== DEBUG PROCESS KONSULTASI ANESTESI ===");
+    error_log("POST jenis_kelamin: " . (isset($_POST['jenis_kelamin']) ? $_POST['jenis_kelamin'] : 'NOT SET'));
+    error_log("Variable jenis_kelamin: " . ($jenis_kelamin ?? 'NULL'));
+    error_log("POST menikah: " . (isset($_POST['menikah']) ? $_POST['menikah'] : 'NOT SET'));
+    error_log("POST merokok: " . ($merokok ?? 'NULL'));
+    error_log("POST alkohol: " . ($alkohol ?? 'NULL'));
+    error_log("==========================================");
     $has_pengobatan = $_POST['has_pengobatan'] ?? null;
     $pengobatan = $_POST['pengobatan'] ?? '';
     $daftar_alergi_obat = $_POST['daftarAlergiObat'] ?? '';
@@ -90,8 +102,7 @@ if ($_POST) {
     $suhu = $_POST['suhu'] ?? null;
     $skrining_nyeri = $_POST['skrining_nyeri'] ?? null;
     $jalan_nafas = $_POST['jalan_nafas'] ?? null;
-    $gerakan_leher = $_POST['gerakan_leher'] ?? null;
-    $gerakan_leher_keterangan = $_POST['gerakanLeherAbnormal'] ?? '';
+    $jalan_nafas_keterangan = $_POST['jalanNafasKeterangan'] ?? '';
     $paru_paru = $_POST['paruParu'] ?? '';
     $jantung = $_POST['jantung'] ?? '';
     $abdomen = $_POST['abdomen'] ?? '';
@@ -145,16 +156,16 @@ if ($_POST) {
                gigi_palsu, makan_terakhir, riwayat_operasi, jenis_anestesi, terakhir_periksa,
                tempat_periksa_terakhir, penyakit_gangguan, jumlah_kehamilan, jumlah_anak,
                menyusui, kesadaran, tb, bb, td, nadi, rr, suhu, skrining_nyeri, jalan_nafas,
-               gerakan_leher, gerakan_leher_keterangan, paru_paru, jantung, abdomen, ekstrimitas,
-               neurologi, lain_lain, hb_ht_al_at, na_k_cl, ureum, ct_bt, kreatin, ekg, ro_dada,
+               jalan_nafas_keterangan, paru_paru, jantung, abdomen, ekstrimitas, neurologi, lain_lain, 
+               hb_ht_al_at, na_k_cl, ureum, ct_bt, kreatin, ekg, ro_dada,
                echo, lain_lain_pemeriksaan, asa_status, emergency, rekomendasi_anestesi,
                anestesi_umum, regional_anestesi, kombinasi_anestesi, sedasi, saran,
                puasa_mulai_jam, puasa_mulai_tanggal, rencana_tiba_jam, rencana_tiba_tanggal,
                rencana_operasi_jam, rencana_operasi_tanggal)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
               ON DUPLICATE KEY UPDATE
                 ruang_perawatan = VALUES(ruang_perawatan),
                 dokter_merawat = VALUES(dokter_merawat),
@@ -217,8 +228,7 @@ if ($_POST) {
                 suhu = VALUES(suhu),
                 skrining_nyeri = VALUES(skrining_nyeri),
                 jalan_nafas = VALUES(jalan_nafas),
-                gerakan_leher = VALUES(gerakan_leher),
-                gerakan_leher_keterangan = VALUES(gerakan_leher_keterangan),
+                jalan_nafas_keterangan = VALUES(jalan_nafas_keterangan),
                 paru_paru = VALUES(paru_paru),
                 jantung = VALUES(jantung),
                 abdomen = VALUES(abdomen),
@@ -253,7 +263,7 @@ if ($_POST) {
     
     // Debug: Log error jika ada
     try {
-        // Execute dengan semua 96 parameter (termasuk jenis_diagnosa)
+        // Execute dengan semua 95 parameter (tanpa gerakan_leher dan gerakan_leher_keterangan)
         $success = $stmt->execute([
         $no_rawat, $kode_paket, $tanggal, $jam_mulai, $ruang_perawatan, $dokter_merawat,
         $tanggal_konsul, $jam_konsul, $tinggi_badan, $berat_badan, $diagnosa_pra_operasi, $jenis_diagnosa,
@@ -266,8 +276,8 @@ if ($_POST) {
         $gigi_palsu, $makan_terakhir, $riwayat_operasi, $jenis_anestesi, $terakhir_periksa,
         $tempat_periksa_terakhir, $penyakit_gangguan, $jumlah_kehamilan, $jumlah_anak,
         $menyusui, $kesadaran, $tb, $bb, $td, $nadi, $rr, $suhu, $skrining_nyeri, $jalan_nafas,
-        $gerakan_leher, $gerakan_leher_keterangan, $paru_paru, $jantung, $abdomen, $ekstrimitas,
-        $neurologi, $lain_lain, $hb_ht_al_at, $na_k_cl, $ureum, $ct_bt, $kreatin, $ekg, $ro_dada,
+        $jalan_nafas_keterangan, $paru_paru, $jantung, $abdomen, $ekstrimitas, $neurologi, $lain_lain, 
+        $hb_ht_al_at, $na_k_cl, $ureum, $ct_bt, $kreatin, $ekg, $ro_dada,
         $echo, $lain_lain_pemeriksaan, $asa_status, $emergency, $rekomendasi_anestesi,
         $anestesi_umum, $regional_anestesi, $kombinasi_anestesi, $sedasi, $saran,
         $puasa_mulai_jam, $puasa_mulai_tanggal, $rencana_tiba_jam, $rencana_tiba_tanggal,
@@ -275,14 +285,33 @@ if ($_POST) {
     ]);
         
         // Cek apakah ini update atau insert
-        $is_update = ($stmt->rowCount() > 0 && $db->lastInsertId() == 0);
+        $rowCount = $stmt->rowCount();
+        $lastInsertId = $db->lastInsertId();
+        $is_update = ($rowCount > 0 && $lastInsertId == 0);
+        
+        error_log("Query Success: " . ($success ? 'YES' : 'NO'));
+        error_log("Row Count: $rowCount");
+        error_log("Last Insert ID: $lastInsertId");
+        error_log("Is Update: " . ($is_update ? 'YES' : 'NO'));
         
         if ($success) {
-            $action = $is_update ? 'updated' : 'saved';
-            header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai) . "&status=sukses&action={$action}");
+            // Verifikasi data tersimpan
+            $verify_query = "SELECT jenis_kelamin, menikah FROM tbl_anestesi_konsultasi_anestesi 
+                           WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+            $verify_stmt = $db->prepare($verify_query);
+            $verify_stmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
+            $saved_data = $verify_stmt->fetch(PDO::FETCH_ASSOC);
+            
+            error_log("Data tersimpan - jenis_kelamin: " . ($saved_data['jenis_kelamin'] ?? 'NULL'));
+            error_log("Data tersimpan - menikah: " . ($saved_data['menikah'] ?? 'NULL'));
+            
+            $_SESSION['success'] = $is_update ? 'Data konsultasi berhasil diperbarui!' : 'Data konsultasi berhasil disimpan!';
+            header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai));
             exit;
         } else {
-            header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai) . "&status=gagal&error=" . urlencode('Terjadi kesalahan saat menyimpan data'));
+            error_log("GAGAL MENYIMPAN DATA!");
+            $_SESSION['error'] = 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.';
+            header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai));
             exit;
         }
     } catch (PDOException $e) {
@@ -295,14 +324,14 @@ if ($_POST) {
             // Hitung jumlah placeholder
             $placeholder_count = substr_count($query, '?');
             error_log("Placeholder count in query: " . $placeholder_count);
-            error_log("Parameter count in execute: 96");
+            error_log("Parameter count in execute: 95");
             
-            $errorMsg = 'Parameter mismatch! Query memiliki ' . $placeholder_count . ' placeholder, tapi execute() memiliki 96 parameter. Periksa query INSERT.';
+            $_SESSION['error'] = 'Parameter mismatch! Query memiliki ' . $placeholder_count . ' placeholder, tapi execute() memiliki 95 parameter. Periksa query INSERT.';
         } else {
-            $errorMsg = 'Terjadi kesalahan database: ' . $e->getMessage();
+            $_SESSION['error'] = 'Terjadi kesalahan database: ' . $e->getMessage();
         }
         
-        header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai) . "&status=error&msg=" . urlencode($errorMsg));
+        header("Location: ../index.php?page=konsultasi-anestesi&no_rawat=" . urlencode($no_rawat) . "&kode_paket=" . urlencode($kode_paket) . "&tanggal=" . urlencode($tanggal) . "&jam_mulai=" . urlencode($jam_mulai));
         exit;
     }
 }
