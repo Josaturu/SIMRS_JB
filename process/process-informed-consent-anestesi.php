@@ -10,11 +10,11 @@ if ($_POST) {
     $id = !empty($_POST['id']) ? $_POST['id'] : uniqid();
     $is_update = !empty($_POST['id']);
     
-    // Prepare checkbox arrays
-    $jenis_anestesi = isset($_POST['jenisAnestesi']) ? implode(', ', $_POST['jenisAnestesi']) : '';
-    $indikasi = isset($_POST['indikasi']) ? implode(', ', $_POST['indikasi']) : '';
-    $tata_cara = isset($_POST['tataCara']) ? implode(', ', $_POST['tataCara']) : '';
-    $risiko = isset($_POST['risiko']) ? implode(', ', $_POST['risiko']) : '';
+    // Prepare checkbox arrays (using | as delimiter to match database format)
+    $jenis_anestesi = isset($_POST['jenisAnestesi']) ? implode('|', $_POST['jenisAnestesi']) : '';
+    $indikasi = isset($_POST['indikasi']) ? implode('|', $_POST['indikasi']) : '';
+    $tata_cara = isset($_POST['tataCara']) ? implode('|', $_POST['tataCara']) : '';
+    $risiko = isset($_POST['risiko']) ? implode('|', $_POST['risiko']) : '';
     $status_fisik = isset($_POST['statusFisik']) ? $_POST['statusFisik'] : ''; // Radio button (single value)
     
     // Generate checkbox_confirm dari cek1-cek10

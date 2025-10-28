@@ -2,10 +2,21 @@
 // process/process-simpan-catatan-sedasi.php
 session_start();
 
+// Fungsi generate UUID - HARUS DI ATAS SEBELUM DIGUNAKAN
+function generateUUID() {
+    return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0x0fff) | 0x4000,
+        mt_rand(0, 0x3fff) | 0x8000,
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+    );
+}
+
 // PROTECTION: Hanya proses jika method POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error'] = "Invalid request method. Form harus di-submit dengan POST.";
-    header("Location: ../views/form-catatan-sedasi.php?" . http_build_query($_GET));
+    header("Location: ../index.php?page=form-catatan-sedasi&" . http_build_query($_GET));
     exit;
 }
 
@@ -25,7 +36,8 @@ foreach ($configPaths as $path) {
 
 if (!class_exists('Database')) {
     $_SESSION['error'] = "File database.php tidak ditemukan. Periksa konfigurasi.";
-    header("Location: ../views/form-catatan-sedasi.php?" . http_build_query($_GET));
+    $redirect_url = "../index.php?page=form-catatan-sedasi&" . http_build_query($_GET);
+    header("Location: " . $redirect_url);
     exit;
 }
 
@@ -41,7 +53,7 @@ $jam_mulai = $_POST['jam_mulai'] ?? '';
 // Validasi data wajib
 if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mulai)) {
     $_SESSION['error'] = "Data wajib tidak lengkap";
-    header("Location: ../views/form-catatan-sedasi.php?" . http_build_query($_GET));
+    header("Location: ../index.php?page=form-catatan-sedasi&" . http_build_query($_GET));
     exit;
 }
 
@@ -105,6 +117,10 @@ $ventilator = isset($_POST['ventilator']) ? implode(', ', $_POST['ventilator']) 
 $ukuran_balon = $_POST['ukuran_balon'] ?? '';
 $jenis_balon = $_POST['jenis_balon'] ?? '';
 $posisi_ett = $_POST['posisi_ett'] ?? '';
+// IMPORTANT: Form menggunakan name="lain-lain_balon" (dengan dash)
+// PHP POST tidak convert dash ke underscore, jadi kita ambil dengan dash
+$lain_lain_balon = $_POST['lain-lain_balon'] ?? '';  // Field lain-lain balon (dengan dash!)
+
 $lokasi_regional = $_POST['lokasi_regional'] ?? '';
 $jarum_regional = $_POST['jarum_regional'] ?? '';
 $kateter_regional = $_POST['kateter_regional'] ?? '';
@@ -181,7 +197,7 @@ try {
         mulai_pembedahan, selesai_pembedahan, keterangan_waktu, induksi_pukul,
         pasien_siap_insisi, insisi_mulai_pukul, operasi_mulai_pukul, ekstubasi_pukul,
         pasien_keluar_ok, lain_lain_balon
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     }
     
     $stmt = $db->prepare($query);
@@ -204,7 +220,7 @@ try {
         $perawat_menyerahkan, $perawat_menerima, $dokter_anestesi_ttd,
         $mulai_anestesi, $selesai_anestesi, $mulai_pembedahan, $selesai_pembedahan,
         $keterangan_waktu, $induksi_pukul, $pasien_siap_insisi, $insisi_mulai_pukul,
-        $operasi_mulai_pukul, $ekstubasi_pukul, $pasien_keluar_ok, $_POST['lain_lain_balon'] ?? '',
+        $operasi_mulai_pukul, $ekstubasi_pukul, $pasien_keluar_ok, $lain_lain_balon,
         $id  // WHERE id = ?
         ];
     } else {
@@ -225,7 +241,7 @@ try {
         $perawat_menyerahkan, $perawat_menerima, $dokter_anestesi_ttd,
         $mulai_anestesi, $selesai_anestesi, $mulai_pembedahan, $selesai_pembedahan,
         $keterangan_waktu, $induksi_pukul, $pasien_siap_insisi, $insisi_mulai_pukul,
-        $operasi_mulai_pukul, $ekstubasi_pukul, $pasien_keluar_ok, $_POST['lain_lain_balon'] ?? ''
+        $operasi_mulai_pukul, $ekstubasi_pukul, $pasien_keluar_ok, $lain_lain_balon
         ];
     }
 
@@ -253,27 +269,21 @@ try {
 
 } catch (Exception $e) {
     $_SESSION['error'] = "Error: " . $e->getMessage();
+    error_log("=== CATATAN SEDASI ERROR ===");
     error_log("Database Error: " . $e->getMessage());
     error_log("Query: " . ($query ?? 'N/A'));
     error_log("Param count: " . (isset($params) ? count($params) : 0));
+    error_log("Token count: " . (isset($query) ? substr_count($query, '?') : 0));
+    error_log("Is Update: " . ($isUpdate ?? 'N/A'));
+    error_log("ID: " . ($id ?? 'N/A'));
+    error_log("===========================");
 }
 
-// Redirect kembali ke form
-$redirect_url = "../views/form-catatan-sedasi.php?no_rawat=" . urlencode($no_rawat) . 
+// Redirect kembali ke form melalui index.php (untuk menghindari CSS hilang dan looping)
+$redirect_url = "../index.php?page=form-catatan-sedasi&no_rawat=" . urlencode($no_rawat) . 
                 "&kode_paket=" . urlencode($kode_paket) . 
                 "&tanggal=" . urlencode($tanggal) . 
                 "&jam_mulai=" . urlencode($jam_mulai);
 header("Location: " . $redirect_url);
 exit;
-
-// Fungsi generate UUID
-function generateUUID() {
-    return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-        mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0x0fff) | 0x4000,
-        mt_rand(0, 0x3fff) | 0x8000,
-        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-    );
-}
 ?>

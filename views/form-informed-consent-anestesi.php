@@ -133,10 +133,10 @@ include __DIR__ . '/../includes/header.php';
             <h2>Informasi Tindakan Anestesi</h2>
             <?php
             // Explode data checkbox untuk auto-check saat edit
-            $jenis_anestesi_data = isset($consent['jenis_anestesi']) ? explode(', ', $consent['jenis_anestesi']) : [];
-            $indikasi_data = isset($consent['indikasi']) ? explode(', ', $consent['indikasi']) : [];
-            $tata_cara_data = isset($consent['tata_cara']) ? explode(', ', $consent['tata_cara']) : [];
-            $risiko_data = isset($consent['risiko']) ? explode(', ', $consent['risiko']) : [];
+            $jenis_anestesi_data = isset($consent['jenis_anestesi']) ? explode('|', $consent['jenis_anestesi']) : [];
+            $indikasi_data = isset($consent['indikasi']) ? explode('|', $consent['indikasi']) : [];
+            $tata_cara_data = isset($consent['tata_cara']) ? explode('|', $consent['tata_cara']) : [];
+            $risiko_data = isset($consent['risiko']) ? explode('|', $consent['risiko']) : [];
             $status_fisik_data = isset($consent['status_fisik']) ? $consent['status_fisik'] : '';
             $checkbox_confirm_data = isset($consent['checkbox_confirm']) ? explode(',', $consent['checkbox_confirm']) : [];
             ?>
