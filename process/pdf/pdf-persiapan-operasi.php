@@ -40,8 +40,9 @@ $stmt_checklist = $db->prepare($query_checklist);
 $stmt_checklist->execute([$no_rawat, $kode_paket]);
 $checklist = $stmt_checklist->fetch(PDO::FETCH_ASSOC);
 
+// Jika tidak ada data, buat array kosong untuk menghindari error
 if (!$checklist) {
-    die("Data checklist persiapan operasi belum diisi!");
+    $checklist = [];
 }
 
 // Helper functions
@@ -386,7 +387,7 @@ ob_start();
             <tr>
                 <td>Cat kuku dan make up muka sudah dibersihkan</td>
                 <td>-</td>
-                <td>-</td>
+                <td><span class="check-icon"><?= isChecked($checklist['cat_kuku_dibersihkan']) ?></span></td>
                 <td>-</td>
             </tr>
             <tr>
@@ -398,7 +399,7 @@ ob_start();
             <tr>
                 <td>Persiapan darah untuk transfusi</td>
                 <td>-</td>
-                <td>-</td>
+                <td><span class="check-icon"><?= isChecked($checklist['transfusi_darah']) ?></span></td>
                 <td>-</td>
             </tr>
             <tr>
@@ -428,8 +429,8 @@ ob_start();
             <tr>
                 <td>Antibiotik pre-ops</td>
                 <td>-</td>
-                <td>-</td>
-                <td><?= displayValue($checklist['jam_antibiotik']) ?> WIB</td>
+                <td><span class="check-icon"><?= isChecked($checklist['antibiotik']) ?></span></td>
+                <td><?= displayValue($checklist['antibiotik_preops']) ?> - <?= displayValue($checklist['jam_antibiotik']) ?> WIB</td>
             </tr>
             
             <!-- Khusus -->
@@ -458,7 +459,7 @@ ob_start();
             <tr>
                 <td>Obat Lain</td>
                 <td>-</td>
-                <td>-</td>
+                <td><span class="check-icon"><?= isChecked($checklist['obat_lain_radio']) ?></span></td>
                 <td><?= displayValue($checklist['obat_lain']) ?></td>
             </tr>
             <tr>
@@ -476,26 +477,26 @@ ob_start();
             <tr>
                 <td>Tekanan Darah</td>
                 <td>-</td>
-                <td>-</td>
-                <td><?= displayValue($checklist['tekanan_darah']) ?> mmHg</td>
+                <td><span class="check-icon"><?= isChecked($checklist['tekanan_darah_radio']) ?></span></td>
+                <td><?= displayValue($checklist['tekanan_darah']) ?></td>
             </tr>
             <tr>
                 <td>Nadi</td>
                 <td>-</td>
-                <td>-</td>
-                <td><?= displayValue($checklist['nadi']) ?> x/mnt</td>
+                <td><span class="check-icon"><?= isChecked($checklist['nadi_radio']) ?></span></td>
+                <td><?= displayValue($checklist['nadi']) ?></td>
             </tr>
             <tr>
                 <td>Suhu</td>
                 <td>-</td>
-                <td>-</td>
+                <td><span class="check-icon"><?= isChecked($checklist['suhu_radio']) ?></span></td>
                 <td><?= displayValue($checklist['suhu']) ?> °C</td>
             </tr>
             <tr>
                 <td>Pernapasan</td>
                 <td>-</td>
-                <td>-</td>
-                <td><?= displayValue($checklist['pernafasan']) ?> x/mnt</td>
+                <td><span class="check-icon"><?= isChecked($checklist['pernafasan_radio']) ?></span></td>
+                <td><?= displayValue($checklist['pernafasan']) ?></td>
             </tr>
             <tr>
                 <td>Obat yang dibawa ke UBS</td>
@@ -506,7 +507,7 @@ ob_start();
             <tr>
                 <td>Hasil Skin Test</td>
                 <td>-</td>
-                <td>-</td>
+                <td><span class="check-icon"><?= isChecked($checklist['skin_test_radio']) ?></span></td>
                 <td><?= displayValue($checklist['hasil_skin_test']) ?></td>
             </tr>
             <tr>

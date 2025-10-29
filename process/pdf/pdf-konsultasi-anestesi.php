@@ -415,7 +415,7 @@ ob_start();
     </div>
     
     <div class="info-box">
-        <strong>Rekomendasi Anestesi:</strong> <?= displayValue($konsul['rekomendasi_anestesi']) ?>
+        <strong>Rekomendasi Anestesi:</strong> <?= displayValue($konsul['saran'] ?? '') ?>
     </div>
     
     <!-- Rekomendasi Tindakan Anestesi -->

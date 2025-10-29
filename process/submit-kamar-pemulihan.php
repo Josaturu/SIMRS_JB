@@ -88,7 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                        jam_keluar = :jam_keluar, td_keluar = :td_keluar, n_keluar = :n_keluar, r_keluar = :r_keluar, s_keluar = :s_keluar, spo2_keluar = :spo2_keluar,
                        skrining_nyeri = :skrining_nyeri, tujuan_keluar = :tujuan_keluar, catatan_khusus = :catatan_khusus,
                        aldrete_score = :aldrete_score, bromage_score = :bromage_score, steward_score = :steward_score,
-                       nama_penanggungjawab = :nama_penanggungjawab, perawat_menyerahkan = :perawat_menyerahkan, perawat_menerima = :perawat_menerima, dokter_anestesi = :dokter_anestesi
+                       nama_penanggungjawab = :nama_penanggungjawab, perawat_menyerahkan = :perawat_menyerahkan, perawat_menerima = :perawat_menerima, dokter_anestesi = :dokter_anestesi,
+                       chart_image = :chart_image, vital_sign_data = :vital_sign_data
                       WHERE id = :id";
         } else {
             // INSERT new record
@@ -110,7 +111,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    jam_keluar, td_keluar, n_keluar, r_keluar, s_keluar, spo2_keluar,
                    skrining_nyeri, tujuan_keluar, catatan_khusus,
                    aldrete_score, bromage_score, steward_score,
-                   nama_penanggungjawab, perawat_menyerahkan, perawat_menerima, dokter_anestesi
+                   nama_penanggungjawab, perawat_menyerahkan, perawat_menerima, dokter_anestesi,
+                   chart_image, vital_sign_data
                   ) VALUES (
                    :id, :no_rawat, :kode_paket, :tanggal, :jam_mulai,
                    :jam_masuk, :tgl_masuk,
@@ -129,7 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    :jam_keluar, :td_keluar, :n_keluar, :r_keluar, :s_keluar, :spo2_keluar,
                    :skrining_nyeri, :tujuan_keluar, :catatan_khusus,
                    :aldrete_score, :bromage_score, :steward_score,
-                   :nama_penanggungjawab, :perawat_menyerahkan, :perawat_menerima, :dokter_anestesi
+                   :nama_penanggungjawab, :perawat_menyerahkan, :perawat_menerima, :dokter_anestesi,
+                   :chart_image, :vital_sign_data
                   )";
         }
         
@@ -239,6 +242,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':perawat_menyerahkan', $formData['perawat_menyerahkan']);
         $stmt->bindParam(':perawat_menerima', $formData['perawat_menerima']);
         $stmt->bindParam(':dokter_anestesi', $formData['dokter_anestesi']);
+        
+        // Bind parameters - Chart Image & Vital Sign Data (NEW)
+        $chart_image = $formData['chart_image'] ?? '';
+        $vital_sign_data = $formData['vital_sign_data'] ?? '';
+        
+        $stmt->bindParam(':chart_image', $chart_image);
+        $stmt->bindParam(':vital_sign_data', $vital_sign_data);
         
         // Execute query
         if ($stmt->execute()) {

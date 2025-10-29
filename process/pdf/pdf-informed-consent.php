@@ -102,17 +102,6 @@ ob_start();
         .info-box.success { border-left-color: #34a853; background: #f0fdf4; }
         .info-box.warning { border-left-color: #fbbc04; background: #fffbeb; }
         
-        /* Confirmation Box */
-        .confirmation-box { background: linear-gradient(135deg, #e3f0ff 0%, #f4f7fb 100%); border: 2px solid #4285f4; border-radius: 8px; padding: 15px; margin: 15px 0; }
-        .confirmation-box h3 { text-align: center; color: #4285f4; margin-bottom: 12px; font-size: 11pt; }
-        .confirmation-box p { margin: 6px 0; font-size: 9pt; line-height: 1.6; }
-        .confirmation-box .checkbox-item { display: flex; gap: 8px; margin: 8px 0; padding: 6px; background: white; border-radius: 4px; }
-        .confirmation-box .checkbox-icon { width: 16px; height: 16px; border: 2px solid #4285f4; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
-        .confirmation-box .checkbox-icon.checked { background: #4285f4; color: white; }
-        .confirmation-box .decision { margin-top: 15px; padding: 12px; border-radius: 6px; font-weight: 600; font-size: 10pt; text-align: center; }
-        .confirmation-box .decision.approved { background: #d4edda; color: #34a853; border: 2px solid #34a853; }
-        .confirmation-box .decision.rejected { background: #f8d7da; color: #ea4335; border: 2px solid #ea4335; }
-        
         /* Signature */
         .signature-section { margin-top: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .signature-box { text-align: center; padding: 12px; border: 2px solid #e3f0ff; border-radius: 6px; background: white; }
@@ -259,45 +248,6 @@ ob_start();
         <h3>10. Lain-lain</h3>
         <p><?= displayValue($consent['lain_lain']) ?></p>
     </div>
-    
-    <!-- Pernyataan Persetujuan (Optional - Uncomment if needed) -->
-    <?php if (!empty($consent['checkbox_confirm'])): ?>
-    <div class="confirmation-box">
-        <h3>PERNYATAAN PERSETUJUAN</h3>
-        
-        <p style="font-weight: bold; margin-bottom: 10px;">Dengan ini saya menyatakan bahwa:</p>
-        
-        <div class="checkbox-item">
-            <div class="checkbox-icon checked">✓</div>
-            <span>Saya telah menerima informasi sebagaimana tersebut di atas yang saya beri tanda/paraf di kotak kanannya, dan saya telah memahaminya.</span>
-        </div>
-        
-        <div class="checkbox-item">
-            <div class="checkbox-icon checked">✓</div>
-            <span>Saya telah mendapat kesempatan untuk bertanya dan mendiskusikan hal-hal yang berkaitan dengan tindakan anestesi tersebut di atas.</span>
-        </div>
-        
-        <div class="checkbox-item">
-            <div class="checkbox-icon checked">✓</div>
-            <span>Saya memahami bahwa setiap tindakan anestesi mengandung risiko dan tidak selalu memberikan hasil yang diharapkan.</span>
-        </div>
-        
-        <div class="checkbox-item">
-            <div class="checkbox-icon checked">✓</div>
-            <span>Saya mengerti bahwa tindakan anestesi ini dilakukan oleh tenaga medis yang kompeten dan berpengalaman.</span>
-        </div>
-        
-        <?php if ($consent['checkbox_confirm'] == 'setuju'): ?>
-        <div class="decision approved">
-            ✓ Saya MENYETUJUI tindakan anestesi yang dijelaskan di atas
-        </div>
-        <?php else: ?>
-        <div class="decision rejected">
-            ✗ Saya MENOLAK tindakan anestesi yang dijelaskan di atas
-        </div>
-        <?php endif; ?>
-    </div>
-    <?php endif; ?>
     
     <!-- Tanda Tangan -->
     <div class="signature-section">

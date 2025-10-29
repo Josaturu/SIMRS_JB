@@ -191,6 +191,8 @@ include __DIR__ . '/../includes/header.php';
             <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
             <input type="hidden" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>">
             <input type="hidden" name="jam_mulai" value="<?php echo htmlspecialchars($jam_mulai); ?>">
+            <input type="hidden" name="chart_image" id="chart_image" value="">
+            <input type="hidden" name="vital_sign_data" id="vital_sign_data" value="">
             <div class="form-grid">
                 <!-- Kolom Kiri -->
                 <div class="form-column">
@@ -518,6 +520,9 @@ include __DIR__ . '/../includes/header.php';
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="button" class="btn btn-success" onclick="cetakPDF()">
+                <i class="fas fa-file-pdf"></i> Cetak PDF
+            </button>
             <button type="button" class="btn btn-secondary" onclick="window.location.href='/index.php?page=detail-pasien&no_rawat=<?php echo urlencode($no_rawat); ?>&kode_paket=<?php echo urlencode($kode_paket); ?>&tanggal=<?php echo urlencode($tanggal); ?>&jam_mulai=<?php echo urlencode($jam_mulai); ?>'">Kembali</button>
         </div>
         </form>
@@ -780,7 +785,17 @@ include __DIR__ . '/../includes/header.php';
     
     // Update hidden input
     function updateHiddenInput() {
-        document.getElementById('vital_signs_data').value = JSON.stringify(vitalSignsArray);
+        // Save vital sign data as JSON
+        document.getElementById('vital_sign_data').value = JSON.stringify(vitalSignsArray);
+        
+        // Capture chart as base64 image
+        if (vitalChart && vitalSignsArray.length > 0) {
+            setTimeout(() => {
+                const chartImage = document.getElementById('vitalChart').toDataURL('image/png');
+                document.getElementById('chart_image').value = chartImage;
+                console.log('Chart image captured');
+            }, 500); // Delay to ensure chart is fully rendered
+        }
         
         // AutoSave to localStorage
         const storageKey = 'vital_signs_kamar_pemulihan_<?= $no_rawat ?>_<?= $kode_paket ?>_<?= $tanggal ?>_<?= $jam_mulai ?>';
@@ -906,14 +921,43 @@ include __DIR__ . '/../includes/header.php';
                 }
             });
         }
+        
+        // Load vital sign data from JSON and populate chart
+        if (data.vital_sign_data) {
+            try {
+                const vitalSignData = JSON.parse(data.vital_sign_data);
+                if (Array.isArray(vitalSignData) && vitalSignData.length > 0) {
+                    vitalSignsArray = vitalSignData;
+                    console.log('Loaded vital signs from database:', vitalSignsArray.length + ' records');
+                    
+                    // Update table and chart
+                    updateTable();
+                    updateChart();
+                    updateHiddenInput();
+                    
+                    showToast('📊 Data vital sign berhasil dimuat (' + vitalSignsArray.length + ' records)');
+                }
+            } catch (e) {
+                console.error('Failed to parse vital_sign_data:', e);
+            }
+        }
         <?php endif; ?>
+    }
+    
+    // Cetak PDF
+    function cetakPDF() {
+        const no_rawat = '<?= $no_rawat ?>';
+        const kode_paket = '<?= $kode_paket ?>';
+        const tanggal = '<?= $tanggal ?>';
+        const jam_mulai = '<?= $jam_mulai ?>';
+        
+        const url = `/process/pdf/pdf-kamar-pemulihan.php?no_rawat=${encodeURIComponent(no_rawat)}&kode_paket=${encodeURIComponent(kode_paket)}&tanggal=${encodeURIComponent(tanggal)}&jam_mulai=${encodeURIComponent(jam_mulai)}`;
+        
+        window.open(url, '_blank');
     }
     
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
-        // Populate existing data first
-        populateExistingData();
-        
         // Set initial time
         setCurrentTime();
         
@@ -923,12 +967,17 @@ include __DIR__ . '/../includes/header.php';
             showToast('⏰ Waktu diperbarui!');
         });
         
-        // Initialize chart
+        // Initialize chart first
         initChart();
         
-        // Restore vital signs from autosave (only if not editing)
+        // Then populate existing data (will update chart if data exists)
+        populateExistingData();
+        
+        // Restore vital signs from autosave (only if not editing and no data from DB)
         <?php if (!$isEdit): ?>
-        restoreVitalSigns();
+        if (vitalSignsArray.length === 0) {
+            restoreVitalSigns();
+        }
         <?php endif; ?>
         
         // Initialize AutoSave

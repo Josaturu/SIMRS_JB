@@ -306,11 +306,27 @@ include __DIR__ . '/../includes/header.php';
                     'Hasil EKG',
                     'Lain-lain'
                 ];
+                
+                // Mapping keterangan fields
+                $ket_fields = [
+                    'ket_program_ke_ubs',
+                    'ket_persetujuan_operasi',
+                    'ket_rekam_medis',
+                    'ket_laporan_operasi',
+                    'ket_laporan_anestesi',
+                    'ket_hasil_lab',
+                    'ket_hasil_radiologi',
+                    'ket_hasil_ct_scan',
+                    'ket_hasil_usg',
+                    'ket_hasil_ekg',
+                    'ket_hasil_lain'
+                ];
 
                 for ($i = 1; $i <= count($checklist_items); $i++): 
                     $item = $checklist_items[$i-1];
                     $db_field = $db_fields[$i-1];
                     $rawat_field = $rawat_fields[$i-1];
+                    $ket_field = $ket_fields[$i-1];
                 ?>
                 <tr class="checklist-row-administrasi">
                     <td style="text-align: left;"><?php echo $item; ?></td>
@@ -326,7 +342,7 @@ include __DIR__ . '/../includes/header.php';
                             <label><input type="radio" name="ubs<?php echo $i; ?>" value="tidak" <?php echo $db_field ? getRadioChecked($existing_data[$db_field] ?? 0, 'tidak') : ''; ?>> Tidak</label>
                         </div>
                     </td>
-                    <td><input type="text" name="ket<?php echo $i; ?>"></td>
+                    <td><input type="text" name="ket<?php echo $i; ?>" value="<?php echo htmlspecialchars($existing_data[$ket_field] ?? ''); ?>"></td>
                 </tr>
                 <?php endfor; ?>
 

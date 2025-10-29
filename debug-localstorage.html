@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug LocalStorage - SIMRS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .data-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .data-section h2 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .storage-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .storage-item .key {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .storage-item .value {
+            background: white;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #333;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .storage-item .meta {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: 0.3;
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .json-viewer {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow: auto;
+        }
+        
+        .json-key {
+            color: #66d9ef;
+        }
+        
+        .json-string {
+            color: #e6db74;
+        }
+        
+        .json-number {
+            color: #ae81ff;
+        }
+        
+        .json-boolean {
+            color: #fd971f;
+        }
+        
+        .json-null {
+            color: #f92672;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔍 Debug LocalStorage - SIMRS Josaturu Blora</h1>
+            <p>Tool untuk melihat dan mengelola data yang tersimpan di LocalStorage browser</p>
+        </div>
+        
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-primary" onclick="loadData()">
+                🔄 Refresh Data
+            </button>
+            <button class="btn btn-danger" onclick="clearAll()">
+                🗑️ Clear All LocalStorage
+            </button>
+            <button class="btn btn-success" onclick="exportData()">
+                📥 Export to JSON
+            </button>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="total_items">0</div>
+                <div class="label">Total Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="total_size">0 KB</div>
+                <div class="label">Total Size</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="vital_sign_count">0</div>
+                <div class="label">Vital Sign Records</div>
+            </div>
+        </div>
+        
+        <!-- Data Section -->
+        <div class="data-section">
+            <h2>📦 LocalStorage Contents</h2>
+            <input type="text" class="filter-input" id="filter" placeholder="🔍 Filter by key name..." onkeyup="filterData()">
+            <div id="storage_content"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Load data on page load
+        window.onload = function() {
+            loadData();
+        };
+        
+        // Load and display localStorage data
+        function loadData() {
+            const content = document.getElementById('storage_content');
+            const totalItems = document.getElementById('total_items');
+            const totalSize = document.getElementById('total_size');
+            const vitalSignCount = document.getElementById('vital_sign_count');
+            
+            let html = '';
+            let count = 0;
+            let size = 0;
+            let vitalCount = 0;
+            
+            // Get all localStorage items
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                
+                count++;
+                size += (key.length + value.length) * 2; // Approximate size in bytes
+                
+                // Count vital sign records
+                if (key.includes('vital_sign')) {
+                    try {
+                        const data = JSON.parse(value);
+                        if (Array.isArray(data)) {
+                            vitalCount += data.length;
+                        }
+                    } catch (e) {}
+                }
+                
+                // Format value for display
+                let displayValue = value;
+                let isJSON = false;
+                
+                try {
+                    const parsed = JSON.parse(value);
+                    displayValue = JSON.stringify(parsed, null, 2);
+                    isJSON = true;
+                } catch (e) {
+                    displayValue = value;
+                }
+                
+                html += `
+                    <div class="storage-item" data-key="${key}">
+                        <div class="key">🔑 ${key}</div>
+                        <div class="value">${escapeHtml(displayValue)}</div>
+                        <div class="meta">
+                            <span>Size: ${formatBytes((key.length + value.length) * 2)}</span>
+                            <span>${isJSON ? '📄 JSON' : '📝 Text'}</span>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteItem('${escapeHtml(key)}')">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (count === 0) {
+                html = `
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📭</div>
+                        <p>LocalStorage kosong</p>
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = html;
+            totalItems.textContent = count;
+            totalSize.textContent = formatBytes(size);
+            vitalSignCount.textContent = vitalCount;
+        }
+        
+        // Filter data by key name
+        function filterData() {
+            const filter = document.getElementById('filter').value.toLowerCase();
+            const items = document.querySelectorAll('.storage-item');
+            
+            items.forEach(item => {
+                const key = item.getAttribute('data-key').toLowerCase();
+                if (key.includes(filter)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // Clear all localStorage
+        function clearAll() {
+            if (confirm('⚠️ Apakah Anda yakin ingin menghapus SEMUA data di LocalStorage?\n\nPeringatan: Data yang belum disimpan ke database akan hilang!')) {
+                localStorage.clear();
+                loadData();
+                alert('✅ LocalStorage berhasil dikosongkan!');
+            }
+        }
+        
+        // Delete single item
+        function deleteItem(key) {
+            if (confirm(`Hapus item "${key}"?`)) {
+                localStorage.removeItem(key);
+                loadData();
+                alert('✅ Item berhasil dihapus!');
+            }
+        }
+        
+        // Export data to JSON
+        function exportData() {
+            const data = {};
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                
+                try {
+                    data[key] = JSON.parse(value);
+                } catch (e) {
+                    data[key] = value;
+                }
+            }
+            
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `localstorage_${new Date().getTime()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('✅ Data berhasil di-export!');
+        }
+        
+        // Helper: Format bytes
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+        
+        // Helper: Escape HTML
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+</html>

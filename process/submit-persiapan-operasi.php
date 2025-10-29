@@ -59,6 +59,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $hasil_ekg = radioToBool($formData['ubs10'] ?? '');
         $hasil_lain = radioToBool($formData['ubs11'] ?? '');
         
+        // KETERANGAN untuk Item 1-11: Administrasi
+        $ket_program_ke_ubs = $formData['ket1'] ?? null;
+        $ket_persetujuan_operasi = $formData['ket2'] ?? null;
+        $ket_rekam_medis = $formData['ket3'] ?? null;
+        $ket_laporan_operasi = $formData['ket4'] ?? null;
+        $ket_laporan_anestesi = $formData['ket5'] ?? null;
+        $ket_hasil_lab = $formData['ket6'] ?? null;
+        $ket_hasil_radiologi = $formData['ket7'] ?? null;
+        $ket_hasil_ct_scan = $formData['ket8'] ?? null;
+        $ket_hasil_usg = $formData['ket9'] ?? null;
+        $ket_hasil_ekg = $formData['ket10'] ?? null;
+        $ket_hasil_lain = $formData['ket11'] ?? null;
+        
         // ===== KOLOM R. RAWAT =====
         // Item 1-11: Administrasi
         $rawat_program_ke_ubs = radioToBool($formData['rawat1'] ?? '');
@@ -192,6 +205,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       hasil_usg = :hasil_usg, rawat_hasil_usg = :rawat_hasil_usg,
                       hasil_ekg = :hasil_ekg, rawat_hasil_ekg = :rawat_hasil_ekg,
                       hasil_lain = :hasil_lain, rawat_hasil_lain = :rawat_hasil_lain,
+                      ket_program_ke_ubs = :ket_program_ke_ubs,
+                      ket_persetujuan_operasi = :ket_persetujuan_operasi,
+                      ket_rekam_medis = :ket_rekam_medis,
+                      ket_laporan_operasi = :ket_laporan_operasi,
+                      ket_laporan_anestesi = :ket_laporan_anestesi,
+                      ket_hasil_lab = :ket_hasil_lab,
+                      ket_hasil_radiologi = :ket_hasil_radiologi,
+                      ket_hasil_ct_scan = :ket_hasil_ct_scan,
+                      ket_hasil_usg = :ket_hasil_usg,
+                      ket_hasil_ekg = :ket_hasil_ekg,
+                      ket_hasil_lain = :ket_hasil_lain,
                       puasa = :puasa, rawat_puasa = :rawat_puasa,
                       waktu_puasa = :waktu_puasa,
                       lavement = :lavement, rawat_lavement = :rawat_lavement,
@@ -254,6 +278,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    hasil_usg, rawat_hasil_usg,
                    hasil_ekg, rawat_hasil_ekg,
                    hasil_lain, rawat_hasil_lain,
+                   ket_program_ke_ubs, ket_persetujuan_operasi, ket_rekam_medis,
+                   ket_laporan_operasi, ket_laporan_anestesi, ket_hasil_lab,
+                   ket_hasil_radiologi, ket_hasil_ct_scan, ket_hasil_usg,
+                   ket_hasil_ekg, ket_hasil_lain,
                    puasa, rawat_puasa, waktu_puasa,
                    lavement, rawat_lavement,
                    pasang_dc, rawat_pasang_dc, dc_no, dc_macam,
@@ -301,6 +329,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    :hasil_usg, :rawat_hasil_usg,
                    :hasil_ekg, :rawat_hasil_ekg,
                    :hasil_lain, :rawat_hasil_lain,
+                   :ket_program_ke_ubs, :ket_persetujuan_operasi, :ket_rekam_medis,
+                   :ket_laporan_operasi, :ket_laporan_anestesi, :ket_hasil_lab,
+                   :ket_hasil_radiologi, :ket_hasil_ct_scan, :ket_hasil_usg,
+                   :ket_hasil_ekg, :ket_hasil_lain,
                    :puasa, :rawat_puasa, :waktu_puasa,
                    :lavement, :rawat_lavement,
                    :pasang_dc, :rawat_pasang_dc, :dc_no, :dc_macam,
@@ -371,6 +403,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':hasil_usg', $hasil_usg);
         $stmt->bindParam(':hasil_ekg', $hasil_ekg);
         $stmt->bindParam(':hasil_lain', $hasil_lain);
+        
+        // Bind keterangan parameters
+        $stmt->bindParam(':ket_program_ke_ubs', $ket_program_ke_ubs);
+        $stmt->bindParam(':ket_persetujuan_operasi', $ket_persetujuan_operasi);
+        $stmt->bindParam(':ket_rekam_medis', $ket_rekam_medis);
+        $stmt->bindParam(':ket_laporan_operasi', $ket_laporan_operasi);
+        $stmt->bindParam(':ket_laporan_anestesi', $ket_laporan_anestesi);
+        $stmt->bindParam(':ket_hasil_lab', $ket_hasil_lab);
+        $stmt->bindParam(':ket_hasil_radiologi', $ket_hasil_radiologi);
+        $stmt->bindParam(':ket_hasil_ct_scan', $ket_hasil_ct_scan);
+        $stmt->bindParam(':ket_hasil_usg', $ket_hasil_usg);
+        $stmt->bindParam(':ket_hasil_ekg', $ket_hasil_ekg);
+        $stmt->bindParam(':ket_hasil_lain', $ket_hasil_lain);
+        
         $stmt->bindParam(':puasa', $puasa);
         $stmt->bindParam(':waktu_puasa', $waktu_puasa);
         $stmt->bindParam(':lavement', $lavement);
