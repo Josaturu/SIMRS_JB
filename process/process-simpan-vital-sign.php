@@ -19,6 +19,7 @@ try {
     $tanggal = $data['tanggal'] ?? '';
     $jam_mulai = $data['jam_mulai'] ?? '';
     $vital_signs = $data['vital_signs'] ?? [];
+    $mode = $data['mode'] ?? 'replace'; // Mode: 'append' atau 'replace'
 
     // Validasi required fields
     if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mulai)) {
@@ -44,18 +45,21 @@ try {
     // Start transaction
     $db->beginTransaction();
     
-    // Hapus data lama untuk session ini (optional - jika ingin replace)
-    $delete_query = "DELETE FROM tbl_anestesi_vital_sign 
-                     WHERE no_rawat = :no_rawat 
-                     AND kode_paket = :kode_paket 
-                     AND tanggal = :tanggal 
-                     AND jam_mulai = :jam_mulai";
-    $delete_stmt = $db->prepare($delete_query);
-    $delete_stmt->bindParam(':no_rawat', $no_rawat);
-    $delete_stmt->bindParam(':kode_paket', $kode_paket);
-    $delete_stmt->bindParam(':tanggal', $tanggal);
-    $delete_stmt->bindParam(':jam_mulai', $jam_mulai);
-    $delete_stmt->execute();
+    // Hapus data lama HANYA jika mode = 'replace'
+    if ($mode === 'replace') {
+        $delete_query = "DELETE FROM tbl_anestesi_vital_sign 
+                         WHERE no_rawat = :no_rawat 
+                         AND kode_paket = :kode_paket 
+                         AND tanggal = :tanggal 
+                         AND jam_mulai = :jam_mulai";
+        $delete_stmt = $db->prepare($delete_query);
+        $delete_stmt->bindParam(':no_rawat', $no_rawat);
+        $delete_stmt->bindParam(':kode_paket', $kode_paket);
+        $delete_stmt->bindParam(':tanggal', $tanggal);
+        $delete_stmt->bindParam(':jam_mulai', $jam_mulai);
+        $delete_stmt->execute();
+    }
+    // Jika mode = 'append', tidak hapus data lama, langsung INSERT saja
     
     // Insert query
     $query = "INSERT INTO tbl_anestesi_vital_sign
@@ -103,11 +107,13 @@ try {
     $db->commit();
     
     if ($success_count > 0) {
+        $action_text = ($mode === 'append') ? 'menambahkan' : 'menyimpan';
         echo json_encode([
             'success' => true,
-            'message' => "Berhasil menyimpan $success_count dari " . count($vital_signs) . " data vital sign.",
+            'message' => "Berhasil $action_text $success_count dari " . count($vital_signs) . " data vital sign.",
             'saved_count' => $success_count,
-            'total_count' => count($vital_signs)
+            'total_count' => count($vital_signs),
+            'mode' => $mode
         ]);
     } else {
         throw new Exception('Gagal menyimpan data vital sign: ' . implode(', ', $error_messages));

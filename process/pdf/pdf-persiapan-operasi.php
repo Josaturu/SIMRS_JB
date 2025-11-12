@@ -286,67 +286,67 @@ ob_start();
                 <td>Program ke UBS</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['program_ke_ubs']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_program_ke_ubs']) ?></td>
             </tr>
             <tr>
                 <td>Persetujuan Operasi Lengkap dan Terisi</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['persetujuan_operasi']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_persetujuan_operasi']) ?></td>
             </tr>
             <tr>
                 <td>Rekam Medis</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['rekam_medis']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_rekam_medis']) ?></td>
             </tr>
             <tr>
                 <td>Laporan Operasi</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['laporan_operasi']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_laporan_operasi']) ?></td>
             </tr>
             <tr>
                 <td>Laporan Anestesi</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['laporan_anestesi']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_laporan_anestesi']) ?></td>
             </tr>
             <tr>
                 <td>Hasil Laboratorium</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['hasil_lab']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_hasil_lab']) ?></td>
             </tr>
             <tr>
                 <td>Hasil Radiologi</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['hasil_radiologi']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_hasil_radiologi']) ?></td>
             </tr>
             <tr>
                 <td>Hasil CT Scan</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['hasil_ct_scan']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_hasil_ct_scan']) ?></td>
             </tr>
             <tr>
                 <td>Hasil USG</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['hasil_usg']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_hasil_usg']) ?></td>
             </tr>
             <tr>
                 <td>Hasil EKG</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['hasil_ekg']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_hasil_ekg']) ?></td>
             </tr>
             <tr>
                 <td>Lain-lain</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['hasil_lain']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_hasil_lain']) ?></td>
             </tr>
             
             <!-- Fisik -->
@@ -364,7 +364,7 @@ ob_start();
                 <td>Lavement/garam Inggris</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['lavement']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_lavement']) ?></td>
             </tr>
             <tr>
                 <td>Pasang DC</td>
@@ -376,31 +376,31 @@ ob_start();
                 <td>Cukur dan bersihkan daerah operasi</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['cukur_daerah_operasi']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_cukur_daerah_operasi']) ?></td>
             </tr>
             <tr>
                 <td>Rambut palsu, gigi palsu, contact lens, sudah dilepas</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['rambut_makeup_dibersihkan']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_rambut_makeup_dibersihkan']) ?></td>
             </tr>
             <tr>
                 <td>Cat kuku dan make up muka sudah dibersihkan</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['cat_kuku_dibersihkan']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_cat_kuku_dibersihkan']) ?></td>
             </tr>
             <tr>
                 <td>Perhiasan dan arloji dll, sudah dilepas</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['perhiasan_dilepas']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_perhiasan_dilepas']) ?></td>
             </tr>
             <tr>
                 <td>Persiapan darah untuk transfusi</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['transfusi_darah']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_transfusi_darah']) ?></td>
             </tr>
             <tr>
                 <td>1) Whole Blood (WB)</td>
@@ -424,7 +424,7 @@ ob_start();
                 <td>Premedikasi</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['premedikasi']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_premedikasi']) ?></td>
             </tr>
             <tr>
                 <td>Antibiotik pre-ops</td>
@@ -442,19 +442,19 @@ ob_start();
                 <td>DM - Insulin Pre Op</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['dm_insulin_preop']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_dm_insulin_preop']) ?></td>
             </tr>
             <tr>
                 <td>Hipertensi - Obat anti hipertensi pre ops</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['hipertensi_obat']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_hipertensi_obat']) ?></td>
             </tr>
             <tr>
                 <td>Asma - Obat anti asma / Corticosteroid pre ops</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['asma_obat']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_asma_obat']) ?></td>
             </tr>
             <tr>
                 <td>Obat Lain</td>
@@ -466,7 +466,7 @@ ob_start();
                 <td>Obat-obatan sebelum tidur</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['obat_tidur']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_obat_tidur']) ?></td>
             </tr>
             <tr>
                 <td>Pasang Infus</td>
@@ -502,7 +502,7 @@ ob_start();
                 <td>Obat yang dibawa ke UBS</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['obat_ubs']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_obat_ubs']) ?></td>
             </tr>
             <tr>
                 <td>Hasil Skin Test</td>
@@ -514,31 +514,31 @@ ob_start();
                 <td>Kunjungan dokter pra bedah - Dokter Bedah</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['visit_dokter_bedah']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_visit_dokter_bedah']) ?></td>
             </tr>
             <tr>
                 <td>Kunjungan dokter pra bedah - Dokter Anestesi</td>
                 <td>-</td>
                 <td><span class="check-icon"><?= isChecked($checklist['visit_dokter_anestesi']) ?></span></td>
-                <td>-</td>
+                <td><?= displayValue($checklist['ket_visit_dokter_anestesi']) ?></td>
             </tr>
             <tr>
-                <td>Kunjungan dokter pra bedah - Dokter Konsul terkait</td>
+                <td>Kunjungan dokter pra bedah - Dokter Konsul terkait 1</td>
                 <td>-</td>
-                <td>-</td>
-                <td>-</td>
+                <td><span class="check-icon"><?= isChecked($checklist['visit_dokter_konsul_1']) ?></span></td>
+                <td><?= displayValue($checklist['ket_visit_dokter_konsul_1']) ?></td>
             </tr>
             <tr>
-                <td>Kunjungan dokter pra bedah - Dokter Konsul terkait</td>
+                <td>Kunjungan dokter pra bedah - Dokter Konsul terkait 2</td>
                 <td>-</td>
-                <td>-</td>
-                <td>-</td>
+                <td><span class="check-icon"><?= isChecked($checklist['visit_dokter_konsul_2']) ?></span></td>
+                <td><?= displayValue($checklist['ket_visit_dokter_konsul_2']) ?></td>
             </tr>
             <tr>
-                <td>Kunjungan dokter pra bedah - Dokter Konsul terkait</td>
+                <td>Kunjungan dokter pra bedah - Dokter Konsul terkait 3</td>
                 <td>-</td>
-                <td>-</td>
-                <td>-</td>
+                <td><span class="check-icon"><?= isChecked($checklist['visit_dokter_konsul_3']) ?></span></td>
+                <td><?= displayValue($checklist['ket_visit_dokter_konsul_3']) ?></td>
             </tr>
         </tbody>
     </table>

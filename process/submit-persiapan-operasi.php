@@ -72,6 +72,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ket_hasil_ekg = $formData['ket10'] ?? null;
         $ket_hasil_lain = $formData['ket11'] ?? null;
         
+        // KETERANGAN untuk Item 12-24: Persiapan Fisik (NEW)
+        // ket12 = waktu_puasa (sudah ada di line 91)
+        $ket_lavement = $formData['ket13'] ?? null;
+        // ket14 = dc_no, dc_macam (sudah ada di line 95-96)
+        $ket_cukur_daerah_operasi = $formData['ket15'] ?? null;
+        $ket_rambut_makeup_dibersihkan = $formData['ket16'] ?? null;
+        $ket_cat_kuku_dibersihkan = $formData['ket17'] ?? null;
+        $ket_perhiasan_dilepas = $formData['ket18'] ?? null;
+        $ket_transfusi_darah = $formData['ket19'] ?? null;
+        // ket20-22 = kantong_wb/prc/ffp (sudah ada di line 106-110)
+        $ket_premedikasi = $formData['ket23'] ?? null;
+        // ket24 = antibiotik_preops, jam_antibiotik (sudah ada di line 115-116)
+        
+        // KETERANGAN untuk Item 25-41: Persiapan Khusus (NEW)
+        $ket_dm_insulin_preop = $formData['ket25'] ?? null;
+        $ket_hipertensi_obat = $formData['ket26'] ?? null;
+        $ket_asma_obat = $formData['ket27'] ?? null;
+        // ket28 = obat_lain (sudah ada di line 139)
+        $ket_obat_tidur = $formData['ket29'] ?? null;
+        // ket30 = iv_catch_no (sudah ada di line 142)
+        // ket31-34 = vital signs (sudah ada di line 145-151)
+        $ket_obat_ubs = $formData['ket35'] ?? null;
+        // ket36 = hasil_skin_test (sudah ada di line 155)
+        $ket_visit_dokter_bedah = $formData['ket37'] ?? null;
+        $ket_visit_dokter_anestesi = $formData['ket38'] ?? null;
+        $ket_visit_dokter_konsul_1 = $formData['ket39'] ?? null;
+        $ket_visit_dokter_konsul_2 = $formData['ket40'] ?? null;
+        $ket_visit_dokter_konsul_3 = $formData['ket41'] ?? null;
+        
         // ===== KOLOM R. RAWAT =====
         // Item 1-11: Administrasi
         $rawat_program_ke_ubs = radioToBool($formData['rawat1'] ?? '');
@@ -219,13 +248,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       puasa = :puasa, rawat_puasa = :rawat_puasa,
                       waktu_puasa = :waktu_puasa,
                       lavement = :lavement, rawat_lavement = :rawat_lavement,
+                      ket_lavement = :ket_lavement,
                       pasang_dc = :pasang_dc, rawat_pasang_dc = :rawat_pasang_dc,
                       dc_no = :dc_no, dc_macam = :dc_macam,
                       cukur_daerah_operasi = :cukur_daerah_operasi, rawat_cukur_daerah_operasi = :rawat_cukur_daerah_operasi,
+                      ket_cukur_daerah_operasi = :ket_cukur_daerah_operasi,
                       rambut_makeup_dibersihkan = :rambut_makeup_dibersihkan, rawat_rambut_makeup_dibersihkan = :rawat_rambut_makeup_dibersihkan,
+                      ket_rambut_makeup_dibersihkan = :ket_rambut_makeup_dibersihkan,
                       cat_kuku_dibersihkan = :cat_kuku_dibersihkan, rawat_cat_kuku_dibersihkan = :rawat_cat_kuku_dibersihkan,
+                      ket_cat_kuku_dibersihkan = :ket_cat_kuku_dibersihkan,
                       perhiasan_dilepas = :perhiasan_dilepas, rawat_perhiasan_dilepas = :rawat_perhiasan_dilepas,
+                      ket_perhiasan_dilepas = :ket_perhiasan_dilepas,
                       transfusi_darah = :transfusi_darah, rawat_transfusi_darah = :rawat_transfusi_darah,
+                      ket_transfusi_darah = :ket_transfusi_darah,
                       transfusi_whole_blood = :transfusi_whole_blood, rawat_transfusi_whole_blood = :rawat_transfusi_whole_blood,
                       kantong_wb = :kantong_wb,
                       transfusi_prc = :transfusi_prc, rawat_transfusi_prc = :rawat_transfusi_prc,
@@ -233,14 +268,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       transfusi_ffp = :transfusi_ffp, rawat_transfusi_ffp = :rawat_transfusi_ffp,
                       kantong_ffp = :kantong_ffp,
                       premedikasi = :premedikasi, rawat_premedikasi = :rawat_premedikasi,
+                      ket_premedikasi = :ket_premedikasi,
                       antibiotik = :antibiotik, rawat_antibiotik = :rawat_antibiotik,
+                      antibiotik_preops = :antibiotik_preops,
                       jam_antibiotik = :jam_antibiotik,
                       dm_insulin_preop = :dm_insulin_preop, rawat_dm_insulin_preop = :rawat_dm_insulin_preop,
+                      ket_dm_insulin_preop = :ket_dm_insulin_preop,
                       hipertensi_obat = :hipertensi_obat, rawat_hipertensi_obat = :rawat_hipertensi_obat,
+                      ket_hipertensi_obat = :ket_hipertensi_obat,
                       asma_obat = :asma_obat, rawat_asma_obat = :rawat_asma_obat,
+                      ket_asma_obat = :ket_asma_obat,
                       obat_lain_radio = :obat_lain_radio, rawat_obat_lain_radio = :rawat_obat_lain_radio,
                       obat_lain = :obat_lain,
                       obat_tidur = :obat_tidur, rawat_obat_tidur = :rawat_obat_tidur,
+                      ket_obat_tidur = :ket_obat_tidur,
                       pasang_infus = :pasang_infus, rawat_pasang_infus = :rawat_pasang_infus,
                       iv_catch_no = :iv_catch_no,
                       tekanan_darah_radio = :tekanan_darah_radio, rawat_tekanan_darah_radio = :rawat_tekanan_darah_radio,
@@ -252,13 +293,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       pernafasan_radio = :pernafasan_radio, rawat_pernafasan_radio = :rawat_pernafasan_radio,
                       pernafasan = :pernafasan,
                       obat_ubs = :obat_ubs, rawat_obat_ubs = :rawat_obat_ubs,
+                      ket_obat_ubs = :ket_obat_ubs,
                       skin_test_radio = :skin_test_radio, rawat_skin_test_radio = :rawat_skin_test_radio,
                       hasil_skin_test = :hasil_skin_test,
                       visit_dokter_bedah = :visit_dokter_bedah, rawat_visit_dokter_bedah = :rawat_visit_dokter_bedah,
+                      ket_visit_dokter_bedah = :ket_visit_dokter_bedah,
                       visit_dokter_anestesi = :visit_dokter_anestesi, rawat_visit_dokter_anestesi = :rawat_visit_dokter_anestesi,
+                      ket_visit_dokter_anestesi = :ket_visit_dokter_anestesi,
                       visit_dokter_konsul_1 = :visit_dokter_konsul_1, rawat_visit_dokter_konsul_1 = :rawat_visit_dokter_konsul_1,
+                      ket_visit_dokter_konsul_1 = :ket_visit_dokter_konsul_1,
                       visit_dokter_konsul_2 = :visit_dokter_konsul_2, rawat_visit_dokter_konsul_2 = :rawat_visit_dokter_konsul_2,
-                      visit_dokter_konsul_3 = :visit_dokter_konsul_3, rawat_visit_dokter_konsul_3 = :rawat_visit_dokter_konsul_3
+                      ket_visit_dokter_konsul_2 = :ket_visit_dokter_konsul_2,
+                      visit_dokter_konsul_3 = :visit_dokter_konsul_3, rawat_visit_dokter_konsul_3 = :rawat_visit_dokter_konsul_3,
+                      ket_visit_dokter_konsul_3 = :ket_visit_dokter_konsul_3
                       WHERE no_rawat = :no_rawat AND kode_paket = :kode_paket";
         } else {
             // INSERT new data
@@ -283,36 +330,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    ket_hasil_radiologi, ket_hasil_ct_scan, ket_hasil_usg,
                    ket_hasil_ekg, ket_hasil_lain,
                    puasa, rawat_puasa, waktu_puasa,
-                   lavement, rawat_lavement,
+                   lavement, rawat_lavement, ket_lavement,
                    pasang_dc, rawat_pasang_dc, dc_no, dc_macam,
-                   cukur_daerah_operasi, rawat_cukur_daerah_operasi,
-                   rambut_makeup_dibersihkan, rawat_rambut_makeup_dibersihkan,
-                   cat_kuku_dibersihkan, rawat_cat_kuku_dibersihkan,
-                   perhiasan_dilepas, rawat_perhiasan_dilepas,
-                   transfusi_darah, rawat_transfusi_darah,
+                   cukur_daerah_operasi, rawat_cukur_daerah_operasi, ket_cukur_daerah_operasi,
+                   rambut_makeup_dibersihkan, rawat_rambut_makeup_dibersihkan, ket_rambut_makeup_dibersihkan,
+                   cat_kuku_dibersihkan, rawat_cat_kuku_dibersihkan, ket_cat_kuku_dibersihkan,
+                   perhiasan_dilepas, rawat_perhiasan_dilepas, ket_perhiasan_dilepas,
+                   transfusi_darah, rawat_transfusi_darah, ket_transfusi_darah,
                    transfusi_whole_blood, rawat_transfusi_whole_blood, kantong_wb,
                    transfusi_prc, rawat_transfusi_prc, kantong_prc,
                    transfusi_ffp, rawat_transfusi_ffp, kantong_ffp,
-                   premedikasi, rawat_premedikasi,
+                   premedikasi, rawat_premedikasi, ket_premedikasi,
                    antibiotik, rawat_antibiotik,
                    antibiotik_preops, jam_antibiotik,
-                   dm_insulin_preop, rawat_dm_insulin_preop,
-                   hipertensi_obat, rawat_hipertensi_obat,
-                   asma_obat, rawat_asma_obat,
+                   dm_insulin_preop, rawat_dm_insulin_preop, ket_dm_insulin_preop,
+                   hipertensi_obat, rawat_hipertensi_obat, ket_hipertensi_obat,
+                   asma_obat, rawat_asma_obat, ket_asma_obat,
                    obat_lain_radio, rawat_obat_lain_radio, obat_lain,
-                   obat_tidur, rawat_obat_tidur,
+                   obat_tidur, rawat_obat_tidur, ket_obat_tidur,
                    pasang_infus, rawat_pasang_infus, iv_catch_no,
                    tekanan_darah_radio, rawat_tekanan_darah_radio, tekanan_darah,
                    nadi_radio, rawat_nadi_radio, nadi,
                    suhu_radio, rawat_suhu_radio, suhu,
                    pernafasan_radio, rawat_pernafasan_radio, pernafasan,
-                   obat_ubs, rawat_obat_ubs,
+                   obat_ubs, rawat_obat_ubs, ket_obat_ubs,
                    skin_test_radio, rawat_skin_test_radio, hasil_skin_test,
-                   visit_dokter_bedah, rawat_visit_dokter_bedah,
-                   visit_dokter_anestesi, rawat_visit_dokter_anestesi,
-                   visit_dokter_konsul_1, rawat_visit_dokter_konsul_1,
-                   visit_dokter_konsul_2, rawat_visit_dokter_konsul_2,
-                   visit_dokter_konsul_3, rawat_visit_dokter_konsul_3)
+                   visit_dokter_bedah, rawat_visit_dokter_bedah, ket_visit_dokter_bedah,
+                   visit_dokter_anestesi, rawat_visit_dokter_anestesi, ket_visit_dokter_anestesi,
+                   visit_dokter_konsul_1, rawat_visit_dokter_konsul_1, ket_visit_dokter_konsul_1,
+                   visit_dokter_konsul_2, rawat_visit_dokter_konsul_2, ket_visit_dokter_konsul_2,
+                   visit_dokter_konsul_3, rawat_visit_dokter_konsul_3, ket_visit_dokter_konsul_3)
                   VALUES 
                   (:no_rawat, :kode_paket, 
                    :no_rm, :nama, :jenis_kelamin, :umur, :tanggal_lahir,
@@ -334,36 +381,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    :ket_hasil_radiologi, :ket_hasil_ct_scan, :ket_hasil_usg,
                    :ket_hasil_ekg, :ket_hasil_lain,
                    :puasa, :rawat_puasa, :waktu_puasa,
-                   :lavement, :rawat_lavement,
+                   :lavement, :rawat_lavement, :ket_lavement,
                    :pasang_dc, :rawat_pasang_dc, :dc_no, :dc_macam,
-                   :cukur_daerah_operasi, :rawat_cukur_daerah_operasi,
-                   :rambut_makeup_dibersihkan, :rawat_rambut_makeup_dibersihkan,
-                   :cat_kuku_dibersihkan, :rawat_cat_kuku_dibersihkan,
-                   :perhiasan_dilepas, :rawat_perhiasan_dilepas,
-                   :transfusi_darah, :rawat_transfusi_darah,
+                   :cukur_daerah_operasi, :rawat_cukur_daerah_operasi, :ket_cukur_daerah_operasi,
+                   :rambut_makeup_dibersihkan, :rawat_rambut_makeup_dibersihkan, :ket_rambut_makeup_dibersihkan,
+                   :cat_kuku_dibersihkan, :rawat_cat_kuku_dibersihkan, :ket_cat_kuku_dibersihkan,
+                   :perhiasan_dilepas, :rawat_perhiasan_dilepas, :ket_perhiasan_dilepas,
+                   :transfusi_darah, :rawat_transfusi_darah, :ket_transfusi_darah,
                    :transfusi_whole_blood, :rawat_transfusi_whole_blood, :kantong_wb,
                    :transfusi_prc, :rawat_transfusi_prc, :kantong_prc,
                    :transfusi_ffp, :rawat_transfusi_ffp, :kantong_ffp,
-                   :premedikasi, :rawat_premedikasi,
+                   :premedikasi, :rawat_premedikasi, :ket_premedikasi,
                    :antibiotik, :rawat_antibiotik,
                    :antibiotik_preops, :jam_antibiotik,
-                   :dm_insulin_preop, :rawat_dm_insulin_preop,
-                   :hipertensi_obat, :rawat_hipertensi_obat,
-                   :asma_obat, :rawat_asma_obat,
+                   :dm_insulin_preop, :rawat_dm_insulin_preop, :ket_dm_insulin_preop,
+                   :hipertensi_obat, :rawat_hipertensi_obat, :ket_hipertensi_obat,
+                   :asma_obat, :rawat_asma_obat, :ket_asma_obat,
                    :obat_lain_radio, :rawat_obat_lain_radio, :obat_lain,
-                   :obat_tidur, :rawat_obat_tidur,
+                   :obat_tidur, :rawat_obat_tidur, :ket_obat_tidur,
                    :pasang_infus, :rawat_pasang_infus, :iv_catch_no,
                    :tekanan_darah_radio, :rawat_tekanan_darah_radio, :tekanan_darah,
                    :nadi_radio, :rawat_nadi_radio, :nadi,
                    :suhu_radio, :rawat_suhu_radio, :suhu,
                    :pernafasan_radio, :rawat_pernafasan_radio, :pernafasan,
-                   :obat_ubs, :rawat_obat_ubs,
+                   :obat_ubs, :rawat_obat_ubs, :ket_obat_ubs,
                    :skin_test_radio, :rawat_skin_test_radio, :hasil_skin_test,
-                   :visit_dokter_bedah, :rawat_visit_dokter_bedah,
-                   :visit_dokter_anestesi, :rawat_visit_dokter_anestesi,
-                   :visit_dokter_konsul_1, :rawat_visit_dokter_konsul_1,
-                   :visit_dokter_konsul_2, :rawat_visit_dokter_konsul_2,
-                   :visit_dokter_konsul_3, :rawat_visit_dokter_konsul_3)";
+                   :visit_dokter_bedah, :rawat_visit_dokter_bedah, :ket_visit_dokter_bedah,
+                   :visit_dokter_anestesi, :rawat_visit_dokter_anestesi, :ket_visit_dokter_anestesi,
+                   :visit_dokter_konsul_1, :rawat_visit_dokter_konsul_1, :ket_visit_dokter_konsul_1,
+                   :visit_dokter_konsul_2, :rawat_visit_dokter_konsul_2, :ket_visit_dokter_konsul_2,
+                   :visit_dokter_konsul_3, :rawat_visit_dokter_konsul_3, :ket_visit_dokter_konsul_3)";
         }
         
         $stmt = $db->prepare($query);
@@ -420,14 +467,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':puasa', $puasa);
         $stmt->bindParam(':waktu_puasa', $waktu_puasa);
         $stmt->bindParam(':lavement', $lavement);
+        $stmt->bindParam(':ket_lavement', $ket_lavement);
         $stmt->bindParam(':pasang_dc', $pasang_dc);
         $stmt->bindParam(':dc_no', $dc_no);
         $stmt->bindParam(':dc_macam', $dc_macam);
         $stmt->bindParam(':cukur_daerah_operasi', $cukur_daerah_operasi);
+        $stmt->bindParam(':ket_cukur_daerah_operasi', $ket_cukur_daerah_operasi);
         $stmt->bindParam(':rambut_makeup_dibersihkan', $rambut_makeup_dibersihkan);
+        $stmt->bindParam(':ket_rambut_makeup_dibersihkan', $ket_rambut_makeup_dibersihkan);
         $stmt->bindParam(':cat_kuku_dibersihkan', $cat_kuku_dibersihkan);
+        $stmt->bindParam(':ket_cat_kuku_dibersihkan', $ket_cat_kuku_dibersihkan);
         $stmt->bindParam(':perhiasan_dilepas', $perhiasan_dilepas);
+        $stmt->bindParam(':ket_perhiasan_dilepas', $ket_perhiasan_dilepas);
         $stmt->bindParam(':transfusi_darah', $transfusi_darah);
+        $stmt->bindParam(':ket_transfusi_darah', $ket_transfusi_darah);
         $stmt->bindParam(':transfusi_whole_blood', $transfusi_whole_blood);
         $stmt->bindParam(':kantong_wb', $kantong_wb);
         $stmt->bindParam(':transfusi_prc', $transfusi_prc);
@@ -435,17 +488,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':transfusi_ffp', $transfusi_ffp);
         $stmt->bindParam(':kantong_ffp', $kantong_ffp);
         $stmt->bindParam(':premedikasi', $premedikasi);
+        $stmt->bindParam(':ket_premedikasi', $ket_premedikasi);
         $stmt->bindParam(':antibiotik', $antibiotik);
-        if (!$existing) {
-            $stmt->bindParam(':antibiotik_preops', $antibiotik_preops);
-        }
+        $stmt->bindParam(':antibiotik_preops', $antibiotik_preops);
         $stmt->bindParam(':jam_antibiotik', $jam_antibiotik);
         $stmt->bindParam(':dm_insulin_preop', $dm_insulin_preop);
+        $stmt->bindParam(':ket_dm_insulin_preop', $ket_dm_insulin_preop);
         $stmt->bindParam(':hipertensi_obat', $hipertensi_obat);
+        $stmt->bindParam(':ket_hipertensi_obat', $ket_hipertensi_obat);
         $stmt->bindParam(':asma_obat', $asma_obat);
+        $stmt->bindParam(':ket_asma_obat', $ket_asma_obat);
         $stmt->bindParam(':obat_lain_radio', $obat_lain_radio);
         $stmt->bindParam(':obat_lain', $obat_lain);
         $stmt->bindParam(':obat_tidur', $obat_tidur);
+        $stmt->bindParam(':ket_obat_tidur', $ket_obat_tidur);
         $stmt->bindParam(':pasang_infus', $pasang_infus);
         $stmt->bindParam(':iv_catch_no', $iv_catch_no);
         $stmt->bindParam(':tekanan_darah_radio', $tekanan_darah_radio);
@@ -457,13 +513,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':pernafasan_radio', $pernafasan_radio);
         $stmt->bindParam(':pernafasan', $pernafasan);
         $stmt->bindParam(':obat_ubs', $obat_ubs);
+        $stmt->bindParam(':ket_obat_ubs', $ket_obat_ubs);
         $stmt->bindParam(':skin_test_radio', $skin_test_radio);
         $stmt->bindParam(':hasil_skin_test', $hasil_skin_test);
         $stmt->bindParam(':visit_dokter_bedah', $visit_dokter_bedah);
+        $stmt->bindParam(':ket_visit_dokter_bedah', $ket_visit_dokter_bedah);
         $stmt->bindParam(':visit_dokter_anestesi', $visit_dokter_anestesi);
+        $stmt->bindParam(':ket_visit_dokter_anestesi', $ket_visit_dokter_anestesi);
         $stmt->bindParam(':visit_dokter_konsul_1', $visit_dokter_konsul_1);
+        $stmt->bindParam(':ket_visit_dokter_konsul_1', $ket_visit_dokter_konsul_1);
         $stmt->bindParam(':visit_dokter_konsul_2', $visit_dokter_konsul_2);
+        $stmt->bindParam(':ket_visit_dokter_konsul_2', $ket_visit_dokter_konsul_2);
         $stmt->bindParam(':visit_dokter_konsul_3', $visit_dokter_konsul_3);
+        $stmt->bindParam(':ket_visit_dokter_konsul_3', $ket_visit_dokter_konsul_3);
         
         // Bind R. RAWAT parameters (28 kolom)
         $stmt->bindParam(':rawat_program_ke_ubs', $rawat_program_ke_ubs);

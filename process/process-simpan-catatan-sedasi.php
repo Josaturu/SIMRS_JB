@@ -258,10 +258,84 @@ try {
     if ($result) {
         $affectedRows = $stmt->rowCount();
         
+        // Simpan data vital sign jika ada
+        $vitalSignSaved = 0;
+        
+        // Debug logging
+        error_log("=== VITAL SIGN DEBUG ===");
+        error_log("POST vital_sign_data exists: " . (isset($_POST['vital_sign_data']) ? 'YES' : 'NO'));
+        error_log("POST vital_sign_data empty: " . (empty($_POST['vital_sign_data']) ? 'YES' : 'NO'));
+        if (isset($_POST['vital_sign_data'])) {
+            error_log("POST vital_sign_data value: " . $_POST['vital_sign_data']);
+        }
+        error_log("=======================");
+        
+        if (!empty($_POST['vital_sign_data'])) {
+            try {
+                $vitalSignData = json_decode($_POST['vital_sign_data'], true);
+                
+                error_log("Decoded vital sign data: " . print_r($vitalSignData, true));
+                
+                if ($vitalSignData && isset($vitalSignData['vital_signs']) && is_array($vitalSignData['vital_signs'])) {
+                    $vitalSigns = $vitalSignData['vital_signs'];
+                    
+                    // Prepare statement untuk insert vital sign
+                    $vitalQuery = "INSERT INTO tbl_anestesi_vital_sign 
+                                   (id, no_rawat, kode_paket, tanggal, jam_mulai, waktu, respirasi, nadi, td_sistolik, td_diastolik, fio2, spo2) 
+                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $vitalStmt = $db->prepare($vitalQuery);
+                    
+                    foreach ($vitalSigns as $vital) {
+                        $vitalId = generateUUID();
+                        
+                        error_log("Inserting vital sign: " . print_r($vital, true));
+                        
+                        // Gabungkan tanggal dengan waktu untuk field waktu (datetime)
+                        $waktuDatetime = $vitalSignData['tanggal'] . ' ' . ($vital['jam'] ?? '00:00:00');
+                        
+                        $insertResult = $vitalStmt->execute([
+                            $vitalId,
+                            $vitalSignData['no_rawat'],
+                            $vitalSignData['kode_paket'],
+                            $vitalSignData['tanggal'],
+                            $vitalSignData['jam_mulai'],
+                            $waktuDatetime,  // waktu (datetime)
+                            $vital['respirasi'] ?? null,
+                            $vital['nadi'] ?? null,
+                            $vital['sistol'] ?? null,  // td_sistolik
+                            $vital['diastol'] ?? null,  // td_diastolik
+                            $vital['fio2'] ?? null,
+                            $vital['spo2'] ?? null
+                        ]);
+                        
+                        if ($insertResult) {
+                            $vitalSignSaved++;
+                            error_log("✅ Vital sign inserted successfully");
+                        } else {
+                            error_log("❌ Failed to insert vital sign");
+                        }
+                    }
+                    
+                    error_log("Total vital signs saved: " . $vitalSignSaved);
+                }
+            } catch (Exception $vitalError) {
+                error_log("Error saving vital signs: " . $vitalError->getMessage());
+                // Tidak throw error, hanya log saja
+            }
+        }
+        
         if ($isUpdate) {
-            $_SESSION['success'] = "Data catatan sedasi berhasil diperbarui!";
+            $message = "Data catatan sedasi berhasil diperbarui!";
+            if ($vitalSignSaved > 0) {
+                $message .= " ($vitalSignSaved data vital sign tersimpan)";
+            }
+            $_SESSION['success'] = $message;
         } else {
-            $_SESSION['success'] = "Data catatan sedasi berhasil disimpan!";
+            $message = "Data catatan sedasi berhasil disimpan!";
+            if ($vitalSignSaved > 0) {
+                $message .= " ($vitalSignSaved data vital sign tersimpan)";
+            }
+            $_SESSION['success'] = $message;
         }
     } else {
         $_SESSION['error'] = "Gagal menyimpan data.";

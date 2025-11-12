@@ -34,6 +34,18 @@ if (!$booking) {
     exit;
 }
 
+// Ambil semua dokter dari tbl_dokter untuk dropdown
+$query_dokter = "SELECT id_dokter, nama_dokter FROM tbl_dokter ORDER BY nama_dokter ASC";
+$stmt_dokter = $db->prepare($query_dokter);
+$stmt_dokter->execute();
+$dokter_list = $stmt_dokter->fetchAll(PDO::FETCH_ASSOC);
+
+// Ambil semua perawat dari tbl_perawat untuk dropdown
+$query_perawat = "SELECT id_perawat, nama_perawat FROM tbl_perawat ORDER BY nama_perawat ASC";
+$stmt_perawat = $db->prepare($query_perawat);
+$stmt_perawat->execute();
+$perawat_list = $stmt_perawat->fetchAll(PDO::FETCH_ASSOC);
+
 // Hitung umur dari tanggal lahir
 $umur = 0;
 if (!empty($pasien['tanggal_lahir'])) {
@@ -103,6 +115,16 @@ include __DIR__ . '/../includes/header.php';
         <div style="color: #004d80;">CHECKLIST PERSIAPAN OPERASI</div>
         <div>RMO-1 a</div>
     </div>
+    
+    <!-- Tombol Back ke Detail Pasien (Floating) -->
+    <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
+       class="btn-back-to-detail" 
+       style="position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background: #6c757d; color: white; border: none; border-radius: 50%; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;"
+       onmouseover="this.style.background='#5a6268'; this.style.transform='scale(1.1)';" 
+       onmouseout="this.style.background='#6c757d'; this.style.transform='scale(1)';" 
+       title="Kembali ke Detail Pasien">
+        <i class="fas fa-arrow-left"></i>
+    </a>
     
     <!-- Informasi Pasien & Data Booking Operasi -->
     <div class="card" style="background: #e3f2fd; border-left: 4px solid #2196F3;">
@@ -196,28 +218,45 @@ include __DIR__ . '/../includes/header.php';
             <div class="form-column">
                 <div class="keterangan-pasien">
                     <div class="input-container">
-                        <input type="date" id="tglOperasi" name="tglOperasi" placeholder=" " value="<?php echo htmlspecialchars($existing_data['tanggal_operasi'] ?? ''); ?>" required>
+                        <input type="date" id="tglOperasi" name="tglOperasi" placeholder=" " value="<?php echo htmlspecialchars($existing_data['tanggal_operasi'] ?? ''); ?>" data-nullable="true">
                         <label for="tglOperasi" class="label-floating">Tanggal Operasi</label>
                     </div>
                 </div>
                 
                 <div class="keterangan-pasien">
                     <div class="input-container">
-                        <input type="text" id="macamOperasi" name="macamOperasi" placeholder=" " value="<?php echo htmlspecialchars($existing_data['macam_operasi'] ?? ''); ?>" required>
+                        <input type="text" id="macamOperasi" name="macamOperasi" placeholder=" " value="<?php echo htmlspecialchars($existing_data['macam_operasi'] ?? ''); ?>" data-nullable="true">
                         <label for="macamOperasi" class="label-floating">Macam Operasi</label>
                     </div>
                 </div>
                 
                 <div class="keterangan-pasien">
-                    <div class="input-container">
-                        <input type="text" id="dpjp" name="dpjp" placeholder=" " value="<?php echo htmlspecialchars($existing_data['dpjp'] ?? ''); ?>">
-                        <label for="dpjp" class="label-floating">DPJP (Dokter Penanggung Jawab Pelayanan)</label>
+                    <?php
+                    $current_dpjp = $existing_data['dpjp'] ?? '';
+                    $is_other_dpjp = !empty($current_dpjp) && !in_array($current_dpjp, array_column($dokter_list, 'nama_dokter'));
+                    ?>
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #333;">
+                        <i class="fas fa-user-md"></i> DPJP (Dokter Penanggung Jawab Pelayanan)
+                    </label>
+                    <select id="dpjp_select" name="dpjp_select" onchange="toggleInput('dpjp')" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;" data-nullable="true">
+                        <option value="">-- Pilih DPJP --</option>
+                        <?php
+                        foreach ($dokter_list as $dokter) {
+                            $selected = ($current_dpjp == $dokter['nama_dokter']) ? 'selected' : '';
+                            echo "<option value=\"" . htmlspecialchars($dokter['nama_dokter']) . "\" $selected>" . htmlspecialchars($dokter['nama_dokter']) . "</option>";
+                        }
+                        ?>
+                        <option value="lainnya" <?= $is_other_dpjp ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
+                    </select>
+                    <div id="dpjp_input_container" style="display: <?= $is_other_dpjp ? 'block' : 'none' ?>; margin-top: 8px;">
+                        <input type="text" id="dpjp_input" name="dpjp_input" placeholder="Nama Dokter Lainnya" value="<?= $is_other_dpjp ? htmlspecialchars($current_dpjp) : '' ?>" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
                     </div>
+                    <input type="hidden" id="dpjp" name="dpjp" value="<?= htmlspecialchars($current_dpjp) ?>">
                 </div>
                 
                 <div class="keterangan-pasien">
                     <div class="input-container">
-                        <input type="number" id="tinggiBadan" name="tinggiBadan" placeholder=" " step="0.1" value="<?php echo htmlspecialchars($existing_data['tinggi_badan'] ?? ''); ?>">
+                        <input type="number" id="tinggiBadan" name="tinggiBadan" placeholder=" " step="0.1" value="<?php echo htmlspecialchars($existing_data['tinggi_badan'] ?? ''); ?>" data-nullable="true">
                         <label for="tinggiBadan" class="label-floating">Tinggi Badan (cm)</label>
                     </div>
                 </div>
@@ -227,13 +266,13 @@ include __DIR__ . '/../includes/header.php';
             <div class="form-column">
                 <div class="keterangan-pasien">
                     <div class="input-container">
-                        <input type="text" id="riwayatAlergi" name="riwayatAlergi" placeholder=" " value="<?php echo htmlspecialchars($existing_data['riwayat_alergi'] ?? ''); ?>">
+                        <input type="text" id="riwayatAlergi" name="riwayatAlergi" placeholder=" " value="<?php echo htmlspecialchars($existing_data['riwayat_alergi'] ?? ''); ?>" data-nullable="true">
                         <label for="riwayatAlergi" class="label-floating">Riwayat Alergi</label>
                     </div>
                 </div>
                 <div class="keterangan-pasien">
                     <div class="input-container">
-                        <input type="number" id="beratBadan" name="beratBadan" placeholder=" " step="0.1" value="<?php echo htmlspecialchars($existing_data['berat_badan'] ?? ''); ?>">
+                        <input type="number" id="beratBadan" name="beratBadan" placeholder=" " step="0.1" value="<?php echo htmlspecialchars($existing_data['berat_badan'] ?? ''); ?>" data-nullable="true">
                         <label for="beratBadan" class="label-floating">Berat Badan (kg)</label>
                     </div>
                 </div>
@@ -406,7 +445,21 @@ include __DIR__ . '/../includes/header.php';
                             <input type="time" name="ket<?php echo $i; ?>_waktu" value="<?php echo htmlspecialchars($existing_data['jam_antibiotik'] ?? ''); ?>" style="width: 30%;">
                             <label for="ket24_waktu"> WIB</label>
                         <?php else: ?>
-                            <input type="text" name="ket<?php echo $i; ?>">
+                            <?php
+                            // Map ket number to database field
+                            $ket_field_map = [
+                                13 => 'ket_lavement',
+                                15 => 'ket_cukur_daerah_operasi',
+                                16 => 'ket_rambut_makeup_dibersihkan',
+                                17 => 'ket_cat_kuku_dibersihkan',
+                                18 => 'ket_perhiasan_dilepas',
+                                19 => 'ket_transfusi_darah',
+                                23 => 'ket_premedikasi'
+                            ];
+                            $ket_db_field = $ket_field_map[$i] ?? null;
+                            $ket_value = $ket_db_field ? ($existing_data[$ket_db_field] ?? '') : '';
+                            ?>
+                            <input type="text" name="ket<?php echo $i; ?>" value="<?php echo htmlspecialchars($ket_value); ?>" placeholder="Keterangan">
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -478,7 +531,24 @@ include __DIR__ . '/../includes/header.php';
                                 <label><input type="radio" name="ket<?php echo $i; ?>" value="negatif" <?php echo (!empty($existing_data['hasil_skin_test']) && $existing_data['hasil_skin_test'] == 'Negatif') ? 'checked' : ''; ?>> Negatif</label>
                             </div>
                         <?php else: ?>
-                            <input type="text" name="ket<?php echo $i; ?>">
+                            <?php
+                            // Map ket number to database field for Persiapan Khusus
+                            $ket_khusus_map = [
+                                25 => 'ket_dm_insulin_preop',
+                                26 => 'ket_hipertensi_obat',
+                                27 => 'ket_asma_obat',
+                                29 => 'ket_obat_tidur',
+                                35 => 'ket_obat_ubs',
+                                37 => 'ket_visit_dokter_bedah',
+                                38 => 'ket_visit_dokter_anestesi',
+                                39 => 'ket_visit_dokter_konsul_1',
+                                40 => 'ket_visit_dokter_konsul_2',
+                                41 => 'ket_visit_dokter_konsul_3'
+                            ];
+                            $ket_khusus_field = $ket_khusus_map[$i] ?? null;
+                            $ket_khusus_value = $ket_khusus_field ? ($existing_data[$ket_khusus_field] ?? '') : '';
+                            ?>
+                            <input type="text" name="ket<?php echo $i; ?>" value="<?php echo htmlspecialchars($ket_khusus_value); ?>" placeholder="Keterangan">
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -495,6 +565,9 @@ include __DIR__ . '/../includes/header.php';
     </div>
     <?php include __DIR__ . '/../includes/footer.php'; ?>
 </div>
+
+<!-- Persiapan Operasi Custom Validation -->
+<script src="/assets/js/persiapan-operasi-validation.js"></script>
 
 <script src="/assets/js/autosave.js"></script>
 <script>
@@ -580,7 +653,54 @@ include __DIR__ . '/../includes/header.php';
     `;
     document.head.appendChild(style);
     
+    // Toggle Input untuk Dropdown dengan opsi "Lainnya"
+    function toggleInput(fieldName) {
+        const select = document.getElementById(fieldName + '_select');
+        const inputContainer = document.getElementById(fieldName + '_input_container');
+        const inputField = document.getElementById(fieldName + '_input');
+        const hiddenField = document.getElementById(fieldName);
+        
+        if (select.value === 'lainnya') {
+            inputContainer.style.display = 'block';
+            inputField.required = false;
+            select.required = false;
+            hiddenField.value = inputField.value;
+        } else {
+            inputContainer.style.display = 'none';
+            inputField.required = false;
+            select.required = false;
+            hiddenField.value = select.value;
+        }
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize toggle untuk dropdown DPJP
+        const fields = ['dpjp'];
+        
+        fields.forEach(function(fieldName) {
+            const select = document.getElementById(fieldName + '_select');
+            const inputField = document.getElementById(fieldName + '_input');
+            const hiddenField = document.getElementById(fieldName);
+            
+            if (select && inputField && hiddenField) {
+                // Event listener untuk dropdown
+                select.addEventListener('change', function() {
+                    if (this.value !== 'lainnya') {
+                        hiddenField.value = this.value;
+                    }
+                    toggleInput(fieldName);
+                });
+                
+                // Event listener untuk input manual
+                inputField.addEventListener('input', function() {
+                    hiddenField.value = this.value;
+                });
+                
+                // Initialize state saat load
+                toggleInput(fieldName);
+            }
+        });
+        
         // Initialize AutoSave
         AutoSave.init('formPersiapanOperasi', {
             debounce: 1000,

@@ -12,6 +12,15 @@
     <link rel="stylesheet" href="assets/css/loading-skeleton.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- DateTime Now Button Script -->
+    <script src="assets/js/datetime-now.js"></script>
+    
+    <!-- Form Exit Confirmation Script -->
+    <script src="assets/js/form-exit-confirmation.js"></script>
+    
+    <!-- Mark Required Fields Script -->
+    <script src="assets/js/mark-required-fields.js"></script>
 </head>
 <body>
     <div class="header header-sticky">

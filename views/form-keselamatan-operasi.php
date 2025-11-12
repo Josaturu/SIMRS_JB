@@ -19,13 +19,28 @@ if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mula
 // Koneksi database untuk mendapatkan data booking DAN data pasien
 $database = new Database();
 $db = $database->getConnection();
-$query = "SELECT b.*, p.kode_rekam_medis, p.nama, p.tanggal_lahir, p.jenis_kelamin, p.alamat, p.no_hp, p.gol_darah, p.tempat_lahir
+$query = "SELECT b.*, 
+                 p.kode_rekam_medis, p.nama, p.tanggal_lahir, p.jenis_kelamin, p.alamat, p.no_hp, p.gol_darah, p.tempat_lahir,
+                 d.nama_dokter as nama_dokter_bedah
           FROM booking_operasi b 
           LEFT JOIN pasien p ON b.kd_pasien = p.kd_pasien 
+          LEFT JOIN tbl_dokter d ON b.kd_dokter COLLATE utf8mb4_unicode_ci = d.id_dokter
           WHERE b.no_rawat = ? AND b.kode_paket = ? AND b.tanggal = ? AND b.jam_mulai = ?";
 $stmt = $db->prepare($query);
 $stmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $booking = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Ambil semua dokter dari tbl_dokter untuk dropdown
+$query_dokter = "SELECT id_dokter, nama_dokter FROM tbl_dokter ORDER BY nama_dokter ASC";
+$stmt_dokter = $db->prepare($query_dokter);
+$stmt_dokter->execute();
+$dokter_list = $stmt_dokter->fetchAll(PDO::FETCH_ASSOC);
+
+// Ambil semua perawat dari tbl_perawat untuk dropdown
+$query_perawat = "SELECT id_perawat, nama_perawat FROM tbl_perawat ORDER BY nama_perawat ASC";
+$stmt_perawat = $db->prepare($query_perawat);
+$stmt_perawat->execute();
+$perawat_list = $stmt_perawat->fetchAll(PDO::FETCH_ASSOC);
 
 $pasien = $booking ? $booking : [];
 
@@ -64,11 +79,120 @@ include __DIR__ . '/../includes/header.php';
 ?>
 <link rel="stylesheet" href="/assets/css/style.css">
 
+<style>
+/* Time Input Wrapper - Compact Design */
+.time-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    flex-wrap: nowrap;
+}
+
+.time-input-wrapper .input-time {
+    width: 200px !important;
+    min-width: 200px;
+    padding: 12px 16px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background: white;
+    flex-shrink: 0;
+}
+
+.time-input-wrapper .input-time:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+
+/* Section Header Adjustment */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.section-header h3 i {
+    color: #007bff;
+}
+
+/* Ensure time input wrapper doesn't overflow */
+.section-header .time-input-wrapper {
+    margin-left: auto;
+}
+
+/* Checklist Section Spacing */
+.checklist-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+/* Prevent icon overlap on time input */
+input[type="time"]::-webkit-calendar-picker-indicator {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* Responsive adjustment for smaller screens */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .section-header .time-input-wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .time-input-wrapper {
+        width: 100%;
+    }
+    
+    .time-input-wrapper .input-time {
+        flex: 1;
+        width: auto !important;
+    }
+}
+</style>
+
 <div class="container">
     <div class="title">
         <div style="color: #004d80;">CHECKLIST KESELAMATAN OPERASI</div>
         <div>RMOK-0002</div>
     </div>
+    
+    <!-- Tombol Back ke Detail Pasien (Floating) -->
+    <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
+       class="btn-back-to-detail" 
+       style="position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background: #6c757d; color: white; border: none; border-radius: 50%; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;"
+       onmouseover="this.style.background='#5a6268'; this.style.transform='scale(1.1)';" 
+       onmouseout="this.style.background='#6c757d'; this.style.transform='scale(1)';" 
+       title="Kembali ke Detail Pasien">
+        <i class="fas fa-arrow-left"></i>
+    </a>
     
     <!-- Informasi Pasien & Data Booking Operasi -->
     <div class="card" style="background: #e3f2fd; border-left: 4px solid #2196F3;">
@@ -182,10 +306,28 @@ include __DIR__ . '/../includes/header.php';
                 <div class="form-column">
                     <h3><i class="fas fa-stethoscope"></i> Informasi Operasi</h3>
                     <div class="keterangan-pasien">
-                        <div class="input-container">
-                            <input type="text" id="operator" name="operator" placeholder=" " value="<?php echo htmlspecialchars($existing_data['operator'] ?? ''); ?>" required>
-                            <label for="operator" class="label-floating">Operator / dr. Bedah</label>
+                        <?php
+                        // Ambil operator dari existing_data atau booking
+                        $current_operator = $existing_data['operator'] ?? $booking['nama_dokter_bedah'] ?? '';
+                        $is_other_operator = !empty($current_operator) && !in_array($current_operator, array_column($dokter_list, 'nama_dokter'));
+                        ?>
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #333;">
+                            <i class="fas fa-user-md"></i> Operator / Dokter Bedah
+                        </label>
+                        <select id="operator_select" name="operator_select" onchange="toggleInput('operator')" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;" required>
+                            <option value="">-- Pilih Dokter Bedah --</option>
+                            <?php
+                            foreach ($dokter_list as $dokter) {
+                                $selected = ($current_operator == $dokter['nama_dokter']) ? 'selected' : '';
+                                echo "<option value=\"" . htmlspecialchars($dokter['nama_dokter']) . "\" $selected>" . htmlspecialchars($dokter['nama_dokter']) . "</option>";
+                            }
+                            ?>
+                            <option value="lainnya" <?= $is_other_operator ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
+                        </select>
+                        <div id="operator_input_container" style="display: <?= $is_other_operator ? 'block' : 'none' ?>; margin-top: 8px;">
+                            <input type="text" id="operator_input" name="operator_input" placeholder="Nama Dokter Lainnya" value="<?= $is_other_operator ? htmlspecialchars($current_operator) : '' ?>" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
                         </div>
+                        <input type="hidden" id="operator" name="operator" value="<?= htmlspecialchars($current_operator) ?>">
                     </div>
                     <div class="keterangan-pasien">
                         <div class="input-container">
@@ -210,7 +352,9 @@ include __DIR__ . '/../includes/header.php';
                 <div class="checklist-section">
                     <div class="section-header">
                         <h3><i class="fas fa-sign-in-alt"></i> Sign In</h3>
-                        <input type="time" class="input-time" name="signin_time" value="<?php echo htmlspecialchars($existing_data['signin_time'] ?? ''); ?>" required>
+                        <div class="time-input-wrapper">
+                            <input type="time" class="input-time" name="signin_time" id="signin_time" value="<?php echo htmlspecialchars($existing_data['signin_time'] ?? ''); ?>" required>
+                        </div>
                     </div>
                     <ol>
                         <li>Pasien sudah konfirmasikan : 
@@ -264,13 +408,64 @@ include __DIR__ . '/../includes/header.php';
                         </tr>
                         <tr>
                             <td>
-                                <input type="text" name="dokter_anestesi_signin" value="<?php echo htmlspecialchars($existing_data['dokter_anestesi_signin'] ?? ''); ?>" placeholder="Nama Dokter Anestesi" style="width: 100%; padding: 8px;">
+                                <?php
+                                $current_dokter_anestesi_signin = $existing_data['dokter_anestesi_signin'] ?? '';
+                                $is_other_dokter_anestesi_signin = !empty($current_dokter_anestesi_signin) && !in_array($current_dokter_anestesi_signin, array_column($dokter_list, 'nama_dokter'));
+                                ?>
+                                <select id="dokter_anestesi_signin_select" name="dokter_anestesi_signin_select" onchange="toggleInput('dokter_anestesi_signin')" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">-- Pilih Dokter Anestesi --</option>
+                                    <?php
+                                    foreach ($dokter_list as $dokter) {
+                                        $selected = ($current_dokter_anestesi_signin == $dokter['nama_dokter']) ? 'selected' : '';
+                                        echo "<option value=\"" . htmlspecialchars($dokter['nama_dokter']) . "\" $selected>" . htmlspecialchars($dokter['nama_dokter']) . "</option>";
+                                    }
+                                    ?>
+                                    <option value="lainnya" <?= $is_other_dokter_anestesi_signin ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
+                                </select>
+                                <div id="dokter_anestesi_signin_input_container" style="display: <?= $is_other_dokter_anestesi_signin ? 'block' : 'none' ?>; margin-top: 5px;">
+                                    <input type="text" id="dokter_anestesi_signin_input" name="dokter_anestesi_signin_input" placeholder="Nama Dokter Lainnya" value="<?= $is_other_dokter_anestesi_signin ? htmlspecialchars($current_dokter_anestesi_signin) : '' ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <input type="hidden" id="dokter_anestesi_signin" name="dokter_anestesi_signin" value="<?= htmlspecialchars($current_dokter_anestesi_signin) ?>">
                             </td>
                             <td>
-                                <input type="text" name="perawat_anestesi_signin" value="<?php echo htmlspecialchars($existing_data['perawat_anestesi_signin'] ?? ''); ?>" placeholder="Nama Perawat Anestesi" style="width: 100%; padding: 8px;">
+                                <?php
+                                $current_perawat_anestesi_signin = $existing_data['perawat_anestesi_signin'] ?? '';
+                                $is_other_perawat_anestesi_signin = !empty($current_perawat_anestesi_signin) && !in_array($current_perawat_anestesi_signin, array_column($perawat_list, 'nama_perawat'));
+                                ?>
+                                <select id="perawat_anestesi_signin_select" name="perawat_anestesi_signin_select" onchange="toggleInput('perawat_anestesi_signin')" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">-- Pilih Perawat Anestesi --</option>
+                                    <?php
+                                    foreach ($perawat_list as $perawat) {
+                                        $selected = ($current_perawat_anestesi_signin == $perawat['nama_perawat']) ? 'selected' : '';
+                                        echo "<option value=\"" . htmlspecialchars($perawat['nama_perawat']) . "\" $selected>" . htmlspecialchars($perawat['nama_perawat']) . "</option>";
+                                    }
+                                    ?>
+                                    <option value="lainnya" <?= $is_other_perawat_anestesi_signin ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
+                                </select>
+                                <div id="perawat_anestesi_signin_input_container" style="display: <?= $is_other_perawat_anestesi_signin ? 'block' : 'none' ?>; margin-top: 5px;">
+                                    <input type="text" id="perawat_anestesi_signin_input" name="perawat_anestesi_signin_input" placeholder="Nama Perawat Lainnya" value="<?= $is_other_perawat_anestesi_signin ? htmlspecialchars($current_perawat_anestesi_signin) : '' ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <input type="hidden" id="perawat_anestesi_signin" name="perawat_anestesi_signin" value="<?= htmlspecialchars($current_perawat_anestesi_signin) ?>">
                             </td>
                             <td>
-                                <input type="text" name="perawat_sirkuler_signin" value="<?php echo htmlspecialchars($existing_data['perawat_sirkuler_signin'] ?? ''); ?>" placeholder="Nama Perawat Sirkuler" style="width: 100%; padding: 8px;">
+                                <?php
+                                $current_perawat_sirkuler_signin = $existing_data['perawat_sirkuler_signin'] ?? '';
+                                $is_other_perawat_sirkuler_signin = !empty($current_perawat_sirkuler_signin) && !in_array($current_perawat_sirkuler_signin, array_column($perawat_list, 'nama_perawat'));
+                                ?>
+                                <select id="perawat_sirkuler_signin_select" name="perawat_sirkuler_signin_select" onchange="toggleInput('perawat_sirkuler_signin')" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">-- Pilih Perawat Sirkuler --</option>
+                                    <?php
+                                    foreach ($perawat_list as $perawat) {
+                                        $selected = ($current_perawat_sirkuler_signin == $perawat['nama_perawat']) ? 'selected' : '';
+                                        echo "<option value=\"" . htmlspecialchars($perawat['nama_perawat']) . "\" $selected>" . htmlspecialchars($perawat['nama_perawat']) . "</option>";
+                                    }
+                                    ?>
+                                    <option value="lainnya" <?= $is_other_perawat_sirkuler_signin ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
+                                </select>
+                                <div id="perawat_sirkuler_signin_input_container" style="display: <?= $is_other_perawat_sirkuler_signin ? 'block' : 'none' ?>; margin-top: 5px;">
+                                    <input type="text" id="perawat_sirkuler_signin_input" name="perawat_sirkuler_signin_input" placeholder="Nama Perawat Lainnya" value="<?= $is_other_perawat_sirkuler_signin ? htmlspecialchars($current_perawat_sirkuler_signin) : '' ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <input type="hidden" id="perawat_sirkuler_signin" name="perawat_sirkuler_signin" value="<?= htmlspecialchars($current_perawat_sirkuler_signin) ?>">
                             </td>
                         </tr>
                     </table> 
@@ -280,7 +475,9 @@ include __DIR__ . '/../includes/header.php';
                 <div class="checklist-section">
                     <div class="section-header">
                         <h3><i class="fas fa-clock"></i> Time Out</h3>
-                        <input type="time" class="input-time" name="timeout_time" value="<?php echo htmlspecialchars($existing_data['timeout_time'] ?? ''); ?>" required>
+                        <div class="time-input-wrapper">
+                            <input type="time" class="input-time" name="timeout_time" id="timeout_time" value="<?php echo htmlspecialchars($existing_data['timeout_time'] ?? ''); ?>" required>
+                        </div>
                     </div>
                     <ol>
                         <li>Konfirmasi seluruh anggota tim (nama dan peran masing-masing)
@@ -327,7 +524,24 @@ include __DIR__ . '/../includes/header.php';
                         </tr>
                         <tr>
                             <td>
-                                <input type="text" name="perawat_sirkuler_timeout" value="<?php echo htmlspecialchars($existing_data['perawat_sirkuler_timeout'] ?? ''); ?>" placeholder="Nama Perawat Sirkuler" style="width: 100%; padding: 8px;">
+                                <?php
+                                $current_perawat_sirkuler_timeout = $existing_data['perawat_sirkuler_timeout'] ?? '';
+                                $is_other_perawat_sirkuler_timeout = !empty($current_perawat_sirkuler_timeout) && !in_array($current_perawat_sirkuler_timeout, array_column($perawat_list, 'nama_perawat'));
+                                ?>
+                                <select id="perawat_sirkuler_timeout_select" name="perawat_sirkuler_timeout_select" onchange="toggleInput('perawat_sirkuler_timeout')" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">-- Pilih Perawat Sirkuler --</option>
+                                    <?php
+                                    foreach ($perawat_list as $perawat) {
+                                        $selected = ($current_perawat_sirkuler_timeout == $perawat['nama_perawat']) ? 'selected' : '';
+                                        echo "<option value=\"" . htmlspecialchars($perawat['nama_perawat']) . "\" $selected>" . htmlspecialchars($perawat['nama_perawat']) . "</option>";
+                                    }
+                                    ?>
+                                    <option value="lainnya" <?= $is_other_perawat_sirkuler_timeout ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
+                                </select>
+                                <div id="perawat_sirkuler_timeout_input_container" style="display: <?= $is_other_perawat_sirkuler_timeout ? 'block' : 'none' ?>; margin-top: 5px;">
+                                    <input type="text" id="perawat_sirkuler_timeout_input" name="perawat_sirkuler_timeout_input" placeholder="Nama Perawat Lainnya" value="<?= $is_other_perawat_sirkuler_timeout ? htmlspecialchars($current_perawat_sirkuler_timeout) : '' ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <input type="hidden" id="perawat_sirkuler_timeout" name="perawat_sirkuler_timeout" value="<?= htmlspecialchars($current_perawat_sirkuler_timeout) ?>">
                             </td>
                         </tr>
                     </table>
@@ -337,7 +551,9 @@ include __DIR__ . '/../includes/header.php';
                 <div class="checklist-section">
                     <div class="section-header">
                         <h3><i class="fas fa-sign-out-alt"></i> Sign Out</h3>
-                        <input type="time" class="input-time" name="signout_time" value="<?php echo htmlspecialchars($existing_data['signout_time'] ?? ''); ?>" required>
+                        <div class="time-input-wrapper">
+                            <input type="time" class="input-time" name="signout_time" id="signout_time" value="<?php echo htmlspecialchars($existing_data['signout_time'] ?? ''); ?>" required>
+                        </div>
                     </div>
                     <ol>
                         <li>Konfirmasi perawat secara verbal:
@@ -369,13 +585,64 @@ include __DIR__ . '/../includes/header.php';
                         </tr>
                         <tr>
                             <td>
-                                <input type="text" name="perawat_sirkuler_signout" value="<?php echo htmlspecialchars($existing_data['perawat_sirkuler_signout'] ?? ''); ?>" placeholder="Nama Perawat Sirkuler" style="width: 100%; padding: 8px;">
+                                <?php
+                                $current_perawat_sirkuler_signout = $existing_data['perawat_sirkuler_signout'] ?? '';
+                                $is_other_perawat_sirkuler_signout = !empty($current_perawat_sirkuler_signout) && !in_array($current_perawat_sirkuler_signout, array_column($perawat_list, 'nama_perawat'));
+                                ?>
+                                <select id="perawat_sirkuler_signout_select" name="perawat_sirkuler_signout_select" onchange="toggleInput('perawat_sirkuler_signout')" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">-- Pilih Perawat Sirkuler --</option>
+                                    <?php
+                                    foreach ($perawat_list as $perawat) {
+                                        $selected = ($current_perawat_sirkuler_signout == $perawat['nama_perawat']) ? 'selected' : '';
+                                        echo "<option value=\"" . htmlspecialchars($perawat['nama_perawat']) . "\" $selected>" . htmlspecialchars($perawat['nama_perawat']) . "</option>";
+                                    }
+                                    ?>
+                                    <option value="lainnya" <?= $is_other_perawat_sirkuler_signout ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
+                                </select>
+                                <div id="perawat_sirkuler_signout_input_container" style="display: <?= $is_other_perawat_sirkuler_signout ? 'block' : 'none' ?>; margin-top: 5px;">
+                                    <input type="text" id="perawat_sirkuler_signout_input" name="perawat_sirkuler_signout_input" placeholder="Nama Perawat Lainnya" value="<?= $is_other_perawat_sirkuler_signout ? htmlspecialchars($current_perawat_sirkuler_signout) : '' ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <input type="hidden" id="perawat_sirkuler_signout" name="perawat_sirkuler_signout" value="<?= htmlspecialchars($current_perawat_sirkuler_signout) ?>">
                             </td>
                             <td>
-                                <input type="text" name="dokter_anestesi_signout" value="<?php echo htmlspecialchars($existing_data['dokter_anestesi_signout'] ?? ''); ?>" placeholder="Nama Dokter Anestesi" style="width: 100%; padding: 8px;">
+                                <?php
+                                $current_dokter_anestesi_signout = $existing_data['dokter_anestesi_signout'] ?? '';
+                                $is_other_dokter_anestesi_signout = !empty($current_dokter_anestesi_signout) && !in_array($current_dokter_anestesi_signout, array_column($dokter_list, 'nama_dokter'));
+                                ?>
+                                <select id="dokter_anestesi_signout_select" name="dokter_anestesi_signout_select" onchange="toggleInput('dokter_anestesi_signout')" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">-- Pilih Dokter Anestesi --</option>
+                                    <?php
+                                    foreach ($dokter_list as $dokter) {
+                                        $selected = ($current_dokter_anestesi_signout == $dokter['nama_dokter']) ? 'selected' : '';
+                                        echo "<option value=\"" . htmlspecialchars($dokter['nama_dokter']) . "\" $selected>" . htmlspecialchars($dokter['nama_dokter']) . "</option>";
+                                    }
+                                    ?>
+                                    <option value="lainnya" <?= $is_other_dokter_anestesi_signout ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
+                                </select>
+                                <div id="dokter_anestesi_signout_input_container" style="display: <?= $is_other_dokter_anestesi_signout ? 'block' : 'none' ?>; margin-top: 5px;">
+                                    <input type="text" id="dokter_anestesi_signout_input" name="dokter_anestesi_signout_input" placeholder="Nama Dokter Lainnya" value="<?= $is_other_dokter_anestesi_signout ? htmlspecialchars($current_dokter_anestesi_signout) : '' ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <input type="hidden" id="dokter_anestesi_signout" name="dokter_anestesi_signout" value="<?= htmlspecialchars($current_dokter_anestesi_signout) ?>">
                             </td>
                             <td>
-                                <input type="text" name="operator_signout" value="<?php echo htmlspecialchars($existing_data['operator_signout'] ?? ''); ?>" placeholder="Nama Operator/Dokter Bedah" style="width: 100%; padding: 8px;">
+                                <?php
+                                $current_operator_signout = $existing_data['operator_signout'] ?? '';
+                                $is_other_operator_signout = !empty($current_operator_signout) && !in_array($current_operator_signout, array_column($dokter_list, 'nama_dokter'));
+                                ?>
+                                <select id="operator_signout_select" name="operator_signout_select" onchange="toggleInput('operator_signout')" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">-- Pilih Operator/Dokter Bedah --</option>
+                                    <?php
+                                    foreach ($dokter_list as $dokter) {
+                                        $selected = ($current_operator_signout == $dokter['nama_dokter']) ? 'selected' : '';
+                                        echo "<option value=\"" . htmlspecialchars($dokter['nama_dokter']) . "\" $selected>" . htmlspecialchars($dokter['nama_dokter']) . "</option>";
+                                    }
+                                    ?>
+                                    <option value="lainnya" <?= $is_other_operator_signout ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
+                                </select>
+                                <div id="operator_signout_input_container" style="display: <?= $is_other_operator_signout ? 'block' : 'none' ?>; margin-top: 5px;">
+                                    <input type="text" id="operator_signout_input" name="operator_signout_input" placeholder="Nama Dokter Lainnya" value="<?= $is_other_operator_signout ? htmlspecialchars($current_operator_signout) : '' ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <input type="hidden" id="operator_signout" name="operator_signout" value="<?= htmlspecialchars($current_operator_signout) ?>">
                             </td>
                         </tr>
                     </table>
@@ -427,5 +694,66 @@ include __DIR__ . '/../includes/header.php';
             clearOnSubmit: true
         });
     });
+
+
+// Toggle Input untuk Dropdown dengan opsi "Lainnya"
+function toggleInput(fieldName) {
+    const select = document.getElementById(fieldName + '_select');
+    const inputContainer = document.getElementById(fieldName + '_input_container');
+    const inputField = document.getElementById(fieldName + '_input');
+    const hiddenField = document.getElementById(fieldName);
+    
+    if (select.value === 'lainnya') {
+        inputContainer.style.display = 'block';
+        inputField.required = true;
+        select.required = false;
+        hiddenField.value = inputField.value;
+    } else {
+        inputContainer.style.display = 'none';
+        inputField.required = false;
+        select.required = true;
+        hiddenField.value = select.value;
+    }
+}
+
+// Initialize toggle untuk semua dropdown saat page load
+document.addEventListener('DOMContentLoaded', function() {
+    const fields = [
+        'operator',
+        'dokter_anestesi_signin',
+        'perawat_anestesi_signin',
+        'perawat_sirkuler_signin',
+        'perawat_sirkuler_timeout',
+        'perawat_sirkuler_signout',
+        'dokter_anestesi_signout',
+        'operator_signout'
+    ];
+    
+    fields.forEach(function(fieldName) {
+        const select = document.getElementById(fieldName + '_select');
+        const inputField = document.getElementById(fieldName + '_input');
+        const hiddenField = document.getElementById(fieldName);
+        
+        if (select && inputField && hiddenField) {
+            // Event listener untuk dropdown
+            select.addEventListener('change', function() {
+                if (this.value !== 'lainnya') {
+                    hiddenField.value = this.value;
+                }
+                toggleInput(fieldName);
+            });
+            
+            // Event listener untuk input manual
+            inputField.addEventListener('input', function() {
+                hiddenField.value = this.value;
+            });
+            
+            // Initialize on page load (untuk mode edit)
+            if (select.value === 'lainnya') {
+                toggleInput(fieldName);
+            }
+        }
+    });
+});
 </script>
 

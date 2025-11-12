@@ -19,13 +19,34 @@ if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mula
 // Koneksi database untuk mendapatkan data booking dan pasien
 $database = new Database();
 $db = $database->getConnection();
-$query = "SELECT bo.*, p.nama AS nama_pasien, p.kode_rekam_medis, p.tanggal_lahir, p.jenis_kelamin
+$query = "SELECT bo.*, 
+                 p.nama AS nama_pasien, p.kode_rekam_medis, p.tanggal_lahir, p.jenis_kelamin,
+                 r.nama_ruang
           FROM booking_operasi bo
           LEFT JOIN pasien p ON bo.kd_pasien = p.kd_pasien
+          LEFT JOIN tbl_ruang r ON bo.ruang_rawat COLLATE utf8mb4_unicode_ci = r.id_ruang
           WHERE bo.no_rawat = ? AND bo.kode_paket = ? AND bo.tanggal = ? AND bo.jam_mulai = ?";
 $stmt = $db->prepare($query);
 $stmt->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $booking = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Ambil semua dokter dari tbl_dokter untuk dropdown
+$query_dokter = "SELECT id_dokter, nama_dokter FROM tbl_dokter ORDER BY nama_dokter ASC";
+$stmt_dokter = $db->prepare($query_dokter);
+$stmt_dokter->execute();
+$dokter_list = $stmt_dokter->fetchAll(PDO::FETCH_ASSOC);
+
+// Ambil semua perawat dari tbl_perawat untuk dropdown
+$query_perawat = "SELECT id_perawat, nama_perawat FROM tbl_perawat ORDER BY nama_perawat ASC";
+$stmt_perawat = $db->prepare($query_perawat);
+$stmt_perawat->execute();
+$perawat_list = $stmt_perawat->fetchAll(PDO::FETCH_ASSOC);
+
+// Ambil semua ruang dari tbl_ruang untuk dropdown
+$query_ruang = "SELECT id_ruang, nama_ruang FROM tbl_ruang ORDER BY nama_ruang ASC";
+$stmt_ruang = $db->prepare($query_ruang);
+$stmt_ruang->execute();
+$ruang_list = $stmt_ruang->fetchAll(PDO::FETCH_ASSOC);
 
 $pasien = $booking;
 
@@ -50,6 +71,16 @@ include __DIR__ . '/../includes/header.php';
         <div style="color: #004d80;">INFORMED CONSENT TINDAKAN ANESTESI</div>
         <div>RMC 4a Rev-01</div>
     </div>
+
+    <!-- Tombol Back ke Detail Pasien (Floating) -->
+    <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
+       class="btn-back-to-detail" 
+       style="position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background: #6c757d; color: white; border: none; border-radius: 50%; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;"
+       onmouseover="this.style.background='#5a6268'; this.style.transform='scale(1.1)';" 
+       onmouseout="this.style.background='#6c757d'; this.style.transform='scale(1)';'" 
+       title="Kembali ke Detail Pasien">
+        <i class="fas fa-arrow-left"></i>
+    </a>
 
     <div class="card">
         <!-- Form Data Booking -->
@@ -78,7 +109,7 @@ include __DIR__ . '/../includes/header.php';
         </div>
 
         <!-- Informasi Identitas -->
-        <h2>Pemberian Informasi</h2>
+        <h2 style="margin-bottom: 20px;">Pemberian Informasi</h2>
         <form id="formInformedConsent" action="process/process-informed-consent-anestesi.php" method="POST">
             <input type="hidden" name="no_rawat" value="<?php echo htmlspecialchars($no_rawat); ?>">
             <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
@@ -89,16 +120,50 @@ include __DIR__ . '/../includes/header.php';
             <div class="form-grid">
                 <div class="form-column">
                     <div class="keterangan-pasien">
-                        <div class="input-container">
-                            <input type="text" id="ruang" name="ruang" placeholder=" " value="<?= htmlspecialchars($consent['ruang'] ?? '') ?>" required>
-                            <label for="ruang" class="label-floating">Ruang Perawatan</label>
+                        <?php
+                        $current_ruang = $consent['ruang'] ?? $booking['nama_ruang'] ?? '';
+                        $is_other_ruang = !empty($current_ruang) && !in_array($current_ruang, array_column($ruang_list, 'nama_ruang'));
+                        ?>
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #333;">
+                            <i class="fas fa-door-open"></i> Ruang Perawatan <span style="color: #dc3545;">*</span>
+                        </label>
+                        <select id="ruang_select" name="ruang_select" onchange="toggleInput('ruang')" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;" required>
+                            <option value="">-- Pilih Ruang Perawatan --</option>
+                            <?php
+                            foreach ($ruang_list as $ruang) {
+                                $selected = ($current_ruang == $ruang['nama_ruang']) ? 'selected' : '';
+                                echo "<option value=\"" . htmlspecialchars($ruang['nama_ruang']) . "\" $selected>" . htmlspecialchars($ruang['nama_ruang']) . "</option>";
+                            }
+                            ?>
+                            <option value="lainnya" <?= $is_other_ruang ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
+                        </select>
+                        <div id="ruang_input_container" style="display: <?= $is_other_ruang ? 'block' : 'none' ?>; margin-top: 8px;">
+                            <input type="text" id="ruang_input" name="ruang_input" placeholder="Nama Ruang Lainnya" value="<?= $is_other_ruang ? htmlspecialchars($current_ruang) : '' ?>" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
                         </div>
+                        <input type="hidden" id="ruang" name="ruang" value="<?= htmlspecialchars($current_ruang) ?>">
+                        <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
+                            <i class="fas fa-info-circle"></i> Default dari booking operasi, dapat diedit jika salah
+                        </small>
                     </div>
                     <div class="keterangan-pasien">
                         <div class="input-container">
-                            <input type="text" id="dokter" name="dokter" placeholder=" " value="<?= htmlspecialchars($consent['dokter_pelaksana'] ?? '') ?>" required>
-                            <label for="dokter" class="label-floating">Dokter Pelaksana Tindakan</label>
+                            <?php
+                            $current_dokter = $consent['dokter_pelaksana'] ?? '';
+                            ?>
+                            <select id="dokter" name="dokter" class="form-select" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;" required>
+                                <option value="">-- Pilih Dokter Pelaksana --</option>
+                                <?php
+                                foreach ($dokter_list as $dokter) {
+                                    $selected = ($current_dokter == $dokter['nama_dokter']) ? 'selected' : '';
+                                    echo "<option value=\"" . htmlspecialchars($dokter['nama_dokter']) . "\" $selected>" . htmlspecialchars($dokter['nama_dokter']) . "</option>";
+                                }
+                                ?>
+                            </select>
+                            <label for="dokter" class="label-floating" style="top: -8px; font-size: 12px; background: white; padding: 0 5px;">Dokter Pelaksana Tindakan</label>
                         </div>
+                        <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
+                            <i class="fas fa-info-circle"></i> Pilih dokter yang akan melaksanakan tindakan anestesi
+                        </small>
                     </div>
                     <div class="keterangan-pasien">
                         <div class="input-container">
@@ -298,6 +363,45 @@ include __DIR__ . '/../includes/header.php';
     </div>
 </div>
 
+<script>
+// Toggle function untuk dropdown dengan input manual
+function toggleInput(fieldName) {
+    const select = document.getElementById(fieldName + '_select');
+    const inputContainer = document.getElementById(fieldName + '_input_container');
+    const input = document.getElementById(fieldName + '_input');
+    const hiddenField = document.getElementById(fieldName);
+    
+    if (select.value === 'lainnya') {
+        inputContainer.style.display = 'block';
+        input.focus();
+        hiddenField.value = input.value;
+    } else {
+        inputContainer.style.display = 'none';
+        input.value = '';
+        hiddenField.value = select.value;
+    }
+}
+
+// Update hidden field saat input manual berubah
+document.addEventListener('DOMContentLoaded', function() {
+    const ruangInput = document.getElementById('ruang_input');
+    if (ruangInput) {
+        ruangInput.addEventListener('input', function() {
+            document.getElementById('ruang').value = this.value;
+        });
+    }
+    
+    // Initialize toggle untuk dropdown ruang
+    const ruangSelect = document.getElementById('ruang_select');
+    if (ruangSelect && ruangSelect.value) {
+        toggleInput('ruang');
+    }
+});
+</script>
+
+<!-- Nullable Field Warning Script -->
+<script src="/assets/js/nullable-field-warning.js"></script>
+
 <!-- AUTOSAVE DISABLED: Fitur autosave dinonaktifkan untuk meningkatkan performa
 <script src="/assets/js/autosave.js"></script>
 <script>
@@ -310,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
         clearOnSubmit: true
     });
     
-    console.log('✅ AutoSave initialized (optimized: 3s debounce, no notification)');
+    console.log('Γ£à AutoSave initialized (optimized: 3s debounce, no notification)');
 });
 </script>
 -->

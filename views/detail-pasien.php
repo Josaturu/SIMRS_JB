@@ -18,14 +18,26 @@ require_once __DIR__ . '/../config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
-// Ambil data pasien & operasi (JOIN)
+// Ambil data pasien & operasi (JOIN dengan tabel master)
 $query = "
     SELECT 
         b.*, 
         p.nama AS nama_pasien, 
-        p.kode_rekam_medis
+        p.kode_rekam_medis,
+        p.alamat,
+        p.jenis_kelamin,
+        p.tempat_lahir,
+        p.tanggal_lahir,
+        p.no_hp,
+        p.gol_darah,
+        d.nama_dokter,
+        r.nama_ruang,
+        pr.nama_perawat
     FROM booking_operasi AS b
     LEFT JOIN pasien AS p ON b.kd_pasien = p.kd_pasien
+    LEFT JOIN tbl_dokter d ON b.dokter_rawat COLLATE utf8mb4_unicode_ci = d.id_dokter
+    LEFT JOIN tbl_ruang r ON b.ruang_rawat COLLATE utf8mb4_unicode_ci = r.id_ruang
+    LEFT JOIN tbl_perawat pr ON b.perawat COLLATE utf8mb4_unicode_ci = pr.id_perawat
     WHERE b.no_rawat = ? AND b.kode_paket = ? AND b.tanggal = ? AND b.jam_mulai = ?
 ";
 $stmt = $db->prepare($query);
@@ -85,7 +97,47 @@ $catatan_terisi     = checkFormStatus($db, 'tbl_anestesi_catatan_anestesi', $no_
 $informed_terisi    = checkFormStatus($db, 'tbl_anestesi_informed_consent_anestesi', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
 $konsultasi_terisi  = checkFormStatus($db, 'tbl_anestesi_konsultasi_anestesi', $no_rawat, $kode_paket, $tanggal, $jam_mulai);
 
-include __DIR__ . '/../includes/header.php';
+// Hitung umur dari tanggal lahir
+$umur = '';
+if (!empty($pasien['tanggal_lahir'])) {
+    $tgl_lahir = new DateTime($pasien['tanggal_lahir']);
+    $today = new DateTime();
+    $diff = $today->diff($tgl_lahir);
+    $umur = $diff->y . ' tahun';
+    if ($diff->m > 0) {
+        $umur .= ' ' . $diff->m . ' bulan';
+    }
+}
+
+// Jangan include header.php - kita buat header sendiri
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $page_title; ?> - SIMRS</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/improvements.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Simple Navigation -->
+    <nav class="main-nav improved-navbar" style="margin-bottom: 0;">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-angle-right"></i>
+                <span>Detail Pasien</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.php" class="nav-link">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Kembali ke Daftar</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+<?php
 ?>
 
 <!-- Load Detail Pasien CSS -->
@@ -103,43 +155,129 @@ include __DIR__ . '/../includes/header.php';
                 <div class="patient-id">RM: <?= htmlspecialchars($pasien['kode_rekam_medis'] ?? '-'); ?></div>
             </div>
             
-            <div class="sidebar-info-item">
-                <span class="info-label">No. Rawat</span>
-                <span class="info-value"><?= htmlspecialchars($pasien['no_rawat']); ?></span>
-            </div>
-            
-            <div class="sidebar-info-item">
-                <span class="info-label">Kode Paket</span>
-                <span class="info-value"><?= htmlspecialchars($pasien['kode_paket']); ?></span>
-            </div>
-            
-            <div class="sidebar-info-item">
-                <span class="info-label">Tanggal Operasi</span>
-                <span class="info-value"><?= htmlspecialchars($pasien['tanggal']); ?></span>
-            </div>
-            
-            <div class="sidebar-info-item">
-                <span class="info-label">Jam Operasi</span>
-                <span class="info-value"><?= htmlspecialchars($pasien['jam_mulai']); ?></span>
-            </div>
-            
-            <div class="sidebar-info-item">
-                <span class="info-label">Dokter</span>
-                <span class="info-value"><?= htmlspecialchars($pasien['kd_dokter']); ?></span>
-            </div>
-            
-            <div class="sidebar-info-item">
-                <span class="info-label">Ruang OK</span>
-                <span class="info-value"><?= htmlspecialchars($pasien['kd_ruang_ok']); ?></span>
-            </div>
-            
-            <div class="sidebar-info-item">
-                <span class="info-label">Status</span>
-                <span class="info-value">
-                    <span class="status-badge-sidebar status-<?= strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
-                        <?= htmlspecialchars($pasien['status']); ?>
+            <!-- Data Pribadi Pasien -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <i class="fas fa-user"></i> Data Pribadi
+                </div>
+                
+                <?php if (!empty($pasien['tempat_lahir']) || !empty($pasien['tanggal_lahir'])): ?>
+                <div class="sidebar-info-item">
+                    <span class="info-label">Tempat, Tgl Lahir</span>
+                    <span class="info-value">
+                        <?= htmlspecialchars($pasien['tempat_lahir'] ?? '-'); ?>, 
+                        <?= !empty($pasien['tanggal_lahir']) ? date('d/m/Y', strtotime($pasien['tanggal_lahir'])) : '-'; ?>
                     </span>
-                </span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if (!empty($umur)): ?>
+                <div class="sidebar-info-item">
+                    <span class="info-label">Umur</span>
+                    <span class="info-value"><?= htmlspecialchars($umur); ?></span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if (!empty($pasien['jenis_kelamin'])): ?>
+                <div class="sidebar-info-item">
+                    <span class="info-label">Jenis Kelamin</span>
+                    <span class="info-value">
+                        <?= $pasien['jenis_kelamin'] == 'L' ? 'Laki-laki' : 'Perempuan'; ?>
+                    </span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if (!empty($pasien['gol_darah'])): ?>
+                <div class="sidebar-info-item">
+                    <span class="info-label">Golongan Darah</span>
+                    <span class="info-value"><?= htmlspecialchars($pasien['gol_darah']); ?></span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if (!empty($pasien['alamat'])): ?>
+                <div class="sidebar-info-item">
+                    <span class="info-label">Alamat</span>
+                    <span class="info-value"><?= htmlspecialchars($pasien['alamat']); ?></span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if (!empty($pasien['no_hp'])): ?>
+                <div class="sidebar-info-item">
+                    <span class="info-label">No. HP</span>
+                    <span class="info-value"><?= htmlspecialchars($pasien['no_hp']); ?></span>
+                </div>
+                <?php endif; ?>
+            </div>
+            
+            <!-- Data Booking Operasi -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <i class="fas fa-calendar-check"></i> Data Booking
+                </div>
+                
+                <div class="sidebar-info-item">
+                    <span class="info-label">No. Rawat</span>
+                    <span class="info-value"><?= htmlspecialchars($pasien['no_rawat']); ?></span>
+                </div>
+                
+                <div class="sidebar-info-item">
+                    <span class="info-label">Kode Paket</span>
+                    <span class="info-value"><?= htmlspecialchars($pasien['kode_paket']); ?></span>
+                </div>
+                
+                <div class="sidebar-info-item">
+                    <span class="info-label">Tanggal Operasi</span>
+                    <span class="info-value">
+                        <?= date('d/m/Y', strtotime($pasien['tanggal'])); ?>
+                    </span>
+                </div>
+                
+                <div class="sidebar-info-item">
+                    <span class="info-label">Jam Operasi</span>
+                    <span class="info-value">
+                        <?= date('H:i', strtotime($pasien['jam_mulai'])); ?>
+                        <?php if (!empty($pasien['jam_selesai'])): ?>
+                            - <?= date('H:i', strtotime($pasien['jam_selesai'])); ?>
+                        <?php endif; ?>
+                    </span>
+                </div>
+                
+                <div class="sidebar-info-item">
+                    <span class="info-label">Status</span>
+                    <span class="info-value">
+                        <span class="status-badge-sidebar status-<?= strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
+                            <?= htmlspecialchars($pasien['status']); ?>
+                        </span>
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Tim Medis -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <i class="fas fa-user-md"></i> Tim Medis
+                </div>
+                
+                <?php if (!empty($pasien['nama_dokter'])): ?>
+                <div class="sidebar-info-item">
+                    <span class="info-label">Dokter Rawat</span>
+                    <span class="info-value"><?= htmlspecialchars($pasien['nama_dokter']); ?></span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if (!empty($pasien['nama_perawat'])): ?>
+                <div class="sidebar-info-item">
+                    <span class="info-label">Perawat</span>
+                    <span class="info-value"><?= htmlspecialchars($pasien['nama_perawat']); ?></span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if (!empty($pasien['nama_ruang'])): ?>
+                <div class="sidebar-info-item">
+                    <span class="info-label">Ruang Rawat</span>
+                    <span class="info-value"><?= htmlspecialchars($pasien['nama_ruang']); ?></span>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </aside>
@@ -147,8 +285,8 @@ include __DIR__ . '/../includes/header.php';
     <!-- Main Content -->
     <main class="main-content">
         <?php
-        // Group forms by phase
-        $pra_operasi = [
+        // Group forms by role (Dokter & Perawat)
+        $forms_dokter = [
             [
                 'page' => 'konsultasi-anestesi',
                 'label' => 'Konsultasi Anestesi',
@@ -166,16 +304,16 @@ include __DIR__ . '/../includes/header.php';
                 'pdf' => 'pdf-informed-consent.php'
             ],
             [
-                'page' => 'persiapan-operasi',
-                'label' => 'Persiapan Operasi',
-                'desc' => 'Checklist persiapan pra-operasi',
-                'icon' => 'clipboard-list',
-                'done' => $persiapan_terisi,
-                'pdf' => 'pdf-persiapan-operasi.php'
+                'page' => 'form-catatan-sedasi',
+                'label' => 'Catatan Sedasi',
+                'desc' => 'Catatan sedasi & anestesi (termasuk vital sign)',
+                'icon' => 'notes-medical',
+                'done' => $catatan_terisi,
+                'pdf' => 'pdf-catatan-sedasi.php'
             ]
         ];
         
-        $intra_operasi = [
+        $forms_perawat = [
             [
                 'page' => 'keselamatan-operasi',
                 'label' => 'Keselamatan Operasi',
@@ -185,24 +323,13 @@ include __DIR__ . '/../includes/header.php';
                 'pdf' => 'pdf-keselamatan-operasi.php'
             ],
             [
-                'page' => 'vital-sign',
-                'label' => 'Vital Sign',
-                'desc' => 'Monitoring tanda vital',
-                'icon' => 'heartbeat',
-                'done' => checkFormStatus($db, 'tbl_anestesi_vital_sign', $no_rawat, $kode_paket, $tanggal, $jam_mulai),
-                'pdf' => 'pdf-vital-sign.php'
+                'page' => 'persiapan-operasi',
+                'label' => 'Persiapan Operasi',
+                'desc' => 'Checklist persiapan pra-operasi',
+                'icon' => 'clipboard-list',
+                'done' => $persiapan_terisi,
+                'pdf' => 'pdf-persiapan-operasi.php'
             ],
-            [
-                'page' => 'form-catatan-sedasi',
-                'label' => 'Catatan Sedasi',
-                'desc' => 'Catatan sedasi & anestesi',
-                'icon' => 'notes-medical',
-                'done' => $catatan_terisi,
-                'pdf' => 'pdf-catatan-sedasi.php'
-            ]
-        ];
-        
-        $post_operasi = [
             [
                 'page' => 'kamar-pemulihan',
                 'label' => 'Kamar Pemulihan',
@@ -214,7 +341,7 @@ include __DIR__ . '/../includes/header.php';
         ];
         
         // Calculate stats
-        $all_forms = array_merge($pra_operasi, $intra_operasi, $post_operasi);
+        $all_forms = array_merge($forms_dokter, $forms_perawat);
         $total_forms = count($all_forms);
         $completed_forms = count(array_filter($all_forms, function($f) { return $f['done']; }));
         $pending_forms = $total_forms - $completed_forms;
@@ -247,22 +374,19 @@ include __DIR__ . '/../includes/header.php';
         <!-- Tabs Container -->
         <div class="tabs-container">
             <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('pra')">
-                    <i class="fas fa-clipboard-check"></i> Pra-Operasi
+                <button class="tab-btn active" onclick="switchTab('dokter')">
+                    <i class="fas fa-user-md"></i> Dokter
                 </button>
-                <button class="tab-btn" onclick="switchTab('intra')">
-                    <i class="fas fa-procedures"></i> Intra-Operasi
-                </button>
-                <button class="tab-btn" onclick="switchTab('post')">
-                    <i class="fas fa-bed"></i> Post-Operasi
+                <button class="tab-btn" onclick="switchTab('perawat')">
+                    <i class="fas fa-user-nurse"></i> Perawat
                 </button>
             </div>
             
             <div class="tab-content">
-                <!-- Pra-Operasi Tab -->
-                <div id="tab-pra" class="tab-pane active">
+                <!-- Dokter Tab -->
+                <div id="tab-dokter" class="tab-pane active">
                     <div class="forms-grid">
-                        <?php foreach ($pra_operasi as $form): 
+                        <?php foreach ($forms_dokter as $form): 
                             $statusClass = $form['done'] ? 'completed' : 'pending';
                             $statusIcon = $form['done'] ? 'check-circle' : 'clock';
                             $formUrl = "index.php?page={$form['page']}&no_rawat=" . urlencode($no_rawat) . 
@@ -293,44 +417,10 @@ include __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
                 
-                <!-- Intra-Operasi Tab -->
-                <div id="tab-intra" class="tab-pane">
+                <!-- Perawat Tab -->
+                <div id="tab-perawat" class="tab-pane">
                     <div class="forms-grid">
-                        <?php foreach ($intra_operasi as $form): 
-                            $statusClass = $form['done'] ? 'completed' : 'pending';
-                            $statusIcon = $form['done'] ? 'check-circle' : 'clock';
-                            $formUrl = "index.php?page={$form['page']}&no_rawat=" . urlencode($no_rawat) . 
-                                      "&kode_paket=" . urlencode($kode_paket) . 
-                                      "&tanggal=" . urlencode($tanggal) . 
-                                      "&jam_mulai=" . urlencode($jam_mulai);
-                        ?>
-                        <a href="<?= $formUrl ?>" class="form-card <?= $statusClass ?>">
-                            <div class="form-status-icon <?= $statusClass ?>">
-                                <i class="fas fa-<?= $statusIcon ?>"></i>
-                            </div>
-                            <div class="form-card-title"><?= $form['label'] ?></div>
-                            <div class="form-card-desc"><?= $form['desc'] ?></div>
-                            <div class="form-card-actions">
-                                <span class="form-action-btn primary">
-                                    <i class="fas fa-<?= $form['done'] ? 'eye' : 'edit' ?>"></i>
-                                    <?= $form['done'] ? 'Lihat' : 'Isi Form' ?>
-                                </span>
-                                <?php if ($form['done'] && isset($form['pdf'])): ?>
-                                <span onclick="window.open('process/pdf/<?= $form['pdf'] ?>?no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>', '_blank'); event.preventDefault(); event.stopPropagation();" 
-                                      class="form-action-btn success">
-                                    <i class="fas fa-file-pdf"></i> PDF
-                                </span>
-                                <?php endif; ?>
-                            </div>
-                        </a>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                
-                <!-- Post-Operasi Tab -->
-                <div id="tab-post" class="tab-pane">
-                    <div class="forms-grid">
-                        <?php foreach ($post_operasi as $form): 
+                        <?php foreach ($forms_perawat as $form): 
                             $statusClass = $form['done'] ? 'completed' : 'pending';
                             $statusIcon = $form['done'] ? 'check-circle' : 'clock';
                             $formUrl = "index.php?page={$form['page']}&no_rawat=" . urlencode($no_rawat) . 
@@ -388,3 +478,5 @@ setTimeout(() => {
 </script>
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>
+</body>
+</html>

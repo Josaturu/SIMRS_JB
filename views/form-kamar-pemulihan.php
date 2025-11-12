@@ -37,6 +37,18 @@ if (!$booking) {
     exit;
 }
 
+// Ambil semua dokter dari tbl_dokter untuk dropdown
+$query_dokter = "SELECT id_dokter, nama_dokter FROM tbl_dokter ORDER BY nama_dokter ASC";
+$stmt_dokter = $db->prepare($query_dokter);
+$stmt_dokter->execute();
+$dokter_list = $stmt_dokter->fetchAll(PDO::FETCH_ASSOC);
+
+// Ambil semua perawat dari tbl_perawat untuk dropdown
+$query_perawat = "SELECT id_perawat, nama_perawat FROM tbl_perawat ORDER BY nama_perawat ASC";
+$stmt_perawat = $db->prepare($query_perawat);
+$stmt_perawat->execute();
+$perawat_list = $stmt_perawat->fetchAll(PDO::FETCH_ASSOC);
+
 // Hitung umur dari tanggal lahir
 $umur = 0;
 if (!empty($pasien['tanggal_lahir'])) {
@@ -86,6 +98,16 @@ include __DIR__ . '/../includes/header.php';
         </div>
         <div>RMOK - 30</div>
     </div>
+
+    <!-- Tombol Back ke Detail Pasien (Floating) -->
+    <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
+       class="btn-back-to-detail" 
+       style="position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background: #6c757d; color: white; border: none; border-radius: 50%; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;"
+       onmouseover="this.style.background='#5a6268'; this.style.transform='scale(1.1)';" 
+       onmouseout="this.style.background='#6c757d'; this.style.transform='scale(1)';" 
+       title="Kembali ke Detail Pasien">
+        <i class="fas fa-arrow-left"></i>
+    </a>
 
     <!-- Informasi Pasien & Data Booking Operasi -->
     <div class="card" style="background: #e3f2fd; border-left: 4px solid #2196F3;">

@@ -103,6 +103,9 @@ if ($_POST) {
     $skrining_nyeri = $_POST['skrining_nyeri'] ?? null;
     $jalan_nafas = $_POST['jalan_nafas'] ?? null;
     $jalan_nafas_keterangan = $_POST['jalanNafasKeterangan'] ?? '';
+    $mallampati = $_POST['mallampati'] ?? null;
+    $gerakan_leher = $_POST['gerakan_leher'] ?? null;
+    $gerakan_leher_keterangan = $_POST['gerakanLeherKeterangan'] ?? '';
     $paru_paru = $_POST['paruParu'] ?? '';
     $jantung = $_POST['jantung'] ?? '';
     $abdomen = $_POST['abdomen'] ?? '';
@@ -124,7 +127,7 @@ if ($_POST) {
     // Diagnosis & Rekomendasi
     $asa_status = $_POST['asa'] ?? null;
     $emergency = $_POST['emergency'] ?? null;
-    $rekomendasi_anestesi = $_POST['diagnosisLain'] ?? '';
+    $lain_lain_diagnosis = $_POST['diagnosisLain'] ?? '';
     
     // Debug log emergency
     error_log("DEBUG - emergency: " . ($emergency ?? 'NULL'));
@@ -156,16 +159,17 @@ if ($_POST) {
                gigi_palsu, makan_terakhir, riwayat_operasi, jenis_anestesi, terakhir_periksa,
                tempat_periksa_terakhir, penyakit_gangguan, jumlah_kehamilan, jumlah_anak,
                menyusui, kesadaran, tb, bb, td, nadi, rr, suhu, skrining_nyeri, jalan_nafas,
-               jalan_nafas_keterangan, paru_paru, jantung, abdomen, ekstrimitas, neurologi, lain_lain, 
+               jalan_nafas_keterangan, mallampati, gerakan_leher, gerakan_leher_keterangan,
+               paru_paru, jantung, abdomen, ekstrimitas, neurologi, lain_lain, 
                hb_ht_al_at, na_k_cl, ureum, ct_bt, kreatin, ekg, ro_dada,
-               echo, lain_lain_pemeriksaan, asa_status, emergency, rekomendasi_anestesi,
+               echo, lain_lain_pemeriksaan, asa_status, emergency, lain_lain_diagnosis,
                anestesi_umum, regional_anestesi, kombinasi_anestesi, sedasi, saran,
                puasa_mulai_jam, puasa_mulai_tanggal, rencana_tiba_jam, rencana_tiba_tanggal,
                rencana_operasi_jam, rencana_operasi_tanggal)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
               ON DUPLICATE KEY UPDATE
                 ruang_perawatan = VALUES(ruang_perawatan),
                 dokter_merawat = VALUES(dokter_merawat),
@@ -229,6 +233,9 @@ if ($_POST) {
                 skrining_nyeri = VALUES(skrining_nyeri),
                 jalan_nafas = VALUES(jalan_nafas),
                 jalan_nafas_keterangan = VALUES(jalan_nafas_keterangan),
+                mallampati = VALUES(mallampati),
+                gerakan_leher = VALUES(gerakan_leher),
+                gerakan_leher_keterangan = VALUES(gerakan_leher_keterangan),
                 paru_paru = VALUES(paru_paru),
                 jantung = VALUES(jantung),
                 abdomen = VALUES(abdomen),
@@ -246,7 +253,7 @@ if ($_POST) {
                 lain_lain_pemeriksaan = VALUES(lain_lain_pemeriksaan),
                 asa_status = VALUES(asa_status),
                 emergency = VALUES(emergency),
-                rekomendasi_anestesi = VALUES(rekomendasi_anestesi),
+                lain_lain_diagnosis = VALUES(lain_lain_diagnosis),
                 anestesi_umum = VALUES(anestesi_umum),
                 regional_anestesi = VALUES(regional_anestesi),
                 kombinasi_anestesi = VALUES(kombinasi_anestesi),
@@ -263,7 +270,7 @@ if ($_POST) {
     
     // Debug: Log error jika ada
     try {
-        // Execute dengan semua 95 parameter (tanpa gerakan_leher dan gerakan_leher_keterangan)
+        // Execute dengan semua 98 parameter (dengan mallampati, gerakan_leher, gerakan_leher_keterangan)
         $success = $stmt->execute([
         $no_rawat, $kode_paket, $tanggal, $jam_mulai, $ruang_perawatan, $dokter_merawat,
         $tanggal_konsul, $jam_konsul, $tinggi_badan, $berat_badan, $diagnosa_pra_operasi, $jenis_diagnosa,
@@ -276,9 +283,10 @@ if ($_POST) {
         $gigi_palsu, $makan_terakhir, $riwayat_operasi, $jenis_anestesi, $terakhir_periksa,
         $tempat_periksa_terakhir, $penyakit_gangguan, $jumlah_kehamilan, $jumlah_anak,
         $menyusui, $kesadaran, $tb, $bb, $td, $nadi, $rr, $suhu, $skrining_nyeri, $jalan_nafas,
-        $jalan_nafas_keterangan, $paru_paru, $jantung, $abdomen, $ekstrimitas, $neurologi, $lain_lain, 
+        $jalan_nafas_keterangan, $mallampati, $gerakan_leher, $gerakan_leher_keterangan,
+        $paru_paru, $jantung, $abdomen, $ekstrimitas, $neurologi, $lain_lain, 
         $hb_ht_al_at, $na_k_cl, $ureum, $ct_bt, $kreatin, $ekg, $ro_dada,
-        $echo, $lain_lain_pemeriksaan, $asa_status, $emergency, $rekomendasi_anestesi,
+        $echo, $lain_lain_pemeriksaan, $asa_status, $emergency, $lain_lain_diagnosis,
         $anestesi_umum, $regional_anestesi, $kombinasi_anestesi, $sedasi, $saran,
         $puasa_mulai_jam, $puasa_mulai_tanggal, $rencana_tiba_jam, $rencana_tiba_tanggal,
         $rencana_operasi_jam, $rencana_operasi_tanggal
@@ -324,9 +332,9 @@ if ($_POST) {
             // Hitung jumlah placeholder
             $placeholder_count = substr_count($query, '?');
             error_log("Placeholder count in query: " . $placeholder_count);
-            error_log("Parameter count in execute: 95");
+            error_log("Parameter count in execute: 98");
             
-            $_SESSION['error'] = 'Parameter mismatch! Query memiliki ' . $placeholder_count . ' placeholder, tapi execute() memiliki 95 parameter. Periksa query INSERT.';
+            $_SESSION['error'] = 'Parameter mismatch! Query memiliki ' . $placeholder_count . ' placeholder, tapi execute() memiliki 98 parameter. Periksa query INSERT.';
         } else {
             $_SESSION['error'] = 'Terjadi kesalahan database: ' . $e->getMessage();
         }
