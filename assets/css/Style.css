@@ -1346,3 +1346,113 @@ table td:last-child {
 	background: #d4edda;
 	color: #155724;
 }
+
+/* ===== Patient Info Top Card ===== */
+.patient-info-top-card {
+	background: white;
+	border-radius: 10px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	overflow: hidden;
+	border-left: 4px solid #667eea;
+}
+
+.patient-info-top-header {
+	padding: 14px 16px;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	font-weight: 600;
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.patient-info-top-header i {
+	font-size: 16px;
+}
+
+.patient-info-top-content {
+	padding: 16px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 12px;
+}
+
+.patient-info-top-item {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 10px;
+	background: #f8f9fa;
+	border-radius: 6px;
+	border-left: 2px solid #667eea;
+}
+
+.patient-info-top-label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #667eea;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.patient-info-top-label i {
+	font-size: 13px;
+}
+
+.patient-info-top-value {
+	font-size: 13px;
+	font-weight: 500;
+	color: #333;
+	word-break: break-word;
+	line-height: 1.4;
+}
+
+/* Responsive untuk tablet */
+@media (max-width: 1024px) {
+	.patient-info-top-content {
+		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+		gap: 10px;
+		padding: 12px;
+	}
+	
+	.patient-info-top-item {
+		padding: 8px;
+	}
+	
+	.patient-info-top-value {
+		font-size: 12px;
+	}
+}
+
+/* Responsive untuk mobile */
+@media (max-width: 768px) {
+	.patient-info-top-header {
+		padding: 12px;
+		font-size: 13px;
+	}
+	
+	.patient-info-top-content {
+		grid-template-columns: 1fr;
+		gap: 8px;
+		padding: 12px;
+	}
+	
+	.patient-info-top-item {
+		padding: 8px;
+		flex-direction: row;
+		align-items: center;
+		gap: 8px;
+	}
+	
+	.patient-info-top-label {
+		min-width: 80px;
+		font-size: 11px;
+	}
+	
+	.patient-info-top-value {
+		font-size: 12px;
+	}
+}

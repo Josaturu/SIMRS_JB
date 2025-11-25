@@ -346,13 +346,53 @@ document.addEventListener('DOMContentLoaded', function() {
   <!-- Tombol Back ke Detail Pasien (Floating) -->
   <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
      class="btn-back-to-detail" 
-     style="position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background: #6c757d; color: white; border: none; border-radius: 50%; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;"
-     onmouseover="this.style.background='#5a6268'; this.style.transform='scale(1.1)';" 
-     onmouseout="this.style.background='#6c757d'; this.style.transform='scale(1)';" 
+     style="position: fixed; bottom: 80px; right: 20px; width: auto; height: 32px; padding: 5px 12px; background: #6c757d; color: white; border: none; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease; white-space: nowrap;"
+     onmouseover="this.style.background='#5a6268'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0,0,0,0.3)';" 
+     onmouseout="this.style.background='#6c757d'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';" 
      title="Kembali ke Detail Pasien">
-    <i class="fas fa-arrow-left"></i>
+    Kembali
   </a>
   
+  <!-- Patient Info Card - Top Section -->
+  <?php
+  $dokter = $booking['kd_dokter'] ?? '';
+  $nama_pasien = $booking['nama'] ?? $booking['nama_pasien'] ?? '';
+  ?>
+  
+  <?php if (!empty($no_rawat) && !empty($kode_paket) && !empty($tanggal)): ?>
+  <div class="patient-info-top-card">
+      <div class="patient-info-top-header">
+          <strong><i class="fas fa-id-badge"></i> Identitas Pasien</strong>
+      </div>
+      <div class="patient-info-top-content">
+          <?php if (!empty($nama_pasien)): ?>
+          <div class="patient-info-top-item">
+              <span class="patient-info-top-label"><i class="fas fa-user"></i> Nama:</span>
+              <span class="patient-info-top-value"><?= htmlspecialchars($nama_pasien) ?></span>
+          </div>
+          <?php endif; ?>
+          <div class="patient-info-top-item">
+              <span class="patient-info-top-label"><i class="fas fa-id-card"></i> No. Rawat:</span>
+              <span class="patient-info-top-value"><?= htmlspecialchars($no_rawat) ?></span>
+          </div>
+          <div class="patient-info-top-item">
+              <span class="patient-info-top-label"><i class="fas fa-barcode"></i> Kode Paket:</span>
+              <span class="patient-info-top-value"><?= htmlspecialchars($kode_paket) ?></span>
+          </div>
+          <div class="patient-info-top-item">
+              <span class="patient-info-top-label"><i class="fas fa-calendar"></i> Tgl Operasi:</span>
+              <span class="patient-info-top-value"><?= htmlspecialchars($tanggal) ?></span>
+          </div>
+          <?php if (!empty($dokter)): ?>
+          <div class="patient-info-top-item">
+              <span class="patient-info-top-label"><i class="fas fa-user-md"></i> Dokter:</span>
+              <span class="patient-info-top-value"><?= htmlspecialchars($dokter) ?></span>
+          </div>
+          <?php endif; ?>
+      </div>
+  </div>
+  <?php endif; ?>
+
   <!-- Notifikasi EDIT/INSERT dihapus untuk tampilan yang lebih bersih -->
 
   <form action="../process/process-simpan-catatan-sedasi.php" method="POST" id="formCatatanSedasi">
@@ -1094,74 +1134,126 @@ document.addEventListener('DOMContentLoaded', function() {
         
         <!-- Setting Waktu -->
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 15px 0; color: white; font-size: 16px;">
-                <i class="fas fa-clock"></i> Pengaturan Waktu Monitoring
-            </h3>
-            <div style="display: grid; grid-template-columns: 2fr 2fr 2fr auto auto; gap: 15px; align-items: end;">
-                <!-- Waktu Mulai (HH:MM:SS) -->
-                <div>
-                    <label style="display: block; color: white; font-weight: 600; margin-bottom: 5px; font-size: 13px;">
-                        ⏰ Waktu Mulai (HH:MM:SS)
-                    </label>
-                    <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 5px; align-items: center;">
-                        <input type="number" id="vs_waktu_jam" min="0" max="23" placeholder="HH" 
-                               style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
-                        <span style="color: white; font-weight: 700; font-size: 18px;">:</span>
-                        <input type="number" id="vs_waktu_menit" min="0" max="59" placeholder="MM" 
-                               style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
-                        <span style="color: white; font-weight: 700; font-size: 18px;">:</span>
-                        <input type="number" id="vs_waktu_detik" min="0" max="59" placeholder="SS" value="0"
-                               style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; color: white; font-size: 16px;">
+                    <i class="fas fa-clock"></i> Pengaturan Waktu Monitoring
+                </h3>
+                
+                <!-- Toggle Switch untuk Mode Input -->
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="color: white; font-size: 13px; font-weight: 600;">Mode Input:</span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span id="intervalLabel" style="color: white; font-size: 12px; font-weight: 600; opacity: 1;">Interval</span>
+                        <div style="position: relative; width: 50px; height: 24px; background: rgba(255,255,255,0.3); border-radius: 12px; cursor: pointer; transition: all 0.3s ease;" 
+                             onclick="toggleInputMode()" id="toggleSwitch">
+                            <div id="toggleSlider" style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
+                        </div>
+                        <span id="manualLabel" style="color: white; font-size: 12px; font-weight: 600; opacity: 0.5;">Manual</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Container untuk Mode Interval dan Manual -->
+            <div id="inputModeContainer">
+                <!-- Mode Interval -->
+                <div id="intervalMode" style="display: block;">
+                    <div style="display: grid; grid-template-columns: 2fr 2fr auto auto; gap: 15px; align-items: end;">
+                        <!-- Waktu Mulai (HH:MM:SS) -->
+                        <div>
+                            <label style="display: block; color: white; font-weight: 600; margin-bottom: 5px; font-size: 13px;">
+                                ⏰ Waktu Mulai (HH:MM:SS)
+                            </label>
+                            <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 5px; align-items: center;">
+                                <input type="number" id="vs_waktu_jam" min="0" max="23" placeholder="HH" 
+                                       style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
+                                <span style="color: white; font-weight: 700; font-size: 18px;">:</span>
+                                <input type="number" id="vs_waktu_menit" min="0" max="59" placeholder="MM" 
+                                       style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
+                                <span style="color: white; font-weight: 700; font-size: 18px;">:</span>
+                                <input type="number" id="vs_waktu_detik" min="0" max="59" placeholder="SS" value="0"
+                                       style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
+                            </div>
+                        </div>
+                        
+                        <!-- Interval (HH:MM:SS) -->
+                        <div>
+                            <label style="display: block; color: white; font-weight: 600; margin-bottom: 5px; font-size: 13px;">
+                                ⏱️ Interval (HH:MM:SS)
+                            </label>
+                            <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 5px; align-items: center;">
+                                <input type="number" id="vs_interval_jam" min="0" max="23" placeholder="HH" value="0"
+                                       style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
+                                <span style="color: white; font-weight: 700; font-size: 18px;">:</span>
+                                <input type="number" id="vs_interval_menit" min="0" max="59" placeholder="MM" value="3"
+                                       style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
+                                <span style="color: white; font-weight: 700; font-size: 18px;">:</span>
+                                <input type="number" id="vs_interval_detik" min="0" max="59" placeholder="SS" value="0"
+                                       style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
+                            </div>
+                        </div>
+                        
+                        <!-- Button Now -->
+                        <div>
+                            <button type="button" id="btn_set_now" 
+                                    style="padding: 10px 15px; background: rgba(255,255,255,0.3); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap;">
+                                <i class="fas fa-clock"></i> Set Now
+                            </button>
+                        </div>
+                        
+                        <!-- Button Set -->
+                        <div>
+                            <button type="button" id="btn_set_waktu_config" 
+                                    style="padding: 10px 20px; background: white; color: #667eea; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.2); white-space: nowrap;">
+                                <i class="fas fa-check-circle"></i> Terapkan
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Interval (HH:MM:SS) -->
-                <div>
-                    <label style="display: block; color: white; font-weight: 600; margin-bottom: 5px; font-size: 13px;">
-                        ⏱️ Interval (HH:MM:SS)
-                    </label>
-                    <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 5px; align-items: center;">
-                        <input type="number" id="vs_interval_jam" min="0" max="23" placeholder="HH" value="0"
-                               style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
-                        <span style="color: white; font-weight: 700; font-size: 18px;">:</span>
-                        <input type="number" id="vs_interval_menit" min="0" max="59" placeholder="MM" value="3"
-                               style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
-                        <span style="color: white; font-weight: 700; font-size: 18px;">:</span>
-                        <input type="number" id="vs_interval_detik" min="0" max="59" placeholder="SS" value="0"
-                               style="width: 100%; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center;">
+                <!-- Mode Manual -->
+                <div id="manualMode" style="display: none;">
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 15px; align-items: end;">
+                        <!-- Input Manual -->
+                        <div>
+                            <label style="display: block; color: white; font-weight: 600; margin-bottom: 5px; font-size: 13px;">
+                                📋 Waktu Input Manual
+                            </label>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="text" id="vs_jam" readonly 
+                                           style="flex: 1; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center; background: rgba(255,255,255,0.3); color: white;">
+                                    <button type="button" id="btn_manual_time" 
+                                            style="padding: 10px 12px; background: rgba(255,255,255,0.3); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 12px; white-space: nowrap;">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                                <div style="display: flex; gap: 8px; justify-content: center;">
+                                    <button type="button" onclick="addManualTimeEntry()" 
+                                            style="padding: 6px 12px; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 15px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s ease;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)';" 
+                                            onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)';">
+                                        <i class="fas fa-plus"></i> Add Entry
+                                    </button>
+                                    <button type="button" onclick="clearManualEntries()" 
+                                            style="padding: 6px 12px; background: rgba(220, 53, 69, 0.3); color: white; border: 1px solid rgba(220, 53, 69, 0.5); border-radius: 15px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s ease;"
+                                            onmouseover="this.style.background='rgba(220, 53, 69, 0.5)'; this.style.transform='scale(1.05)';" 
+                                            onmouseout="this.style.background='rgba(220, 53, 69, 0.3)'; this.style.transform='scale(1)';">
+                                        <i class="fas fa-trash"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Button Apply Manual -->
+                        <div>
+                            <button type="button" id="btn_apply_manual" 
+                                    style="padding: 10px 20px; background: white; color: #667eea; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.2); white-space: nowrap;">
+                                <i class="fas fa-check-circle"></i> Terapkan Manual
+                            </button>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Waktu Pemeriksaan (Display) -->
-                <div>
-                    <label style="display: block; color: white; font-weight: 600; margin-bottom: 5px; font-size: 13px;">
-                        📋 Waktu Input Manual
-                    </label>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="text" id="vs_jam" readonly 
-                               style="flex: 1; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center; background: rgba(255,255,255,0.3); color: white;">
-                        <button type="button" id="btn_manual_time" 
-                                style="padding: 10px 12px; background: rgba(255,255,255,0.3); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 12px; white-space: nowrap;">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Button Now -->
-                <div>
-                    <button type="button" id="btn_set_now" 
-                            style="padding: 10px 15px; background: rgba(255,255,255,0.3); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap;">
-                        <i class="fas fa-clock"></i> Sekarang
-                    </button>
-                </div>
-                
-                <!-- Button Set -->
-                <div>
-                    <button type="button" id="btn_set_waktu_config" 
-                            style="padding: 10px 20px; background: white; color: #667eea; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.2); white-space: nowrap;">
-                        <i class="fas fa-check-circle"></i> Terapkan
-                    </button>
-                </div>
+            </div>
             </div>
             <div style="margin-top: 12px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 5px; color: white; font-size: 12px;">
                 <i class="fas fa-info-circle"></i> 
@@ -1170,7 +1262,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
         
-        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; margin-top: 20px;">
+        <div style="display: grid; grid-template-columns: 320px 1fr; gap: 30px; margin-top: 20px; align-items: start;">
             <!-- LEFT: Form Input -->
             <div>
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;">
@@ -1673,8 +1765,21 @@ function hitungWaktuBerikutnya() {
 
 // Initialize Chart.js
 function initVitalChart() {
-    const ctx = document.getElementById("vitalChart").getContext("2d");
-    vitalChart = new Chart(ctx, {
+    try {
+        const canvas = document.getElementById("vitalChart");
+        if (!canvas) {
+            console.error('❌ Canvas element "vitalChart" not found!');
+            return;
+        }
+        
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+            console.error('❌ Cannot get 2D context from canvas!');
+            return;
+        }
+        
+        console.log('📊 Initializing Chart.js...');
+        vitalChart = new Chart(ctx, {
         type: "line",
         data: {
             labels: [],
@@ -1759,6 +1864,11 @@ function initVitalChart() {
             }
         }
     });
+        
+        console.log('✅ Chart initialized successfully!');
+    } catch (error) {
+        console.error('❌ Error initializing chart:', error);
+    }
 }
 
 // Update chart dengan data
@@ -1954,8 +2064,15 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('⏰ Waktu mulai set ke waktu sekarang (tidak ada data sebelumnya)');
     }
     
-    // Button Set Now (isi waktu sekarang)
-    document.getElementById('btn_set_now').addEventListener('click', function() {
+    // Event listeners untuk button waktu
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize chart
+        initVitalChart();
+        
+        // Button Set Now (isi waktu sekarang)
+        const btnSetNow = document.getElementById('btn_set_now');
+        if (btnSetNow) {
+            btnSetNow.addEventListener('click', function() {
         const now = new Date();
         document.getElementById('vs_waktu_jam').value = String(now.getHours()).padStart(2, '0');
         document.getElementById('vs_waktu_menit').value = String(now.getMinutes()).padStart(2, '0');
@@ -1964,12 +2081,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Visual feedback
         this.innerHTML = '<i class="fas fa-check"></i> Diset!';
         setTimeout(() => {
-            this.innerHTML = '<i class="fas fa-clock"></i> Sekarang';
+            this.innerHTML = '<i class="fas fa-clock"></i> Set Now';
         }, 1000);
-    });
-    
-    // Button Set Waktu Config
-    document.getElementById('btn_set_waktu_config').addEventListener('click', function() {
+            });
+        }
+        
+        // Button Set Waktu Config
+        const btnSetWaktuConfig = document.getElementById('btn_set_waktu_config');
+        if (btnSetWaktuConfig) {
+            btnSetWaktuConfig.addEventListener('click', function() {
         // Waktu Mulai
         const jam = document.getElementById('vs_waktu_jam').value;
         const menitWaktu = document.getElementById('vs_waktu_menit').value;
@@ -2072,10 +2192,13 @@ document.addEventListener('DOMContentLoaded', function() {
               `Waktu akan otomatis bertambah setiap kali Anda tambah record.`);
         
         console.log(`✅ Config: Mulai=${waktuMulai}, Interval=${intervalJamInt}h ${intervalMenitInt}m ${intervalDetikInt}s`);
-    });
-    
-    // Button Manual Time
-    document.getElementById('btn_manual_time').addEventListener('click', function() {
+            });
+        }
+        
+        // Button Manual Time
+        const btnManualTime = document.getElementById('btn_manual_time');
+        if (btnManualTime) {
+            btnManualTime.addEventListener('click', function() {
         const newTime = prompt('Masukkan waktu manual (HH:MM:SS):', document.getElementById('vs_jam').value);
         if (newTime) {
             // Validasi format
@@ -2086,6 +2209,8 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 alert('❌ Format waktu tidak valid! Gunakan format HH:MM:SS (contoh: 14:30:00)');
             }
+        }
+            });
         }
     });
     
@@ -2654,6 +2779,175 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    
 });
+
+// Fungsi global untuk set waktu vital sign ke waktu sekarang
+function setCurrentTimeVitalWaktu() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+    document.getElementById('vs_waktu_jam').value = parseInt(hours);
+    document.getElementById('vs_waktu_menit').value = parseInt(minutes);
+    document.getElementById('vs_waktu_detik').value = parseInt(seconds);
+    
+    // Visual feedback
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> Set!';
+    button.style.background = 'rgba(40, 167, 69, 0.3)';
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.style.background = 'rgba(255,255,255,0.2)';
+    }, 1500);
+    
+    console.log('⏰ Waktu vital sign diset ke:', `${hours}:${minutes}:${seconds}`);
+}
+
+// Fungsi global untuk set interval default (3 menit untuk sedasi)
+function setDefaultInterval() {
+    document.getElementById('vs_interval_jam').value = 0;
+    document.getElementById('vs_interval_menit').value = 3;
+    document.getElementById('vs_interval_detik').value = 0;
+    
+    // Visual feedback
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> Set!';
+    button.style.background = 'rgba(40, 167, 69, 0.3)';
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.style.background = 'rgba(255,255,255,0.2)';
+    }, 1500);
+    
+    console.log('⏱️ Interval diset ke default: 00:03:00');
+}
+
+// Fungsi global untuk set interval custom
+function setCustomInterval() {
+    const minutes = prompt('Masukkan interval dalam menit (1-60):', '3');
+    if (minutes !== null && !isNaN(minutes) && minutes >= 1 && minutes <= 60) {
+        document.getElementById('vs_interval_jam').value = 0;
+        document.getElementById('vs_interval_menit').value = parseInt(minutes);
+        document.getElementById('vs_interval_detik').value = 0;
+        
+        // Visual feedback
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Set!';
+        button.style.background = 'rgba(40, 167, 69, 0.3)';
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.background = 'rgba(255,255,255,0.2)';
+        }, 1500);
+        
+        console.log('⏱️ Interval custom diset ke:', `00:${String(minutes).padStart(2, '0')}:00`);
+    } else if (minutes !== null) {
+        alert('⚠️ Masukkan angka antara 1-60 menit!');
+    }
+}
+
+// Variable untuk mode input
+let isManualMode = false;
+let manualTimeEntries = [];
+
+// Fungsi global untuk toggle mode input
+function toggleInputMode() {
+    isManualMode = !isManualMode;
+    
+    const intervalMode = document.getElementById('intervalMode');
+    const manualMode = document.getElementById('manualMode');
+    const toggleSlider = document.getElementById('toggleSlider');
+    const intervalLabel = document.getElementById('intervalLabel');
+    const manualLabel = document.getElementById('manualLabel');
+    
+    if (isManualMode) {
+        // Switch ke Manual Mode
+        intervalMode.style.display = 'none';
+        manualMode.style.display = 'block';
+        toggleSlider.style.left = '28px';
+        intervalLabel.style.opacity = '0.5';
+        manualLabel.style.opacity = '1';
+        console.log('🔄 Mode diubah ke: Manual Input');
+    } else {
+        // Switch ke Interval Mode
+        intervalMode.style.display = 'block';
+        manualMode.style.display = 'none';
+        toggleSlider.style.left = '2px';
+        intervalLabel.style.opacity = '1';
+        manualLabel.style.opacity = '0.5';
+        console.log('🔄 Mode diubah ke: Interval Input');
+    }
+}
+
+// Fungsi untuk menambah entry waktu manual
+function addManualTimeEntry() {
+    const jamInput = document.getElementById('vs_jam');
+    const currentTime = jamInput.value || getCurrentTimeString();
+    
+    if (currentTime && !manualTimeEntries.includes(currentTime)) {
+        manualTimeEntries.push(currentTime);
+        console.log('➕ Entry waktu manual ditambahkan:', currentTime);
+        console.log('📋 Total entries:', manualTimeEntries.length);
+        
+        // Visual feedback
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Added!';
+        button.style.background = 'rgba(40, 167, 69, 0.3)';
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.background = 'rgba(255,255,255,0.2)';
+        }, 1500);
+        
+        // Update display
+        jamInput.value = '';
+    } else if (manualTimeEntries.includes(currentTime)) {
+        alert('⚠️ Waktu ini sudah ada dalam daftar!');
+    } else {
+        alert('⚠️ Silakan masukkan waktu terlebih dahulu!');
+    }
+}
+
+// Fungsi untuk clear semua entry manual
+function clearManualEntries() {
+    if (manualTimeEntries.length > 0) {
+        const confirm = window.confirm(`🗑️ Hapus ${manualTimeEntries.length} entry waktu manual?`);
+        if (confirm) {
+            manualTimeEntries = [];
+            document.getElementById('vs_jam').value = '';
+            console.log('🗑️ Semua entry waktu manual dihapus');
+            
+            // Visual feedback
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i> Cleared!';
+            button.style.background = 'rgba(40, 167, 69, 0.3)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = 'rgba(220, 53, 69, 0.3)';
+            }, 1500);
+        }
+    } else {
+        alert('ℹ️ Tidak ada entry untuk dihapus.');
+    }
+}
+
+// Helper function untuk get current time string
+function getCurrentTimeString() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+}
+
 </script>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

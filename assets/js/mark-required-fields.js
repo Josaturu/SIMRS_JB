@@ -104,10 +104,21 @@
         }
     });
 
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+    const startObserver = function() {
+        if (!document.body) {
+            return;
+        }
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    };
+
+    if (document.body) {
+        startObserver();
+    } else {
+        window.addEventListener('load', startObserver);
+    }
 
     // Expose to global scope
     window.MarkRequiredFields = {

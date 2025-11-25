@@ -4,6 +4,15 @@ require_once '../config/database.php';
 require_once '../includes/functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // -- DEBUGGING BACKEND START (DIRECT FILE WRITE) --
+    // Membuat file log sendiri untuk memastikan debug berjalan.
+    $log_file = __DIR__ . '/debug_log.txt';
+    $log_message = "--- [" . date('Y-m-d H:i:s') . "] DATA POST DITERIMA ---\n";
+    $log_message .= "Ukuran chart_image: " . (isset($_POST['chart_image']) ? strlen($_POST['chart_image']) : 'TIDAK ADA') . "\n";
+    $log_message .= "Isi POST (tanpa gambar): " . print_r(array_diff_key($_POST, array_flip(['chart_image'])), true) . "\n";
+    $log_message .= "--- AKHIR DATA POST ---\n\n";
+    file_put_contents($log_file, $log_message, FILE_APPEND);
+    // -- DEBUGGING BACKEND END --
     try {
         $database = new Database();
         $db = $database->getConnection();
@@ -88,8 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                        jam_keluar = :jam_keluar, td_keluar = :td_keluar, n_keluar = :n_keluar, r_keluar = :r_keluar, s_keluar = :s_keluar, spo2_keluar = :spo2_keluar,
                        skrining_nyeri = :skrining_nyeri, tujuan_keluar = :tujuan_keluar, catatan_khusus = :catatan_khusus,
                        aldrete_score = :aldrete_score, bromage_score = :bromage_score, steward_score = :steward_score,
-                       nama_penanggungjawab = :nama_penanggungjawab, perawat_menyerahkan = :perawat_menyerahkan, perawat_menerima = :perawat_menerima, dokter_anestesi = :dokter_anestesi,
-                       chart_image = :chart_image, vital_sign_data = :vital_sign_data
+                       nama_penanggungjawab = :nama_penanggungjawab, perawat_menyerahkan = :perawat_menyerahkan, perawat_menerima = :perawat_menerima, dokter_anestesi = :dokter_anestesi
                       WHERE id = :id";
         } else {
             // INSERT new record
@@ -111,8 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    jam_keluar, td_keluar, n_keluar, r_keluar, s_keluar, spo2_keluar,
                    skrining_nyeri, tujuan_keluar, catatan_khusus,
                    aldrete_score, bromage_score, steward_score,
-                   nama_penanggungjawab, perawat_menyerahkan, perawat_menerima, dokter_anestesi,
-                   chart_image, vital_sign_data
+                   nama_penanggungjawab, perawat_menyerahkan, perawat_menerima, dokter_anestesi
                   ) VALUES (
                    :id, :no_rawat, :kode_paket, :tanggal, :jam_mulai,
                    :jam_masuk, :tgl_masuk,
@@ -131,8 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    :jam_keluar, :td_keluar, :n_keluar, :r_keluar, :s_keluar, :spo2_keluar,
                    :skrining_nyeri, :tujuan_keluar, :catatan_khusus,
                    :aldrete_score, :bromage_score, :steward_score,
-                   :nama_penanggungjawab, :perawat_menyerahkan, :perawat_menerima, :dokter_anestesi,
-                   :chart_image, :vital_sign_data
+                   :nama_penanggungjawab, :perawat_menyerahkan, :perawat_menerima, :dokter_anestesi
                   )";
         }
         
@@ -243,15 +249,89 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':perawat_menerima', $formData['perawat_menerima']);
         $stmt->bindParam(':dokter_anestesi', $formData['dokter_anestesi']);
         
-        // Bind parameters - Chart Image & Vital Sign Data (NEW)
-        $chart_image = $formData['chart_image'] ?? '';
-        $vital_sign_data = $formData['vital_sign_data'] ?? '';
-        
-        $stmt->bindParam(':chart_image', $chart_image);
-        $stmt->bindParam(':vital_sign_data', $vital_sign_data);
+        // Kolom vital_sign_data tidak lagi disimpan di tabel utama, 
+        // karena data mentahnya disimpan di tabel tbl_anestesi_vital_pemulihan.
+
+        // ===== LOGIKA BARU: Simpan Vital Sign (Meniru Catatan Sedasi) =====
+        // PENTING: Logika ini harus dijalankan SETELAH query utama berhasil.
+        $vital_sign_data_original = $formData['vital_sign_data'] ?? null;
         
         // Execute query
         if ($stmt->execute()) {
+
+
+            if (!empty($vital_sign_data_original)) {
+                $vitalSigns = json_decode($vital_sign_data_original, true);
+
+                if (is_array($vitalSigns)) {
+                    // 1. Tangani DELETIONS
+                    $deletedRecords = array_filter($vitalSigns, function($record) {
+                        return isset($record['_deleted']) && $record['_deleted'] === true && isset($record['id']) && is_string($record['id']);
+                    });
+
+                    if (!empty($deletedRecords)) {
+                        $deleteQuery = "DELETE FROM tbl_anestesi_vital_pemulihan WHERE id = ?";
+                        $deleteStmt = $db->prepare($deleteQuery);
+                        foreach ($deletedRecords as $record) {
+                            $deleteStmt->execute([$record['id']]);
+                        }
+                    }
+
+                    // 2. Tangani UPDATES (record yang sudah ada di DB, ID adalah UUID string)
+                    $updatedRecords = array_filter($vitalSigns, function($record) {
+                        return isset($record['id']) && is_string($record['id']) && (!isset($record['_deleted']) || $record['_deleted'] === false);
+                    });
+
+                    if (!empty($updatedRecords)) {
+                        $updateQuery = "UPDATE tbl_anestesi_vital_pemulihan SET waktu = ?, respirasi = ?, nadi = ?, sistol = ?, diastol = ?, nyeri = ?, spo2 = ? WHERE id = ?";
+                        $updateStmt = $db->prepare($updateQuery);
+                        foreach ($updatedRecords as $vital) {
+                            $waktuDatetime = $formData['tanggal'] . ' ' . ($vital['jam'] ?? '00:00:00');
+                            $updateStmt->execute([
+                                $waktuDatetime,
+                                $vital['respirasi'] ?? null,
+                                $vital['nadi'] ?? null,
+                                $vital['sistol'] ?? null,
+                                $vital['diastol'] ?? null,
+                                $vital['nyeri'] ?? null,
+                                $vital['spo2'] ?? null,
+                                $vital['id']
+                            ]);
+                        }
+                    }
+
+                    // 3. Tangani INSERTS (record baru, ID adalah numeric)
+                    $newRecords = array_filter($vitalSigns, function($record) {
+                        return isset($record['id']) && is_numeric($record['id']);
+                    });
+
+                    if (!empty($newRecords)) {
+                        $insertQuery = "INSERT INTO tbl_anestesi_vital_pemulihan (id, id_pemulihan, no_rawat, kode_paket, tanggal, jam_mulai, waktu, respirasi, nadi, sistol, diastol, nyeri, spo2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $insertStmt = $db->prepare($insertQuery);
+                        foreach ($newRecords as $vital) {
+                            $vitalId = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+                            $waktuDatetime = $formData['tanggal'] . ' ' . ($vital['jam'] ?? '00:00:00');
+                            $insertStmt->execute([
+                                $vitalId,
+                                $id, // ID dari record utama tbl_anestesi_kamar_pemulihan (sebagai id_pemulihan)
+                                $formData['no_rawat'],
+                                $formData['kode_paket'],
+                                $formData['tanggal'],
+                                $formData['jam_mulai'],
+                                $waktuDatetime,
+                                $vital['respirasi'] ?? null,
+                                $vital['nadi'] ?? null,
+                                $vital['sistol'] ?? null,
+                                $vital['diastol'] ?? null,
+                                $vital['nyeri'] ?? null,
+                                $vital['spo2'] ?? null
+                            ]);
+                        }
+                    }
+                }
+            }
+            // ===== AKHIR LOGIKA BARU =====
+
             // Redirect back to form with success status (like form keselamatan)
             $action = $isUpdate ? 'updated' : 'saved';
             header("Location: ../index.php?page=kamar-pemulihan&no_rawat={$formData['no_rawat']}&kode_paket={$formData['kode_paket']}&tanggal={$formData['tanggal']}&jam_mulai={$formData['jam_mulai']}&status=sukses&action={$action}");

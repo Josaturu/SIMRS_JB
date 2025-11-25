@@ -1,0 +1,1161 @@
+--- [2025-11-24 17:06:58] DATA POST DITERIMA ---
+Ukuran chart_image: 38810
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_signs_data] => [{"id":1764000413190,"jam":"23:06:40","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 10:12:00
+    [tglMasuk] => 2025-11-20
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 17:34:14] DATA POST DITERIMA ---
+Ukuran chart_image: 111634
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_signs_data] => [{"id":1764002027375,"jam":"23:33:34","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98},{"id":1764002044592,"jam":"23:38:34","respirasi":81,"nadi":30,"sistol":80,"diastol":120,"nyeri":10,"spo2":50}]
+    [jamMasuk] => 10:12:00
+    [tglMasuk] => 2025-11-20
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 17:58:01] DATA POST DITERIMA ---
+Ukuran chart_image: 112582
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_signs_data] => [{"id":1764003446683,"jam":"00:02:00","respirasi":81,"nadi":30,"sistol":80,"diastol":120,"nyeri":10,"spo2":10},{"id":1764003431863,"jam":"23:57:00","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 23:57
+    [tglMasuk] => 2025-11-24
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 18:07:18] DATA POST DITERIMA ---
+Ukuran chart_image: 111882
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_signs_data] => [{"id":1764004020581,"jam":"00:06:48","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98},{"id":1764004033995,"jam":"00:11:48","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":40}]
+    [jamMasuk] => 23:57:00
+    [tglMasuk] => 2025-11-24
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 18:08:47] DATA POST DITERIMA ---
+Ukuran chart_image: 109938
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_signs_data] => [{"id":1764004109452,"jam":"00:08:21","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98},{"id":1764004124666,"jam":"00:08:29","respirasi":81,"nadi":40,"sistol":80,"diastol":120,"nyeri":10,"spo2":70}]
+    [jamMasuk] => 00:08
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 18:22:02] DATA POST DITERIMA ---
+Ukuran chart_image: 111522
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_signs_data] => [{"id":1764004908468,"jam":"00:21:33","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98},{"id":1764004919592,"jam":"00:26:33","respirasi":81,"nadi":30,"sistol":80,"diastol":120,"nyeri":10,"spo2":50}]
+    [jamMasuk] => 00:21
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 18:22:33] DATA POST DITERIMA ---
+Ukuran chart_image: 38670
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_signs_data] => [{"id":1764004948413,"jam":"00:22:16","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 00:22
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 18:26:01] DATA POST DITERIMA ---
+Ukuran chart_image: 109494
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_signs_data] => [{"id":1764005140712,"jam":"00:25:28","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98},{"id":1764005157686,"jam":"00:30:28","respirasi":81,"nadi":60,"sistol":80,"diastol":120,"nyeri":10,"spo2":30}]
+    [jamMasuk] => 00:25
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 18:37:49] DATA POST DITERIMA ---
+Ukuran chart_image: 107374
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_signs_data] => [{"id":1764005849851,"jam":"00:37:14","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98},{"id":1764005865754,"jam":"00:37:29","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":40}]
+    [jamMasuk] => 00:25:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 18:41:52] DATA POST DITERIMA ---
+Ukuran chart_image: 38358
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_signs_data] => [{"id":1764006109541,"jam":"00:41:41","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 00:41
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 18:48:01] DATA POST DITERIMA ---
+Ukuran chart_image: 38646
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => 
+    [jamMasuk] => 00:47
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 18:53:23] DATA POST DITERIMA ---
+Ukuran chart_image: 107994
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":1764006757739,"jam":"00:52:08","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98},{"id":1764006776957,"jam":"00:52:37","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":50}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 19:13:34] DATA POST DITERIMA ---
+Ukuran chart_image: 33410
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98,"_deleted":true},{"id":"61b05663-d818-4ee1-900f-9fca793cf230","jam":"","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":50,"_deleted":true}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 19:13:53] DATA POST DITERIMA ---
+Ukuran chart_image: 37830
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"61b05663-d818-4ee1-900f-9fca793cf230","jam":"","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":50},{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"01:13","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 19:16:40] DATA POST DITERIMA ---
+Ukuran chart_image: 112310
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"61b05663-d818-4ee1-900f-9fca793cf230","jam":"01:16","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":50},{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"01:16","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 19:16:59] DATA POST DITERIMA ---
+Ukuran chart_image: 37574
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"61b05663-d818-4ee1-900f-9fca793cf230","jam":"","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":50},{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"01:16","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 19:21:27] DATA POST DITERIMA ---
+Ukuran chart_image: 112198
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"61b05663-d818-4ee1-900f-9fca793cf230","jam":"01:21","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":50},{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"01:21","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 19:21:53] DATA POST DITERIMA ---
+Ukuran chart_image: 33410
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"61b05663-d818-4ee1-900f-9fca793cf230","jam":"","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":50,"_deleted":true},{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 19:22:55] DATA POST DITERIMA ---
+Ukuran chart_image: 38074
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"01:22","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":4,"spo2":98}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-24 19:23:48] DATA POST DITERIMA ---
+Ukuran chart_image: 38378
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":4,"spo2":98},{"id":1764008621366,"jam":"01:23:37","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":40}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-25 04:33:17] DATA POST DITERIMA ---
+Ukuran chart_image: 38178
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"10:33","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":4,"spo2":98}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-25 04:45:18] DATA POST DITERIMA ---
+Ukuran chart_image: 38374
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":4,"spo2":98},{"id":1764042312714,"jam":"10:44:47","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-25 04:50:24] DATA POST DITERIMA ---
+Ukuran chart_image: 38006
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"10:50","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":4,"spo2":98}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-25 04:51:55] DATA POST DITERIMA ---
+Ukuran chart_image: 125418
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"10:50:00","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":4,"spo2":98},{"id":1764042646951,"jam":"10:50:31","respirasi":71,"nadi":86,"sistol":80,"diastol":120,"nyeri":10,"spo2":30},{"id":1764042688674,"jam":"10:51:13","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98},{"id":1764042657560,"jam":"11:00:31","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":1,"spo2":98},{"id":1764042699041,"jam":"11:11:13","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":89}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-25 05:01:40] DATA POST DITERIMA ---
+Ukuran chart_image: 116562
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"10:50:00","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":4,"spo2":98},{"id":1764043186849,"jam":"10:59:36","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98},{"id":1764043221562,"jam":"11:00:04","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":0,"spo2":20},{"id":1764043234756,"jam":"11:20:04","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-25 05:11:57] DATA POST DITERIMA ---
+Ukuran chart_image: 101782
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"10:50:00","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":4,"spo2":98},{"id":1764043914057,"jam":"11:11:37","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":89}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+
+--- [2025-11-25 05:25:52] DATA POST DITERIMA ---
+Ukuran chart_image: 125210
+Isi POST (tanpa gambar): Array
+(
+    [no_rawat] => RW2025014
+    [kode_paket] => PKT-GIN
+    [tanggal] => 2025-11-14
+    [jam_mulai] => 08:00:00
+    [vital_sign_data] => [{"id":"ed203283-2e63-4711-a9d6-593af34e0bd5","jam":"10:50:00","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":4,"spo2":98},{"id":"7270de8c-ace0-4822-a2da-4b26bad2a263","jam":"11:11:37","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":89},{"id":1764044734019,"jam":"11:25:19","respirasi":18,"nadi":86,"sistol":120,"diastol":80,"nyeri":0,"spo2":98},{"id":1764044745055,"jam":"11:30:19","respirasi":81,"nadi":68,"sistol":80,"diastol":120,"nyeri":10,"spo2":89}]
+    [jamMasuk] => 00:47:00
+    [tglMasuk] => 2025-11-25
+    [pemantauan_setiap] => 
+    [pemantauan_selama] => 
+    [analgesia] => 
+    [anti_muntah] => 
+    [antibiotik] => 
+    [posisi_pasien] => 
+    [obat_lain] => 
+    [diet_nutrisi] => 
+    [lain_lain] => 
+    [td_keluar] => 
+    [n_keluar] => 
+    [r_keluar] => 
+    [s_keluar] => 
+    [spo2_keluar] => 
+    [catatan_khusus] => 
+    [aldrete_score] => 
+    [bromage_score] => 
+    [steward_score] => 
+    [nama_penanggungjawab] => 
+    [perawat_menyerahkan_select] => 
+    [perawat_menyerahkan_input] => 
+    [perawat_menyerahkan] => 
+    [perawat_menerima_select] => 
+    [perawat_menerima_input] => 
+    [perawat_menerima] => 
+    [dokter_anestesi_select] => 
+    [dokter_anestesi_input] => 
+    [dokter_anestesi] => 
+)
+
+--- AKHIR DATA POST ---
+

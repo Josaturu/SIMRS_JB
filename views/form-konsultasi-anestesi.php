@@ -181,12 +181,61 @@ include __DIR__ . '/../includes/header.php';
     <!-- Tombol Back ke Detail Pasien (Floating) -->
     <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
        class="btn-back-to-detail" 
-       style="position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background: #6c757d; color: white; border: none; border-radius: 50%; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;"
-       onmouseover="this.style.background='#5a6268'; this.style.transform='scale(1.1)';" 
-       onmouseout="this.style.background='#6c757d'; this.style.transform='scale(1)';" 
+       style="position: fixed; bottom: 80px; right: 20px; width: auto; height: 32px; padding: 5px 12px; background: #6c757d; color: white; border: none; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease; white-space: nowrap;"
+       onmouseover="this.style.background='#5a6268'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0,0,0,0.3)';" 
+       onmouseout="this.style.background='#6c757d'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';" 
        title="Kembali ke Detail Pasien">
-        <i class="fas fa-arrow-left"></i>
+        Kembali
     </a>
+    
+    <!-- Tombol Back to Top (Floating) -->
+    <button id="backToTopBtn" 
+            style="position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: #007bff; color: white; border: none; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 999; display: none; align-items: center; justify-content: center; font-size: 18px; transition: all 0.3s ease;"
+            onmouseover="this.style.background='#0056b3'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 6px 16px rgba(0,0,0,0.3)';" 
+            onmouseout="this.style.background='#007bff'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';" 
+            title="Kembali ke Atas">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Patient Info Card - Top Section -->
+    <?php
+    $dokter = $booking['kd_dokter'] ?? '';
+    $nama_pasien = $booking['nama'] ?? $booking['nama_pasien'] ?? '';
+    ?>
+    
+    <?php if (!empty($no_rawat) && !empty($kode_paket) && !empty($tanggal)): ?>
+    <div class="patient-info-top-card">
+        <div class="patient-info-top-header">
+            <strong><i class="fas fa-id-badge"></i> Identitas Pasien</strong>
+        </div>
+        <div class="patient-info-top-content">
+            <?php if (!empty($nama_pasien)): ?>
+            <div class="patient-info-top-item">
+                <span class="patient-info-top-label"><i class="fas fa-user"></i> Nama:</span>
+                <span class="patient-info-top-value"><?= htmlspecialchars($nama_pasien) ?></span>
+            </div>
+            <?php endif; ?>
+            <div class="patient-info-top-item">
+                <span class="patient-info-top-label"><i class="fas fa-id-card"></i> No. Rawat:</span>
+                <span class="patient-info-top-value"><?= htmlspecialchars($no_rawat) ?></span>
+            </div>
+            <div class="patient-info-top-item">
+                <span class="patient-info-top-label"><i class="fas fa-barcode"></i> Kode Paket:</span>
+                <span class="patient-info-top-value"><?= htmlspecialchars($kode_paket) ?></span>
+            </div>
+            <div class="patient-info-top-item">
+                <span class="patient-info-top-label"><i class="fas fa-calendar"></i> Tgl Operasi:</span>
+                <span class="patient-info-top-value"><?= htmlspecialchars($tanggal) ?></span>
+            </div>
+            <?php if (!empty($dokter)): ?>
+            <div class="patient-info-top-item">
+                <span class="patient-info-top-label"><i class="fas fa-user-md"></i> Dokter:</span>
+                <span class="patient-info-top-value"><?= htmlspecialchars($dokter) ?></span>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endif; ?>
     
         <div class="form-grid">
             <div class="form-column">
@@ -1147,5 +1196,29 @@ document.getElementById('formKonsultasiAnestesi').addEventListener('submit', fun
     console.log('asma:', formData.get('asma'));
     console.log('diabetes:', formData.get('diabetes'));
     console.log('======================');
+});
+
+// Back to Top Button Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const backToTopBtn = document.getElementById('backToTopBtn');
+    
+    if (backToTopBtn) {
+        // Show/hide button based on scroll position
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.style.display = 'flex';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+        
+        // Scroll to top when button clicked
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
 });
 </script>
