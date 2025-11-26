@@ -436,7 +436,7 @@ include __DIR__ . '/../includes/header.php';
                             </label>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <div style="display: flex; gap: 10px; align-items: center;">
-                                    <input type="time" id="vs_jam" 
+                                    <input type="time" id="vs_jam" step="1"
                                            style="flex: 1; padding: 10px; border: 2px solid white; border-radius: 5px; font-size: 14px; font-weight: 600; text-align: center; background: rgba(255,255,255,0.3); color: white;">
                                     <button type="button" id="btn_manual_time" 
                                             style="padding: 10px 12px; background: rgba(255,255,255,0.3); color: white; border: 2px solid white; border-radius: 5px; cursor: pointer; font-size: 12px; white-space: nowrap;">
@@ -616,7 +616,7 @@ include __DIR__ . '/../includes/header.php';
                                             <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left;">Nadi</th>
                                             <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left;">TD</th>
                                             <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left;">Nyeri</th>
-                                            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left;">SPO2</th>
+       /                                     <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left;">SPO2</th>
                                             <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; width: 120px;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -2184,7 +2184,7 @@ window.addEventListener('load', function() {
         
         <div style="margin-bottom: 15px;">
             <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #495057;">Waktu (HH:MM:SS)</label>
-            <input type="time" id="editRecordTime" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 14px;">
+            <input type="time" id="editRecordTime" step="1" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 14px;">
         </div>
         
         <div style="margin-bottom: 15px;">
@@ -2238,7 +2238,12 @@ function openEditModal(index) {
     editingRecordIndex = index;
     
     // Populate form dengan data record
-    document.getElementById('editRecordTime').value = record.jam;
+    // Ensure the time format is always HH:MM:SS
+    let timeValue = record.jam || '00:00:00';
+    if (timeValue.split(':').length === 2) {
+        timeValue += ':00'; // Append seconds if missing
+    }
+    document.getElementById('editRecordTime').value = timeValue;
     document.getElementById('editRecordRespirasi').value = record.respirasi;
     document.getElementById('editRecordNadi').value = record.nadi;
     document.getElementById('editRecordSistol').value = record.sistol;

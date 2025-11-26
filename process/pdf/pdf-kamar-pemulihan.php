@@ -40,23 +40,34 @@ if (!empty($booking['tanggal_lahir'])) {
     $umur = $tanggal_lahir->diff($today)->y;
 }
 
-// Ambil data kamar pemulihan
-$query_pemulihan = "SELECT * FROM tbl_anestesi_kamar_pemulihan 
-                    WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?";
+// Ambil data kamar pemulihan dengan JOIN untuk mendapatkan nama
+$query_pemulihan = "SELECT 
+                        kp.*,
+                        p1.nama_perawat AS nama_perawat_menyerahkan,
+                        p2.nama_perawat AS nama_perawat_menerima,
+                        d.nama_dokter AS nama_dokter_anestesi
+                    FROM tbl_anestesi_kamar_pemulihan kp
+                    LEFT JOIN tbl_perawat p1 ON kp.perawat_menyerahkan = p1.id_perawat COLLATE utf8mb4_unicode_ci
+                    LEFT JOIN tbl_perawat p2 ON kp.perawat_menerima = p2.id_perawat COLLATE utf8mb4_unicode_ci
+                    LEFT JOIN tbl_dokter d ON kp.dokter_anestesi = d.id_dokter COLLATE utf8mb4_unicode_ci
+                    WHERE kp.no_rawat = ? AND kp.kode_paket = ? AND kp.tanggal = ? AND kp.jam_mulai = ?";
 $stmt_pemulihan = $db->prepare($query_pemulihan);
 $stmt_pemulihan->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
 $pemulihan = $stmt_pemulihan->fetch(PDO::FETCH_ASSOC);
 
 if (!$pemulihan) {
-    $pemulihan = [];
+    // Jika data utama tidak ada, tidak perlu melanjutkan
+    die("Data catatan kamar pemulihan tidak ditemukan!");
 }
 
-// Ambil data vital sign pemulihan dari tbl_anestesi_vital_pemulihan
-$query_vital = "SELECT * FROM tbl_anestesi_vital_pemulihan 
-                WHERE no_rawat = ? AND kode_paket = ? AND tanggal = ? AND jam_mulai = ?
-                ORDER BY waktu_label ASC";
+// Ambil data vital sign dari tabel terpisah menggunakan ID pemulihan sebagai foreign key
+$id_pemulihan = $pemulihan['id']; // Ambil ID dari data pemulihan yang sudah di-fetch
+$query_vital = "SELECT id, waktu, respirasi, nadi, sistol, diastol, nyeri, spo2 
+                FROM tbl_anestesi_vital_pemulihan 
+                WHERE id_pemulihan = ?
+                ORDER BY waktu ASC";
 $stmt_vital = $db->prepare($query_vital);
-$stmt_vital->execute([$no_rawat, $kode_paket, $tanggal, $jam_mulai]);
+$stmt_vital->execute([$id_pemulihan]);
 $vital_signs = $stmt_vital->fetchAll(PDO::FETCH_ASSOC);
 
 // Helper functions
@@ -354,9 +365,12 @@ ob_start();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($vital_sign_json as $vs): ?>
+                <?php foreach ($vital_signs as $vs):
+                    // Ekstrak hanya waktu (HH:MM:SS) dari datetime
+                    $waktu_tampil = date('H:i:s', strtotime($vs['waktu']));
+                ?>
                 <tr>
-                    <td><?= displayValue($vs['jam'] ?? '') ?></td>
+                    <td><?= displayValue($waktu_tampil) ?></td>
                     <td><?= displayValue($vs['respirasi'] ?? '') ?></td>
                     <td><?= displayValue($vs['nadi'] ?? '') ?></td>
                     <td><?= displayValue($vs['sistol'] ?? '') ?></td>
@@ -516,17 +530,17 @@ ob_start();
         <div class="signature-section">
             <div class="signature-box">
                 <div class="title">Perawat Menyerahkan</div>
-                <div class="name"><?= displayValue($pemulihan['perawat_menyerahkan']) ?></div>
+                <div class="name"><?= displayValue($pemulihan['nama_perawat_menyerahkan']) ?></div>
             </div>
             
             <div class="signature-box">
                 <div class="title">Perawat Menerima</div>
-                <div class="name"><?= displayValue($pemulihan['perawat_menerima']) ?></div>
+                <div class="name"><?= displayValue($pemulihan['nama_perawat_menerima']) ?></div>
             </div>
             
             <div class="signature-box">
                 <div class="title">Dokter Anestesi</div>
-                <div class="name"><?= displayValue($pemulihan['dokter_anestesi']) ?></div>
+                <div class="name"><?= displayValue($pemulihan['nama_dokter_anestesi']) ?></div>
             </div>
         </div>
     </div>
