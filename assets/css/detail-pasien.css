@@ -87,13 +87,11 @@
 /* Sidebar Sections */
 .sidebar-section {
     margin-top: 20px;
-    padding-top: 16px;
     border-top: 2px solid #f0f0f0;
 }
 
 .sidebar-section:first-of-type {
     margin-top: 0;
-    padding-top: 0;
     border-top: none;
 }
 
@@ -101,7 +99,19 @@
     font-size: 13px;
     font-weight: 700;
     color: #1a1a1a;
-    margin-bottom: 12px;
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar-title-left {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -110,6 +120,28 @@
 .sidebar-section-title i {
     color: #007bff;
     font-size: 14px;
+}
+
+.sidebar-toggle-icon {
+    transition: transform 0.2s ease;
+}
+
+.sidebar-section.is-open .sidebar-toggle-icon {
+    transform: rotate(180deg);
+}
+
+.sidebar-section-body {
+    border-top: 1px solid #f5f5f5;
+    padding-top: 8px;
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+}
+
+.sidebar-section:not(.is-open) .sidebar-section-body {
+    max-height: 0;
+    padding-top: 0;
+    border-top: none;
 }
 
 .status-badge-sidebar {

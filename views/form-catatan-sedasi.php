@@ -190,9 +190,9 @@ $stmt_vital->execute();
 $vital_data = $stmt_vital->fetchAll(PDO::FETCH_ASSOC);
 
 // Konversi data ke format JSON untuk JavaScript
-$vital_data_json = json_encode($vital_data);
+ $vital_data_json = json_encode($vital_data);
 
-include __DIR__ . '/../includes/header.php';
+include __DIR__ . '/../includes/assets.php';
 ?>
 <!-- Prevent browser cache -->
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -1567,14 +1567,45 @@ document.addEventListener('DOMContentLoaded', function() {
               <input type="hidden" id="dokter_anestesi_ttd" name="dokter_anestesi_ttd" value="<?= htmlspecialchars($current_dokter_anestesi_ttd) ?>">
             </td>
           </tr>
-        </table>
+        <table>
+  1570→
+  1571→        <div class="form-actions">
+  1572→          <!-- Tombol aksi utama dipindahkan ke Speed Dial -->
+  1573→        </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary"><?= isset($catatan['id']) ? 'Simpan Perubahan' : 'Simpan' ?></button>
-          <button type="button" class="btn btn-secondary" onclick="window.location.href='/index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>'">Kembali</button>
-        </div>
-<script src="/assets/js/autosave.js"></script>
-<script>
+  <!-- Speed Dial: Simpan, Cetak PDF, Kembali -->
+  <div data-dial-init class="fixed right-6 bottom-6 group">
+      <div id="speed-dial-menu-catatan-sedasi" class="flex flex-col w-32 justify-end hidden mb-4 space-y-2 bg-neutral-primary-medium border border-default-medium rounded-base shadow-xs">
+          <ul class="p-2 text-sm text-body font-medium">
+              <li>
+                  <a href="#" onclick="document.getElementById('formCatatanSedasi').submit(); return false;" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                      <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M11 16h2m6.707-9.293-2.414-2.414A1 1 0 0 0 16.586 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7.414a1 1 0 0 0-.293-.707ZM16 20v-6a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v6h8ZM9 4h6v3a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V4Z"/></svg>
+                      <span class="text-sm font-medium">Simpan</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="/process/pdf/pdf-catatan-sedasi.php?no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" target="_blank" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                      <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z"/></svg>
+                      <span class="text-sm font-medium">Cetak PDF</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="/index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                      <!-- Back Arrow Icon -->
+                      <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 6l-6 6 6 6"/></svg>
+                      <span class="text-sm font-medium">Kembali</span>
+                  </a>
+              </li>
+          </ul>
+      </div>
+      <button type="button" data-dial-toggle="speed-dial-menu-catatan-sedasi" aria-controls="speed-dial-menu-catatan-sedasi" aria-expanded="false" class="flex items-center justify-center ml-auto text-white bg-brand rounded-base w-14 h-14 hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium focus:outline-none">
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4"/></svg>
+          <span class="sr-only">Open actions menu</span>
+      </button>
+  </div>
+
+  1575→<script src="/assets/js/autosave.js"></script>
+  1576→<script>
 // Debug log dihapus - form sudah stabil
 
 // Prevent accidental form submission
@@ -2950,4 +2981,3 @@ function getCurrentTimeString() {
 }
 
 </script>
-<?php include __DIR__ . '/../includes/footer.php'; ?>

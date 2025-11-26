@@ -156,128 +156,143 @@ if (!empty($pasien['tanggal_lahir'])) {
             </div>
             
             <!-- Data Pribadi Pasien -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <i class="fas fa-user"></i> Data Pribadi
+            <div class="sidebar-section is-open">
+                <button type="button" class="sidebar-section-title sidebar-toggle">
+                    <div class="sidebar-title-left">
+                        <i class="fas fa-user"></i>
+                        <span>Data Pribadi</span>
+                    </div>
+                    <span class="sidebar-toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="sidebar-section-body">
+                    <?php if (!empty($pasien['tempat_lahir']) || !empty($pasien['tanggal_lahir'])): ?>
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Tempat, Tgl Lahir</span>
+                        <span class="info-value">
+                            <?= htmlspecialchars($pasien['tempat_lahir'] ?? '-'); ?>, 
+                            <?= !empty($pasien['tanggal_lahir']) ? date('d/m/Y', strtotime($pasien['tanggal_lahir'])) : '-'; ?>
+                        </span>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($umur)): ?>
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Umur</span>
+                        <span class="info-value"><?= htmlspecialchars($umur); ?></span>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($pasien['jenis_kelamin'])): ?>
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Jenis Kelamin</span>
+                        <span class="info-value">
+                            <?= $pasien['jenis_kelamin'] == 'L' ? 'Laki-laki' : 'Perempuan'; ?>
+                        </span>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($pasien['gol_darah'])): ?>
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Golongan Darah</span>
+                        <span class="info-value"><?= htmlspecialchars($pasien['gol_darah']); ?></span>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($pasien['alamat'])): ?>
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Alamat</span>
+                        <span class="info-value"><?= htmlspecialchars($pasien['alamat']); ?></span>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($pasien['no_hp'])): ?>
+                    <div class="sidebar-info-item">
+                        <span class="info-label">No. HP</span>
+                        <span class="info-value"><?= htmlspecialchars($pasien['no_hp']); ?></span>
+                    </div>
+                    <?php endif; ?>
                 </div>
-                
-                <?php if (!empty($pasien['tempat_lahir']) || !empty($pasien['tanggal_lahir'])): ?>
-                <div class="sidebar-info-item">
-                    <span class="info-label">Tempat, Tgl Lahir</span>
-                    <span class="info-value">
-                        <?= htmlspecialchars($pasien['tempat_lahir'] ?? '-'); ?>, 
-                        <?= !empty($pasien['tanggal_lahir']) ? date('d/m/Y', strtotime($pasien['tanggal_lahir'])) : '-'; ?>
-                    </span>
-                </div>
-                <?php endif; ?>
-                
-                <?php if (!empty($umur)): ?>
-                <div class="sidebar-info-item">
-                    <span class="info-label">Umur</span>
-                    <span class="info-value"><?= htmlspecialchars($umur); ?></span>
-                </div>
-                <?php endif; ?>
-                
-                <?php if (!empty($pasien['jenis_kelamin'])): ?>
-                <div class="sidebar-info-item">
-                    <span class="info-label">Jenis Kelamin</span>
-                    <span class="info-value">
-                        <?= $pasien['jenis_kelamin'] == 'L' ? 'Laki-laki' : 'Perempuan'; ?>
-                    </span>
-                </div>
-                <?php endif; ?>
-                
-                <?php if (!empty($pasien['gol_darah'])): ?>
-                <div class="sidebar-info-item">
-                    <span class="info-label">Golongan Darah</span>
-                    <span class="info-value"><?= htmlspecialchars($pasien['gol_darah']); ?></span>
-                </div>
-                <?php endif; ?>
-                
-                <?php if (!empty($pasien['alamat'])): ?>
-                <div class="sidebar-info-item">
-                    <span class="info-label">Alamat</span>
-                    <span class="info-value"><?= htmlspecialchars($pasien['alamat']); ?></span>
-                </div>
-                <?php endif; ?>
-                
-                <?php if (!empty($pasien['no_hp'])): ?>
-                <div class="sidebar-info-item">
-                    <span class="info-label">No. HP</span>
-                    <span class="info-value"><?= htmlspecialchars($pasien['no_hp']); ?></span>
-                </div>
-                <?php endif; ?>
             </div>
             
             <!-- Data Booking Operasi -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <i class="fas fa-calendar-check"></i> Data Booking
-                </div>
-                
-                <div class="sidebar-info-item">
-                    <span class="info-label">No. Rawat</span>
-                    <span class="info-value"><?= htmlspecialchars($pasien['no_rawat']); ?></span>
-                </div>
-                
-                <div class="sidebar-info-item">
-                    <span class="info-label">Kode Paket</span>
-                    <span class="info-value"><?= htmlspecialchars($pasien['kode_paket']); ?></span>
-                </div>
-                
-                <div class="sidebar-info-item">
-                    <span class="info-label">Tanggal Operasi</span>
-                    <span class="info-value">
-                        <?= date('d/m/Y', strtotime($pasien['tanggal'])); ?>
-                    </span>
-                </div>
-                
-                <div class="sidebar-info-item">
-                    <span class="info-label">Jam Operasi</span>
-                    <span class="info-value">
-                        <?= date('H:i', strtotime($pasien['jam_mulai'])); ?>
-                        <?php if (!empty($pasien['jam_selesai'])): ?>
-                            - <?= date('H:i', strtotime($pasien['jam_selesai'])); ?>
-                        <?php endif; ?>
-                    </span>
-                </div>
-                
-                <div class="sidebar-info-item">
-                    <span class="info-label">Status</span>
-                    <span class="info-value">
-                        <span class="status-badge-sidebar status-<?= strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
-                            <?= htmlspecialchars($pasien['status']); ?>
+                <button type="button" class="sidebar-section-title sidebar-toggle">
+                    <div class="sidebar-title-left">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Data Booking</span>
+                    </div>
+                    <span class="sidebar-toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="sidebar-section-body">
+                    <div class="sidebar-info-item">
+                        <span class="info-label">No. Rawat</span>
+                        <span class="info-value"><?= htmlspecialchars($pasien['no_rawat']); ?></span>
+                    </div>
+                    
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Kode Paket</span>
+                        <span class="info-value"><?= htmlspecialchars($pasien['kode_paket']); ?></span>
+                    </div>
+                    
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Tanggal Operasi</span>
+                        <span class="info-value">
+                            <?= date('d/m/Y', strtotime($pasien['tanggal'])); ?>
                         </span>
-                    </span>
+                    </div>
+                    
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Jam Operasi</span>
+                        <span class="info-value">
+                            <?= date('H:i', strtotime($pasien['jam_mulai'])); ?>
+                            <?php if (!empty($pasien['jam_selesai'])): ?>
+                                - <?= date('H:i', strtotime($pasien['jam_selesai'])); ?>
+                            <?php endif; ?>
+                        </span>
+                    </div>
+                    
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Status</span>
+                        <span class="info-value">
+                            <span class="status-badge-sidebar status-<?= strtolower(str_replace(' ', '-', $pasien['status'])); ?>">
+                                <?= htmlspecialchars($pasien['status']); ?>
+                            </span>
+                        </span>
+                    </div>
                 </div>
             </div>
             
             <!-- Tim Medis -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <i class="fas fa-user-md"></i> Tim Medis
+                <button type="button" class="sidebar-section-title sidebar-toggle">
+                    <div class="sidebar-title-left">
+                        <i class="fas fa-user-md"></i>
+                        <span>Tim Medis</span>
+                    </div>
+                    <span class="sidebar-toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                </button>
+                <div class="sidebar-section-body">
+                    <?php if (!empty($pasien['nama_dokter'])): ?>
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Dokter Rawat</span>
+                        <span class="info-value"><?= htmlspecialchars($pasien['nama_dokter']); ?></span>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($pasien['nama_perawat'])): ?>
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Perawat</span>
+                        <span class="info-value"><?= htmlspecialchars($pasien['nama_perawat']); ?></span>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($pasien['nama_ruang'])): ?>
+                    <div class="sidebar-info-item">
+                        <span class="info-label">Ruang Rawat</span>
+                        <span class="info-value"><?= htmlspecialchars($pasien['nama_ruang']); ?></span>
+                    </div>
+                    <?php endif; ?>
                 </div>
-                
-                <?php if (!empty($pasien['nama_dokter'])): ?>
-                <div class="sidebar-info-item">
-                    <span class="info-label">Dokter Rawat</span>
-                    <span class="info-value"><?= htmlspecialchars($pasien['nama_dokter']); ?></span>
-                </div>
-                <?php endif; ?>
-                
-                <?php if (!empty($pasien['nama_perawat'])): ?>
-                <div class="sidebar-info-item">
-                    <span class="info-label">Perawat</span>
-                    <span class="info-value"><?= htmlspecialchars($pasien['nama_perawat']); ?></span>
-                </div>
-                <?php endif; ?>
-                
-                <?php if (!empty($pasien['nama_ruang'])): ?>
-                <div class="sidebar-info-item">
-                    <span class="info-label">Ruang Rawat</span>
-                    <span class="info-value"><?= htmlspecialchars($pasien['nama_ruang']); ?></span>
-                </div>
-                <?php endif; ?>
             </div>
         </div>
     </aside>
@@ -346,30 +361,6 @@ if (!empty($pasien['tanggal_lahir'])) {
         $completed_forms = count(array_filter($all_forms, function($f) { return $f['done']; }));
         $pending_forms = $total_forms - $completed_forms;
         ?>
-        
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card progress">
-                <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
-                <div class="stat-value"><?= $completed_forms ?>/<?= $total_forms ?></div>
-                <div class="stat-label">Progress</div>
-            </div>
-            <div class="stat-card completed">
-                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                <div class="stat-value"><?= $completed_forms ?></div>
-                <div class="stat-label">Completed</div>
-            </div>
-            <div class="stat-card pending">
-                <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                <div class="stat-value"><?= $pending_forms ?></div>
-                <div class="stat-label">Pending</div>
-            </div>
-            <div class="stat-card updated">
-                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
-                <div class="stat-value"><?= date('d/m/Y') ?></div>
-                <div class="stat-label">Last Updated</div>
-            </div>
-        </div>
         
         <!-- Tabs Container -->
         <div class="tabs-container">
@@ -475,8 +466,25 @@ setTimeout(() => {
         setTimeout(() => alert.remove(), 500);
     });
 }, 5000);
-</script>
 
-<?php include __DIR__ . '/../includes/footer.php'; ?>
+// Sidebar collapsible sections
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.sidebar-section .sidebar-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const section = btn.closest('.sidebar-section');
+            if (!section) return;
+
+            // Jika ingin model accordion (satu terbuka sekaligus), uncomment blok berikut:
+            // document.querySelectorAll('.sidebar-section').forEach(function (sec) {
+            //     if (sec !== section) {
+            //         sec.classList.remove('is-open');
+            //     }
+            // });
+
+            section.classList.toggle('is-open');
+        });
+    });
+});
+</script>
 </body>
 </html>

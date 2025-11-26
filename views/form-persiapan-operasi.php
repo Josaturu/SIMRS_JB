@@ -106,7 +106,7 @@ $rawat_fields = [
     'rawat_visit_dokter_bedah', 'rawat_visit_dokter_anestesi', 'rawat_visit_dokter_konsul_1', 'rawat_visit_dokter_konsul_2', 'rawat_visit_dokter_konsul_3'
 ];
 
-include __DIR__ . '/../includes/header.php';
+include __DIR__ . '/../includes/assets.php';
 ?>
 <link rel="stylesheet" href="/assets/css/style.css">
 
@@ -115,16 +115,6 @@ include __DIR__ . '/../includes/header.php';
         <div style="color: #004d80;">CHECKLIST PERSIAPAN OPERASI</div>
         <div>RMO-1 a</div>
     </div>
-    
-    <!-- Tombol Back ke Detail Pasien (Floating) -->
-    <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
-       class="btn-back-to-detail" 
-       style="position: fixed; bottom: 80px; right: 20px; width: auto; height: 32px; padding: 5px 12px; background: #6c757d; color: white; border: none; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease; white-space: nowrap;"
-       onmouseover="this.style.background='#5a6268'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0,0,0,0.3)';" 
-       onmouseout="this.style.background='#6c757d'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';" 
-       title="Kembali ke Detail Pasien">
-        Kembali
-    </a>
     
     <!-- Informasi Pasien & Data Booking Operasi -->
     <div class="card" style="background: #e3f2fd; border-left: 4px solid #2196F3;">
@@ -556,14 +546,40 @@ include __DIR__ . '/../includes/header.php';
             </table>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <?php echo $existing_data ? 'Simpan Perubahan' : 'Simpan Data'; ?>
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='/index.php?page=detail-pasien&no_rawat=<?php echo urlencode($no_rawat); ?>&kode_paket=<?php echo urlencode($kode_paket); ?>&tanggal=<?php echo urlencode($tanggal); ?>&jam_mulai=<?php echo urlencode($jam_mulai); ?>'">Kembali</button>
+                <!-- Tombol aksi utama dipindahkan ke Speed Dial -->
             </div>
         </form>
     </div>
-    <?php include __DIR__ . '/../includes/footer.php'; ?>
+</div>
+
+<!-- Speed Dial: Simpan, Cetak PDF, Kembali -->
+<div data-dial-init class="fixed right-6 bottom-6 group">
+    <div id="speed-dial-menu-persiapan-operasi" class="flex flex-col w-32 justify-end hidden mb-4 space-y-2 bg-neutral-primary-medium border border-default-medium rounded-base shadow-xs">
+        <ul class="p-2 text-sm text-body font-medium">
+            <li>
+                <a href="#" onclick="document.getElementById('formPersiapanOperasi').submit(); return false;" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                    <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M11 16h2m6.707-9.293-2.414-2.414A1 1 0 0 0 16.586 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7.414a1 1 0 0 0-.293-.707ZM16 20v-6a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v6h8ZM9 4h6v3a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V4Z"/></svg>
+                    <span class="text-sm font-medium">Simpan</span>
+                </a>
+            </li>
+            <li>
+                <a href="/process/pdf/pdf-persiapan-operasi.php?no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" target="_blank" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                    <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z"/></svg>
+                    <span class="text-sm font-medium">Cetak PDF</span>
+                </a>
+            </li>
+            <li>
+                <a href="/index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                    <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 6l-6 6 6 6"/></svg>
+                    <span class="text-sm font-medium">Kembali</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <button type="button" data-dial-toggle="speed-dial-menu-persiapan-operasi" aria-controls="speed-dial-menu-persiapan-operasi" aria-expanded="false" class="flex items-center justify-center ml-auto text-white bg-brand rounded-base w-14 h-14 hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium focus:outline-none">
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4"/></svg>
+        <span class="sr-only">Open actions menu</span>
+    </button>
 </div>
 
 <!-- Persiapan Operasi Custom Validation -->

@@ -408,7 +408,75 @@ function setupPrintButton() {
     });
 }
 
-// ===== 10. INITIALIZE ON DOM READY =====
+// ===== 10. SPEED DIAL (FLOATING ACTION BUTTON) =====
+function setupSpeedDial() {
+    const dials = document.querySelectorAll('[data-dial-init]');
+    if (!dials.length) return;
+
+    dials.forEach(dial => {
+        const toggleBtn = dial.querySelector('[data-dial-toggle]');
+        if (!toggleBtn) return;
+
+        const targetId = toggleBtn.getAttribute('data-dial-toggle');
+        if (!targetId) return;
+
+        const menu = document.getElementById(targetId);
+        if (!menu) return;
+
+        let isOpen = false;
+
+        function openMenu() {
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            }
+            toggleBtn.setAttribute('aria-expanded', 'true');
+            isOpen = true;
+        }
+
+        function closeMenu() {
+            if (!menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            isOpen = false;
+        }
+
+        toggleBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (isOpen) {
+                closeMenu();
+            } else {
+                // Tutup speed dial lain
+                document.querySelectorAll('[data-dial-init]').forEach(otherDial => {
+                    if (otherDial === dial) return;
+                    const otherBtn = otherDial.querySelector('[data-dial-toggle]');
+                    if (!otherBtn) return;
+                    const otherTargetId = otherBtn.getAttribute('data-dial-toggle');
+                    if (!otherTargetId) return;
+                    const otherMenu = document.getElementById(otherTargetId);
+                    if (otherMenu && !otherMenu.classList.contains('hidden')) {
+                        otherMenu.classList.add('hidden');
+                        otherBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                openMenu();
+            }
+        });
+
+        // Tutup jika klik di luar
+        document.addEventListener('click', function (e) {
+            if (!dial.contains(e.target)) {
+                if (isOpen) {
+                    closeMenu();
+                }
+            }
+        });
+    });
+}
+
+// ===== 11. INITIALIZE ON DOM READY =====
 document.addEventListener('DOMContentLoaded', function() {
     // Setup all improvements
     setupFormWithLoading();
@@ -416,6 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupFormValidation();
     preventDoubleSubmit();
     setupPrintButton();
+    setupSpeedDial();
 
     // Setup auto-save for specific forms
     // Example usage:
@@ -424,14 +493,14 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✓ Improvements.js loaded');
 });
 
-// ===== 11. GLOBAL ERROR HANDLER FOR AJAX =====
+// ===== 12. GLOBAL ERROR HANDLER FOR AJAX =====
 window.handleAjaxError = function(error) {
     Loading.hide();
     console.error('Ajax Error:', error);
     Toast.error('Terjadi kesalahan. Silakan coba lagi.');
 };
 
-// ===== 12. UTILITY FUNCTIONS =====
+// ===== 13. UTILITY FUNCTIONS =====
 const Utils = {
     // Format tanggal Indonesia
     formatDate(dateString) {

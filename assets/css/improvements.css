@@ -469,7 +469,114 @@ button:focus-visible,
     gap: 10px;
 }
 
-/* ===== 11. RESPONSIVE IMPROVEMENTS ===== */
+/* ===== 11. SPEED DIAL (FLOATING ACTION BUTTON) ===== */
+
+/* Wrapper: titik tetap di kanan-bawah, menjadi konteks posisi untuk FAB & menu */
+[data-dial-init] {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 900;
+    width: 0;
+    height: 0;
+}
+
+/* Menu container muncul melayang di atas FAB, tidak menggeser FAB */
+[data-dial-init] .speed-dial-menu,
+[data-dial-init] .flex.flex-col.w-32.justify-end {
+    position: absolute;
+    bottom: 72px; /* sedikit di atas FAB (56px tinggi + jarak) */
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 140px;
+    padding: 4px 0;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-dial-init] ul {
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+}
+
+[data-dial-init] li {
+    margin: 2px 0;
+}
+
+[data-dial-init] a {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+[data-dial-init] a:hover {
+    background: #f1f3f5;
+    color: #111827;
+    transform: translateY(-1px);
+}
+
+[data-dial-init] svg {
+    margin-right: 6px;
+}
+
+/* FAB button utama */
+[data-dial-init] button[data-dial-toggle] {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: #0d6efd; /* mirip btn-primary Bootstrap */
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(13, 110, 253, 0.4);
+    transition: background 0.15s ease;
+    outline: none;
+}
+
+[data-dial-init] button[data-dial-toggle]:hover {
+    background: #0b5ed7;
+    box-shadow: 0 6px 18px rgba(13, 110, 253, 0.4);
+}
+
+[data-dial-init] button[data-dial-toggle]:active {
+    box-shadow: 0 6px 18px rgba(13, 110, 253, 0.4);
+}
+
+/* Jangan pakai outline global untuk tombol FAB agar tidak tampak bergeser saat fokus */
+[data-dial-init] button[data-dial-toggle]:focus-visible {
+    outline: none;
+}
+
+/* Utility untuk hidden kalau tidak ada Tailwind */
+.hidden {
+    display: none !important;
+}
+
+/* Jaga jarak dengan tombol Back to Top default (optional, bisa disesuaikan) */
+[data-dial-init].right-6.bottom-6,
+[data-dial-init].fixed.right-6.bottom-6.group {
+    right: 80px;
+}
+
+/* ===== 12. RESPONSIVE IMPROVEMENTS ===== */
 @media (max-width: 600px) {
     .toast {
         min-width: auto;

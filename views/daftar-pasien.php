@@ -121,7 +121,7 @@ $kode_paket = '';
 $tanggal = '';
 $pasien = [];
 
-include __DIR__ . '/../includes/header.php';
+include __DIR__ . '/../includes/assets.php';
 ?>
 
 <div class="container">
@@ -440,10 +440,8 @@ include __DIR__ . '/../includes/header.php';
     </div>
     <?php endif; ?>
 
-    <?php include __DIR__ . '/../includes/footer.php'; ?>
-</div>
-
-<!-- AJAX Live Search Script -->
+    
+    <!-- AJAX Live Search Script -->
 <script>
 // Disable form exit confirmation
 window.onbeforeunload = null;
