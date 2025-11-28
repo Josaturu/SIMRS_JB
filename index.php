@@ -1,7 +1,7 @@
 <?php
 require_once 'config/database.php';
 
-$page = $_GET['page'] ?? 'daftar-pasien';
+$page = $_GET['page'] ?? 'login';
 
 switch($page) {
     case 'tambah-booking':
@@ -50,8 +50,16 @@ switch($page) {
         include 'views/detail-pasien.php';
         break;
         
-    default:
+    case 'daftar-pasien':
         include 'views/daftar-pasien.php';
+        break;
+
+    case 'dashboard':
+        include 'views/dashboard.php';
+        break;
+
+    default:
+        include 'login.php';
         break;
 }
 ?>

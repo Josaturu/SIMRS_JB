@@ -123,11 +123,15 @@ $pasien = [];
 
 include __DIR__ . '/../includes/assets.php';
 ?>
+<link rel="stylesheet" href="../assets/css/daftar-pasien.css">
 
 <div class="container">
     <div class="header-actions">
         <h2>Daftar Pasien Booking Operasi</h2>
-        <a href="index.php?page=tambah-booking" class="btn btn-success">+ Tambah Booking Baru</a>
+        <div class="header-buttons">
+            <a href="../index.php?page=dashboard" class="btn btn-secondary"><i class="fas fa-tachometer-alt"></i> Data Operasi Sekarang</a>
+            <a href="../index.php?page=tambah-booking" class="btn btn-success">+ Tambah Booking Baru</a>
+        </div>
     </div>
 
     <?php
@@ -208,7 +212,7 @@ include __DIR__ . '/../includes/assets.php';
                             style="padding: 10px 20px; white-space: nowrap;">
                         <i class="fas fa-search"></i> Filter
                     </button>
-                    <a href="index.php?page=daftar-pasien" 
+                    <a href="../index.php?page=daftar-pasien" 
                        class="btn" 
                        style="padding: 10px 16px; background: #6c757d; color: white; text-decoration: none; border-radius: 6px; display: inline-flex; align-items: center;">
                         <i class="fas fa-redo"></i>
@@ -246,6 +250,7 @@ include __DIR__ . '/../includes/assets.php';
         <?php endif; ?>
     </div>
 
+    <div class="table-scroll-container">
     <table class="table">
         <thead>
             <tr>
@@ -305,7 +310,7 @@ include __DIR__ . '/../includes/assets.php';
                             </span>
                         </td>
                         <td>
-                            <a href="index.php?page=detail-pasien&no_rawat=<?php echo urlencode($pasien['no_rawat']); ?>&kode_paket=<?php echo urlencode($pasien['kode_paket']); ?>&tanggal=<?php echo urlencode($pasien['tanggal']); ?>&jam_mulai=<?php echo urlencode($pasien['jam_mulai']); ?>" 
+                            <a href="../index.php?page=detail-pasien&from=daftar-pasien&no_rawat=<?php echo urlencode($pasien['no_rawat']); ?>&kode_paket=<?php echo urlencode($pasien['kode_paket']); ?>&tanggal=<?php echo urlencode($pasien['tanggal']); ?>&jam_mulai=<?php echo urlencode($pasien['jam_mulai']); ?>" 
                                class="btn btn-info btn-sm">Detail</a>
                         </td>
                     </tr>
@@ -314,12 +319,13 @@ include __DIR__ . '/../includes/assets.php';
                 <tr>
                     <td colspan="10" class="text-center">
                         <p>Belum ada data booking operasi.</p>
-                        <a href="index.php?page=tambah-booking" class="btn btn-primary">Tambah Booking Pertama</a>
+                        <a href="../index.php?page=tambah-booking" class="btn btn-primary">Tambah Booking Pertama</a>
                     </td>
                 </tr>
             <?php endif; ?>
         </tbody>
     </table>
+</div>
 
     <!-- Pagination -->
     <?php 

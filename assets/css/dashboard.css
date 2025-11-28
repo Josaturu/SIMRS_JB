@@ -1,0 +1,150 @@
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    background-color: #007bff;
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+.dashboard-header h2 {
+    margin: 0;
+    color: white;
+    font-size: 1.5em;
+}
+
+.dashboard-header .btn-light {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.dashboard-header .btn-light:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: white;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.schedule-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.schedule-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    display: grid;
+    grid-template-columns: 70px 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 10px 20px;
+    border-left: 6px solid #6c757d; /* Default: Menunggu */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.schedule-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.schedule-card.status-proses-operasi { border-left-color: #007bff; }
+.schedule-card.status-selesai { border-left-color: #28a745; }
+
+.card-time {
+    grid-row: 1 / span 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #007bff;
+    border-right: 1px solid #eee;
+    padding-right: 20px;
+}
+
+.card-patient {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-patient strong {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.card-patient span {
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.card-details {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.9em;
+    color: #495057;
+}
+
+.card-details span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-status {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-badge.status-menunggu {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.status-badge.status-proses-operasi {
+    background-color: #007bff;
+    color: white;
+}
+
+.status-badge.status-selesai {
+    background-color: #28a745;
+    color: white;
+}
+
+.no-schedule {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.no-schedule i {
+    font-size: 3em;
+    color: #28a745;
+    margin-bottom: 15px;
+}

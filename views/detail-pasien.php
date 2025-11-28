@@ -130,7 +130,14 @@ if (!empty($pasien['tanggal_lahir'])) {
                 <span>Detail Pasien</span>
             </div>
             <div class="nav-links">
-                <a href="index.php" class="nav-link">
+                <?php
+// Logika untuk tombol kembali dinamis
+$from = $_GET['from'] ?? 'daftar-pasien'; // Default ke daftar-pasien
+$back_link = ($from === 'dashboard') 
+    ? 'views/dashboard.php' 
+    : 'index.php?page=daftar-pasien';
+?>
+<a href="<?php echo $back_link; ?>" class="nav-link">
                     <i class="fas fa-arrow-left"></i>
                     <span>Kembali ke Daftar</span>
                 </a>
