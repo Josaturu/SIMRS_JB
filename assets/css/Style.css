@@ -251,15 +251,22 @@
 body {
 	font-family: "Segoe UI", Arial, sans-serif;
 	font-size: 14px;
-	margin: 20px;
+	margin: 0;
 	background: #f4f7fb;
 	color: #333;
+    /* sembunyikan scrollbar vertikal, tapi tetap bisa scroll */
+    overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+	display: none; /* Chrome, Edge, Safari */
 }
 
 /* Layout Container */
 .container {
-	max-width: 1100px;
-	margin: 0 auto;
+	max-width: 1360px; /* lebih lebar di monitor besar */
+	margin: 20px auto;
 	background: white;
 	border-radius: 10px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -273,6 +280,34 @@ body {
 	padding: 20px;
 	margin: 20px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsiveness for container & cards */
+@media (max-width: 1024px) {
+	.container {
+		margin: 10px;
+		border-radius: 8px;
+	}
+
+	.card {
+		margin: 12px;
+		padding: 16px;
+	}
+}
+
+@media (max-width: 768px) {
+	.container {
+		max-width: 100%;
+		margin: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
+
+	.card {
+		margin: 10px;
+		border-radius: 6px;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	}
 }
 
 /* Form Layout */

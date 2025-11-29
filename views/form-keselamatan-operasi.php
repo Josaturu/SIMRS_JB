@@ -10,9 +10,9 @@ $kode_paket = $_GET['kode_paket'] ?? '';
 $tanggal = $_GET['tanggal'] ?? '';
 $jam_mulai = $_GET['jam_mulai'] ?? '';
 
-// Jika tidak ada parameter, redirect ke daftar pasien
+// Jika tidak ada parameter, redirect ke daftar pasien (seragam)
 if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mulai)) {
-    header("Location: index.php");
+    header('Location: /index.php?page=daftar-pasien');
     exit;
 }
 
@@ -184,16 +184,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
         <div>RMOK-0002</div>
     </div>
     
-    <!-- Tombol Back ke Detail Pasien (Floating) -->
-    <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
-       class="btn-back-to-detail" 
-       style="position: fixed; bottom: 80px; right: 20px; width: auto; height: 32px; padding: 5px 12px; background: #6c757d; color: white; border: none; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease; white-space: nowrap;"
-       onmouseover="this.style.background='#5a6268'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0,0,0,0.3)';" 
-       onmouseout="this.style.background='#6c757d'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';" 
-       title="Kembali ke Detail Pasien">
-        Kembali
-    </a>
-    
     <!-- Informasi Pasien & Data Booking Operasi -->
     <div class="card" style="background: #e3f2fd; border-left: 4px solid #2196F3;">
         <h2 style="margin-bottom: 20px;">
@@ -259,15 +249,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     <!-- Info Pasien & Operator -->
     <div class="card">
         <h2>Keterangan Pasien & Operator</h2>
-        <?php
-        // Get base URL for form action
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-        $host = $_SERVER['HTTP_HOST'];
-        $base_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-        $base_url = $protocol . $host . $base_path;
-        $form_action = rtrim($base_url, '/') . '/process/submit-keselamatan-operasi.php';
-        ?>
-        <form id="formKeselamatanOperasi" action="<?php echo htmlspecialchars($form_action); ?>" method="POST" data-no-loading>
+        <form id="formKeselamatanOperasi" action="/process/submit-keselamatan-operasi.php" method="POST" data-no-loading>
             <input type="hidden" name="no_rawat" value="<?php echo htmlspecialchars($no_rawat); ?>">
             <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
             <input type="hidden" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>">

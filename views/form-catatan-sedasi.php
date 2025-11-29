@@ -85,8 +85,9 @@ $kode_paket = $_GET['kode_paket'] ?? '';
 $tanggal = $_GET['tanggal'] ?? '';
 $jam_mulai = $_GET['jam_mulai'] ?? '';
 
+// Jika tidak ada parameter, redirect ke daftar pasien (seragam)
 if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mulai)) {
-    header("Location: index.php");
+    header('Location: /index.php?page=daftar-pasien');
     exit;
 }
 
@@ -343,16 +344,6 @@ document.addEventListener('DOMContentLoaded', function() {
     <div>RMOK 1a Rev-01</div>
   </div>
   
-  <!-- Tombol Back ke Detail Pasien (Floating) -->
-  <a href="index.php?page=detail-pasien&no_rawat=<?= urlencode($no_rawat) ?>&kode_paket=<?= urlencode($kode_paket) ?>&tanggal=<?= urlencode($tanggal) ?>&jam_mulai=<?= urlencode($jam_mulai) ?>" 
-     class="btn-back-to-detail" 
-     style="position: fixed; bottom: 80px; right: 20px; width: auto; height: 32px; padding: 5px 12px; background: #6c757d; color: white; border: none; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 998; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease; white-space: nowrap;"
-     onmouseover="this.style.background='#5a6268'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0,0,0,0.3)';" 
-     onmouseout="this.style.background='#6c757d'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';" 
-     title="Kembali ke Detail Pasien">
-    Kembali
-  </a>
-  
   <!-- Patient Info Card - Top Section -->
   <?php
   $dokter = $booking['kd_dokter'] ?? '';
@@ -395,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   <!-- Notifikasi EDIT/INSERT dihapus untuk tampilan yang lebih bersih -->
 
-  <form action="../process/process-simpan-catatan-sedasi.php" method="POST" id="formCatatanSedasi">
+  <form action="/process/process-simpan-catatan-sedasi.php" method="POST" id="formCatatanSedasi">
     <input type="hidden" name="no_rawat" value="<?= htmlspecialchars($no_rawat) ?>">
     <input type="hidden" name="kode_paket" value="<?= htmlspecialchars($kode_paket) ?>">
     <input type="hidden" name="tanggal" value="<?= htmlspecialchars($tanggal) ?>">
@@ -1603,9 +1594,8 @@ document.addEventListener('DOMContentLoaded', function() {
           <span class="sr-only">Open actions menu</span>
       </button>
   </div>
-
-  1575→<script src="/assets/js/autosave.js"></script>
-  1576→<script>
+  <script src="/assets/js/autosave.js"></script>
+  <script>
 // Debug log dihapus - form sudah stabil
 
 // Prevent accidental form submission

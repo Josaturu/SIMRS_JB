@@ -10,9 +10,9 @@ $kode_paket = $_GET['kode_paket'] ?? '';
 $tanggal = $_GET['tanggal'] ?? '';
 $jam_mulai = $_GET['jam_mulai'] ?? '';
 
-// Jika tidak ada parameter, redirect ke daftar pasien
+// Jika tidak ada parameter, redirect ke daftar pasien (seragam)
 if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mulai)) {
-    header("Location: index.php");
+    header('Location: /index.php?page=daftar-pasien');
     exit;
 }
 
@@ -179,15 +179,7 @@ include __DIR__ . '/../includes/assets.php';
     </div>
 
     <!-- Form dimulai di sini -->
-    <?php
-    // Get base URL for form action
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-    $host = $_SERVER['HTTP_HOST'];
-    $base_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-    $base_url = $protocol . $host . $base_path;
-    $form_action = rtrim($base_url, '/') . '/process/submit-persiapan-operasi.php';
-    ?>
-    <form id="formPersiapanOperasi" action="<?php echo htmlspecialchars($form_action); ?>" method="POST" data-no-loading>
+    <form id="formPersiapanOperasi" action="/process/submit-persiapan-operasi.php" method="POST" data-no-loading>
         <input type="hidden" name="no_rawat" value="<?php echo htmlspecialchars($no_rawat); ?>">
         <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
         <input type="hidden" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>">

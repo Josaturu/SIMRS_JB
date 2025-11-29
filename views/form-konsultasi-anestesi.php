@@ -10,9 +10,9 @@ $kode_paket = $_GET['kode_paket'] ?? '';
 $tanggal = $_GET['tanggal'] ?? '';
 $jam_mulai = $_GET['jam_mulai'] ?? '';
 
-// Jika tidak ada parameter, redirect ke daftar pasien
+// Jika tidak ada parameter, redirect ke daftar pasien (seragam)
 if (empty($no_rawat) || empty($kode_paket) || empty($tanggal) || empty($jam_mulai)) {
-    header("Location: index.php");
+    header('Location: /index.php?page=daftar-pasien');
     exit;
 }
 
@@ -255,7 +255,7 @@ include __DIR__ . '/../includes/assets.php';
         <!-- Informasi Identitas -->
         <h2>Informasi Pasien</h2>
         <div class="required-note">* Hanya Ruang Perawatan dan Dokter Merawat yang wajib diisi</div>
-        <form id="formKonsultasiAnestesi" action="process/process-konsultasi-anestesi.php" method="POST">
+        <form id="formKonsultasiAnestesi" action="/process/process-konsultasi-anestesi.php" method="POST">
             <input type="hidden" name="no_rawat" value="<?php echo htmlspecialchars($no_rawat); ?>">
             <input type="hidden" name="kode_paket" value="<?php echo htmlspecialchars($kode_paket); ?>">
             <input type="hidden" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>">

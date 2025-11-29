@@ -14,7 +14,7 @@ $form = new FormModel($db);
     <h2>Tambah Booking Operasi Baru</h2>
     
     <div class="card">
-        <form id="formTambahBooking" action="process/submit-booking-operasi.php" method="POST">
+        <form id="formTambahBooking" action="/process/submit-booking-operasi.php" method="POST">
             <div class="form-grid">
                 <div class="form-column">
                     <div class="input-container">
