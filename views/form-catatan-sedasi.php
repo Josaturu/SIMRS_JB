@@ -1559,10 +1559,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </td>
           </tr>
         <table>
-  1570→
-  1571→        <div class="form-actions">
-  1572→          <!-- Tombol aksi utama dipindahkan ke Speed Dial -->
-  1573→        </div>
+          <div class="form-actions">
+            <!-- Tombol aksi utama dipindahkan ke Speed Dial -->
+          </div>
 
   <!-- Speed Dial: Simpan, Cetak PDF, Kembali -->
   <div data-dial-init class="fixed right-6 bottom-6 group">

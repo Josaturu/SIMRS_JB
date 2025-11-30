@@ -1,4 +1,5 @@
 <?php
+session_start();
 $page_title = "Detail Pasien";
 
 // Ambil parameter dari URL
@@ -131,21 +132,19 @@ if (!empty($pasien['tanggal_lahir'])) {
             </div>
             <div class="nav-links">
                 <?php
-// Logika untuk tombol kembali dinamis
-$from = $_GET['from'] ?? 'daftar-pasien'; // Default ke daftar-pasien
-$back_link = ($from === 'dashboard') 
-    ? 'views/dashboard.php' 
-    : 'index.php?page=daftar-pasien';
-?>
-<a href="<?php echo $back_link; ?>" class="nav-link">
+                // Logika untuk tombol kembali dinamis
+                $from = $_GET['from'] ?? 'daftar-pasien'; // Default ke daftar-pasien
+                $back_link = ($from === 'dashboard') 
+                    ? '../index.php?page=dashboard' 
+                    : '../index.php?page=daftar-pasien';
+                ?>
+                <a href="<?php echo $back_link; ?>" class="nav-link">
                     <i class="fas fa-arrow-left"></i>
                     <span>Kembali ke Daftar</span>
                 </a>
             </div>
         </div>
     </nav>
-<?php
-?>
 
 <!-- Load Detail Pasien CSS -->
 <link rel="stylesheet" href="assets/css/detail-pasien.css">

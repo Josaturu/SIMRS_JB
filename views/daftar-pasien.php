@@ -1,4 +1,5 @@
 <?php
+session_start();
 $page_title = "Daftar Pasien Booking Operasi";
 require_once __DIR__ . '/../config/database.php';
 
@@ -126,10 +127,17 @@ include __DIR__ . '/../includes/assets.php';
 <link rel="stylesheet" href="../assets/css/daftar-pasien.css">
 
 <div class="container">
+    <div class="user-info-header">
+        <?php if (isset($_SESSION['username'])) : ?>
+            <a href="../process/logout_process.php" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        <?php endif; ?>
+    </div>
     <div class="header-actions">
         <h2>Daftar Pasien Booking Operasi</h2>
         <div class="header-buttons">
-            <a href="../index.php?page=dashboard" class="btn btn-secondary"><i class="fas fa-tachometer-alt"></i> Data Operasi Sekarang</a>
+            <a href="../index.php?page=dashboard" class="btn btn-primary"><i class="fas fa-tachometer-alt"></i> Data Operasi Sekarang</a>
             <a href="../index.php?page=tambah-booking" class="btn btn-success">+ Tambah Booking Baru</a>
         </div>
     </div>
