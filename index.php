@@ -32,12 +32,6 @@ switch($page) {
         include 'views/form-catatan-sedasi.php';
         break;
 
-    case 'vital-sign':
-        $page_title = "Vital Sign";
-        $document_code = "RMOK-VS";
-        include 'views/form-vital-sign.php';
-        break;
-
     case 'informed-consent-anestesi':
         include 'views/form-informed-consent-anestesi.php';
         break;

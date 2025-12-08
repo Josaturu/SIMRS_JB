@@ -127,7 +127,6 @@ if (!empty($pasien['tanggal_lahir'])) {
     <nav class="main-nav improved-navbar" style="margin-bottom: 0;">
         <div class="nav-container">
             <div class="nav-brand">
-                <i class="fas fa-angle-right"></i>
                 <span>Detail Pasien</span>
             </div>
             <div class="nav-links">
@@ -140,7 +139,7 @@ if (!empty($pasien['tanggal_lahir'])) {
                 ?>
                 <a href="<?php echo $back_link; ?>" class="nav-link">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Kembali ke Daftar</span>
+                    <span>Kembali ke Daftar Pasien</span>
                 </a>
             </div>
         </div>

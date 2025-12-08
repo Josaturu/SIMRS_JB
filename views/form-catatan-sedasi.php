@@ -46,10 +46,15 @@ if (isset($_SESSION['success'])) {
 
 if (isset($_SESSION['error'])) {
     $errorMsg = $_SESSION['error'];
+    $errorMsgJson = json_encode($errorMsg, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
     echo '<div class="alert alert-danger" style="margin:20px; padding:15px; background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; border-radius:5px; max-height:200px; overflow-y:auto;">
         ❌ <strong>ERROR:</strong><br>' . nl2br(htmlspecialchars($errorMsg)) . '
     </div><script>
-    console.error("Database Error:", ' . json_encode($errorMsg) . ');
+    try {
+        console.error("Database Error:", ' . $errorMsgJson . ');
+    } catch (e) {
+        console.error("Error saat menampilkan error message:", e);
+    }
     setTimeout(function(){
         var alert = document.querySelector(".alert-danger");
         if(alert) {
@@ -174,7 +179,7 @@ if (!$catatan) {
         'tgl_lahir' => $booking['tanggal_lahir'] ?? '',
         'golongan_darah' => $booking['gol_darah'] ?? ''
     ];
-    error_log("DEBUG - Menggunakan data dari booking");
+    error_log("DEBUG - Menggunakln data dari booking");
 }
 
 // Query data vital sign untuk grafik dan tabel
@@ -190,8 +195,6 @@ $stmt_vital->bindParam(':jam_mulai', $jam_mulai);
 $stmt_vital->execute();
 $vital_data = $stmt_vital->fetchAll(PDO::FETCH_ASSOC);
 
-// Konversi data ke format JSON untuk JavaScript
- $vital_data_json = json_encode($vital_data);
 
 include __DIR__ . '/../includes/assets.php';
 ?>
@@ -202,6 +205,23 @@ include __DIR__ . '/../includes/assets.php';
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <!-- Force reload: <?= time() ?> -->
+
+<!-- Global error handler untuk menangkap SyntaxError -->
+<script>
+window.addEventListener('error', function(event) {
+    console.error('🔴 GLOBAL ERROR CAUGHT:', {
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+        error: event.error
+    });
+});
+
+window.addEventListener('unhandledrejection', function(event) {
+    console.error('🔴 UNHANDLED REJECTION:', event.reason);
+});
+</script>
 
 <!-- CSS untuk memastikan layout tetap rapi -->
 <style>
@@ -309,32 +329,6 @@ include __DIR__ . '/../includes/assets.php';
   }
 </style>
 
-<script>
-// Force label floating naik saat page load jika input sudah ada value
-document.addEventListener('DOMContentLoaded', function() {
-  // Ambil semua input container
-  const inputContainers = document.querySelectorAll('.input-container');
-  
-  inputContainers.forEach(function(container) {
-    const input = container.querySelector('input, textarea, select');
-    const label = container.querySelector('.label-floating');
-    
-    if (input && label) {
-      // Check jika input sudah ada value
-      if (input.value && input.value.trim() !== '') {
-        label.classList.add('has-value');
-        label.style.top = '-8px';
-        label.style.fontSize = '12px';
-        label.style.background = 'white';
-        label.style.padding = '0 5px';
-        label.style.left = '10px';
-      }
-    }
-  });
-  
-  console.log('✅ Label floating initialized for all inputs with values');
-});
-</script>
 
 <!-- Debug console log dihapus untuk performa lebih baik -->
 
@@ -395,6 +389,11 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- Hidden field untuk data vital sign -->
     <input type="hidden" name="vital_sign_data" id="vital_sign_data" value="">
     <input type="hidden" name="id" value="<?= htmlspecialchars($catatan['id'] ?? '') ?>">
+
+    <!-- Data JSON yang aman untuk vital sign dari database -->
+    <script id="db_vital_data_json" type="application/json">
+        <?= json_encode($vital_data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
+    </script>
 
     <div class="container">
       <div class="card">
@@ -1404,19 +1403,19 @@ document.addEventListener('DOMContentLoaded', function() {
                                                style="display: none; width: 60px; padding: 5px; border: 1px solid #007bff; border-radius: 3px; text-align: center;">
                                     </td>
                                     <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
-                                        <button type="button" onclick="editDbRecord(<?= $index ?>); return false;" class="btn-edit-db" 
+                                        <button type="button" class="btn-edit-db" data-index="<?= $index ?>"
                                                 style="padding: 5px 8px; background: #ffc107; color: #000; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; margin-right: 3px;">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button" onclick="deleteDbRecord(<?= $index ?>, '<?= htmlspecialchars($record['id']) ?>'); return false;" class="btn-delete-db" 
+                                        <button type="button" class="btn-delete-db" data-index="<?= $index ?>" data-id="<?= htmlspecialchars($record['id']) ?>"
                                                 style="padding: 5px 8px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px;">
                                             <i class="fas fa-trash"></i>
                                         </button>
-                                        <button type="button" onclick="saveDbRecord(<?= $index ?>); return false;" class="btn-save-db" 
+                                        <button type="button" class="btn-save-db" data-index="<?= $index ?>"
                                                 style="display: none; padding: 5px 8px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; margin-right: 3px;">
                                             <i class="fas fa-save"></i>
                                         </button>
-                                        <button type="button" onclick="cancelDbEdit(<?= $index ?>); return false;" class="btn-cancel-db" 
+                                        <button type="button" class="btn-cancel-db" data-index="<?= $index ?>"
                                                 style="display: none; padding: 5px 8px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px;">
                                             <i class="fas fa-times"></i>
                                         </button>
@@ -1627,21 +1626,36 @@ document.getElementById('formCatatanSedasi').addEventListener('submit', function
   
   // IMPORTANT: Simpan data vital sign ke hidden field sebelum submit
   if (typeof vitalSignsArray !== 'undefined' && vitalSignsArray.length > 0) {
-    const vitalSignData = JSON.stringify({
-      no_rawat: '<?= $no_rawat ?>',
-      kode_paket: '<?= $kode_paket ?>',
-      tanggal: '<?= $tanggal ?>',
-      jam_mulai: '<?= $jam_mulai ?>',
-      vital_signs: vitalSignsArray,
-      mode: 'append'
-    });
-    document.getElementById('vital_sign_data').value = vitalSignData;
-    console.log('✅ Vital sign data akan disimpan bersamaan dengan form:', vitalSignsArray.length, 'records');
-    console.log('📋 Data:', vitalSignData);
+    try {
+      // Ambil data dari hidden inputs yang sudah aman
+      const no_rawat = document.querySelector('input[name="no_rawat"]').value;
+      const kode_paket = document.querySelector('input[name="kode_paket"]').value;
+      const tanggal = document.querySelector('input[name="tanggal"]').value;
+      const jam_mulai = document.querySelector('input[name="jam_mulai"]').value;
+      
+      const vitalSignData = JSON.stringify({
+        no_rawat: no_rawat,
+        kode_paket: kode_paket,
+        tanggal: tanggal,
+        jam_mulai: jam_mulai,
+        vital_signs: vitalSignsArray,
+        mode: 'append'
+      });
+      document.getElementById('vital_sign_data').value = vitalSignData;
+      console.log('✅ Vital sign data akan disimpan bersamaan dengan form:', vitalSignsArray.length, 'records');
+      console.log('📋 Data:', vitalSignData);
+    } catch (e) {
+      console.error('❌ Error saat menyimpan vital sign data:', e);
+    }
   } else {
     console.log('ℹ️ Tidak ada data vital sign baru untuk disimpan');
   }
   
+  // Beri tahu autosave.js bahwa form sedang disubmit, jangan tampilkan prompt
+  if (window.allowFormSubmission) {
+    window.allowFormSubmission();
+  }
+
   formSubmitted = true;
   // Clear autosave data setelah submit
   localStorage.removeItem('autosave_formCatatanSedasi');
@@ -1717,7 +1731,7 @@ document.addEventListener('DOMContentLoaded', function() {
   togglePremedikasiInputs();
   
   // Cek apakah data sudah ada di database (mode EDIT)
-  const hasExistingData = <?= json_encode(isset($catatan['id']) && !empty($catatan['id'])) ?>;
+  const hasExistingData = <?= isset($catatan['id']) && !empty($catatan['id']) ? 'true' : 'false' ?>;
   
   if (hasExistingData) {
     // Mode EDIT: Clear localStorage agar tidak override data dari database
@@ -1727,624 +1741,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // AutoSave disabled - form sudah stabil
 });
 
-// ==================== VITAL SIGN MANAGEMENT ====================
-let vitalSignsArray = []; // Data input baru (belum disimpan)
-let dbVitalSigns = <?= $vital_data_json ?>; // Data dari database
-let vitalChart = null;
 
-// ==================== WAKTU OTOMATIS CONFIG ====================
-let waktuMulai = null; // Waktu mulai monitoring (HH:MM:SS)
-let intervalJam = 0; // Default 0 jam
-let intervalMenit = 3; // Default 3 menit
-let intervalDetik = 0; // Default 0 detik
-let recordCount = 0; // Counter untuk record ke berapa
-
-// Set current time
-function setCurrentTime() {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    const timeString = `${hours}:${minutes}:${seconds}`;
-    document.getElementById('vs_jam').value = timeString;
-}
-
-// Hitung waktu berikutnya berdasarkan waktu mulai + (interval × record count)
-function hitungWaktuBerikutnya() {
-    if (!waktuMulai) {
-        // Jika belum set waktu mulai, gunakan waktu sekarang
-        setCurrentTime();
-        return;
-    }
-    
-    // Parse waktu mulai
-    const [hours, minutes, seconds] = waktuMulai.split(':').map(Number);
-    
-    // Hitung total detik untuk interval
-    const totalIntervalDetik = (intervalJam * 3600) + (intervalMenit * 60) + intervalDetik;
-    
-    // Hitung total detik yang harus ditambahkan (interval × recordCount)
-    const tambahDetik = totalIntervalDetik * recordCount;
-    
-    // Buat Date object dari waktu mulai
-    const waktu = new Date();
-    waktu.setHours(hours, minutes, seconds || 0);
-    
-    // Tambahkan detik
-    waktu.setSeconds(waktu.getSeconds() + tambahDetik);
-    
-    // Format kembali ke HH:MM:SS
-    const newHours = String(waktu.getHours()).padStart(2, '0');
-    const newMinutes = String(waktu.getMinutes()).padStart(2, '0');
-    const newSeconds = String(waktu.getSeconds()).padStart(2, '0');
-    const newTimeString = `${newHours}:${newMinutes}:${newSeconds}`;
-    
-    document.getElementById('vs_jam').value = newTimeString;
-    console.log(`⏰ Waktu ke-${recordCount + 1}: ${newTimeString} (Mulai: ${waktuMulai}, Interval: ${intervalJam}h ${intervalMenit}m ${intervalDetik}s)`);
-}
-
-// Initialize Chart.js
-function initVitalChart() {
-    try {
-        const canvas = document.getElementById("vitalChart");
-        if (!canvas) {
-            console.error('❌ Canvas element "vitalChart" not found!');
-            return;
-        }
-        
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-            console.error('❌ Cannot get 2D context from canvas!');
-            return;
-        }
-        
-        console.log('📊 Initializing Chart.js...');
-        vitalChart = new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: [],
-            datasets: [
-                { 
-                    label: "Respirasi (R)", 
-                    data: [], 
-                    borderColor: "#3498db", 
-                    backgroundColor: "rgba(52, 152, 219, 0.1)",
-                    tension: 0.4,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
-                },
-                { 
-                    label: "Nadi (N)", 
-                    data: [], 
-                    borderColor: "#ff9800", 
-                    backgroundColor: "rgba(255, 152, 0, 0.1)",
-                    tension: 0.4,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
-                },
-                { 
-                    label: "Tekanan Darah (Sistol)", 
-                    data: [], 
-                    borderColor: "#e74c3c", 
-                    backgroundColor: "rgba(231, 76, 60, 0.1)",
-                    tension: 0.4,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
-                },
-                { 
-                    label: "FIO2", 
-                    data: [], 
-                    borderColor: "#9c27b0", 
-                    backgroundColor: "rgba(156, 39, 176, 0.1)",
-                    tension: 0.4,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
-                },
-                { 
-                    label: "SPO2", 
-                    data: [], 
-                    borderColor: "#2ecc71", 
-                    backgroundColor: "rgba(46, 204, 113, 0.1)",
-                    tension: 0.4,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: { 
-                    position: "bottom",
-                    labels: {
-                        usePointStyle: true,
-                        padding: 15
-                    }
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Nilai'
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Waktu'
-                    }
-                }
-            }
-        }
-    });
-        
-        console.log('✅ Chart initialized successfully!');
-    } catch (error) {
-        console.error('❌ Error initializing chart:', error);
-    }
-}
-
-// Update chart dengan data
-function updateVitalChart() {
-    if (!vitalChart) return;
-    
-    // Gabungkan data dari database dan input baru
-    const allData = [...dbVitalSigns, ...vitalSignsArray];
-    
-    // Normalize data structure (database vs input baru)
-    const normalizedData = allData.map(d => {
-        // Jika dari database (ada field waktu)
-        if (d.waktu) {
-            return {
-                waktu: d.waktu,
-                respirasi: parseInt(d.respirasi),
-                nadi: parseInt(d.nadi),
-                sistol: parseInt(d.td_sistolik),
-                fio2: parseInt(d.fio2),
-                spo2: parseInt(d.spo2)
-            };
-        }
-        // Jika dari input baru (ada field jam)
-        else {
-            return {
-                waktu: d.jam,
-                respirasi: parseInt(d.respirasi),
-                nadi: parseInt(d.nadi),
-                sistol: parseInt(d.sistol),
-                fio2: parseInt(d.fio2),
-                spo2: parseInt(d.spo2)
-            };
-        }
-    });
-    
-    // Sort berdasarkan waktu (ascending)
-    normalizedData.sort((a, b) => {
-        const timeA = a.waktu.includes(' ') ? a.waktu.split(' ')[1] : a.waktu;
-        const timeB = b.waktu.includes(' ') ? b.waktu.split(' ')[1] : b.waktu;
-        return timeA.localeCompare(timeB);
-    });
-    
-    const labels = normalizedData.map(d => {
-        // Extract hanya jam (HH:MM:SS) jika format datetime
-        return d.waktu.includes(' ') ? d.waktu.split(' ')[1] : d.waktu;
-    });
-    const respirasi = normalizedData.map(d => d.respirasi);
-    const nadi = normalizedData.map(d => d.nadi);
-    const sistol = normalizedData.map(d => d.sistol);
-    const fio2 = normalizedData.map(d => d.fio2);
-    const spo2 = normalizedData.map(d => d.spo2);
-    
-    vitalChart.data.labels = labels;
-    vitalChart.data.datasets[0].data = respirasi;
-    vitalChart.data.datasets[1].data = nadi;
-    vitalChart.data.datasets[2].data = sistol;
-    vitalChart.data.datasets[3].data = fio2;
-    vitalChart.data.datasets[4].data = spo2;
-    vitalChart.update();
-    
-    console.log('📊 Chart updated with', normalizedData.length, 'records (sorted by time)');
-}
-
-// Update table
-function updateVitalTable() {
-    const tbody = document.getElementById('vital_tbody');
-    
-    if (vitalSignsArray.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="7" style="padding: 20px; text-align: center; color: #6c757d; border: 1px solid #dee2e6;">
-                    <i class="fas fa-info-circle"></i> Belum ada data. Silakan tambah record baru.
-                </td>
-            </tr>
-        `;
-        return;
-    }
-    
-    // Sort array berdasarkan waktu (ascending) dengan menyimpan index asli
-    const sortedArray = vitalSignsArray.map((record, originalIndex) => ({
-        ...record,
-        originalIndex: originalIndex
-    })).sort((a, b) => {
-        return a.jam.localeCompare(b.jam);
-    });
-    
-    tbody.innerHTML = '';
-    sortedArray.forEach((record, displayIndex) => {
-        const row = document.createElement('tr');
-        row.style.background = displayIndex % 2 === 0 ? '#ffffff' : '#f8f9fa';
-        row.innerHTML = `
-            <td style="padding: 10px; border: 1px solid #dee2e6; font-family: monospace; font-size: 13px; font-weight: 600;">
-                ${record.jam}
-            </td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
-                <span style="background: #e3f2fd; padding: 4px 10px; border-radius: 15px; color: #1976d2; font-weight: 600; font-size: 12px;">
-                    ${record.respirasi}
-                </span>
-            </td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
-                <span style="background: #fff3e0; padding: 4px 10px; border-radius: 15px; color: #e65100; font-weight: 600; font-size: 12px;">
-                    ${record.nadi} bpm
-                </span>
-            </td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
-                <span style="background: #ffebee; padding: 4px 10px; border-radius: 15px; color: #c62828; font-weight: 600; font-size: 12px;">
-                    ${record.sistol}/${record.diastol}
-                </span>
-            </td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
-                <span style="background: #f3e5f5; padding: 4px 10px; border-radius: 15px; color: #7b1fa2; font-weight: 600; font-size: 12px;">
-                    ${record.fio2}%
-                </span>
-            </td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
-                <span style="background: #e8f5e9; padding: 4px 10px; border-radius: 15px; color: #2e7d32; font-weight: 600; font-size: 12px;">
-                    ${record.spo2}%
-                </span>
-            </td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
-                <button onclick="deleteVitalRecord(${record.originalIndex})" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px;">
-                    <i class="fas fa-trash"></i> Hapus
-                </button>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-// Update hidden input (DEPRECATED - tidak digunakan lagi karena auto-save saat submit)
-function updateVitalHiddenInput() {
-    // Function ini tidak digunakan lagi
-    // Data vital sign akan di-save otomatis saat form submit
-}
-
-// Delete record
-function deleteVitalRecord(index) {
-    if (confirm('Hapus record ini?')) {
-        vitalSignsArray.splice(index, 1);
-        updateVitalTable();
-        updateVitalChart();
-        updateVitalHiddenInput();
-    }
-}
-
-// Add vital sign record
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize chart
-    initVitalChart();
-    updateVitalChart(); // Load data dari database
-    
-    // Set initial time
-    setCurrentTime();
-    
-    // Auto-set waktu mulai dari data terakhir (database atau input baru)
-    let lastTime = null;
-    
-    // Cek data terakhir dari database
-    if (dbVitalSigns.length > 0) {
-        const lastDbRecord = dbVitalSigns[dbVitalSigns.length - 1];
-        lastTime = lastDbRecord.waktu;
-    }
-    
-    // Cek data terakhir dari input baru
-    if (vitalSignsArray.length > 0) {
-        const lastInputRecord = vitalSignsArray[vitalSignsArray.length - 1];
-        lastTime = lastInputRecord.jam;
-    }
-    
-    // Set waktu mulai
-    if (lastTime) {
-        // Ada data sebelumnya, set waktu mulai = waktu terakhir + interval (3 menit)
-        const timeStr = lastTime.includes(' ') ? lastTime.split(' ')[1] : lastTime;
-        const [hours, minutes, seconds] = timeStr.split(':').map(Number);
-        
-        // Tambahkan interval 3 menit
-        const date = new Date();
-        date.setHours(hours, minutes, seconds || 0);
-        date.setMinutes(date.getMinutes() + 3); // Tambah 3 menit
-        
-        document.getElementById('vs_waktu_jam').value = String(date.getHours()).padStart(2, '0');
-        document.getElementById('vs_waktu_menit').value = String(date.getMinutes()).padStart(2, '0');
-        document.getElementById('vs_waktu_detik').value = String(date.getSeconds()).padStart(2, '0');
-        
-        console.log(`⏰ Waktu mulai auto-set dari data terakhir: ${timeStr} + 3 menit = ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`);
-    } else {
-        // Tidak ada data sebelumnya, set waktu mulai = waktu sekarang
-        const now = new Date();
-        document.getElementById('vs_waktu_jam').value = String(now.getHours()).padStart(2, '0');
-        document.getElementById('vs_waktu_menit').value = String(now.getMinutes()).padStart(2, '0');
-        document.getElementById('vs_waktu_detik').value = String(now.getSeconds()).padStart(2, '0');
-        
-        console.log('⏰ Waktu mulai set ke waktu sekarang (tidak ada data sebelumnya)');
-    }
-    
-    // Event listeners untuk button waktu
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize chart
-        initVitalChart();
-        
-        // Button Set Now (isi waktu sekarang)
-        const btnSetNow = document.getElementById('btn_set_now');
-        if (btnSetNow) {
-            btnSetNow.addEventListener('click', function() {
-        const now = new Date();
-        document.getElementById('vs_waktu_jam').value = String(now.getHours()).padStart(2, '0');
-        document.getElementById('vs_waktu_menit').value = String(now.getMinutes()).padStart(2, '0');
-        document.getElementById('vs_waktu_detik').value = String(now.getSeconds()).padStart(2, '0');
-        
-        // Visual feedback
-        this.innerHTML = '<i class="fas fa-check"></i> Diset!';
-        setTimeout(() => {
-            this.innerHTML = '<i class="fas fa-clock"></i> Set Now';
-        }, 1000);
-            });
-        }
-        
-        // Button Set Waktu Config
-        const btnSetWaktuConfig = document.getElementById('btn_set_waktu_config');
-        if (btnSetWaktuConfig) {
-            btnSetWaktuConfig.addEventListener('click', function() {
-        // Waktu Mulai
-        const jam = document.getElementById('vs_waktu_jam').value;
-        const menitWaktu = document.getElementById('vs_waktu_menit').value;
-        const detikWaktu = document.getElementById('vs_waktu_detik').value;
-        
-        // Interval
-        const intervalJamVal = document.getElementById('vs_interval_jam').value;
-        const intervalMenitVal = document.getElementById('vs_interval_menit').value;
-        const intervalDetikVal = document.getElementById('vs_interval_detik').value;
-        
-        // Validasi Waktu Mulai
-        if (!jam || !menitWaktu || detikWaktu === '') {
-            alert('⚠️ Waktu mulai harus diisi lengkap (HH:MM:SS)!');
-            return;
-        }
-        
-        // Validasi Interval
-        if (intervalJamVal === '' || intervalMenitVal === '' || intervalDetikVal === '') {
-            alert('⚠️ Interval harus diisi lengkap (HH:MM:SS)!');
-            return;
-        }
-        
-        // Parse values
-        const jamInt = parseInt(jam);
-        const menitInt = parseInt(menitWaktu);
-        const detikInt = parseInt(detikWaktu);
-        const intervalJamInt = parseInt(intervalJamVal);
-        const intervalMenitInt = parseInt(intervalMenitVal);
-        const intervalDetikInt = parseInt(intervalDetikVal);
-        
-        // Validasi range Waktu Mulai
-        if (jamInt < 0 || jamInt > 23) {
-            alert('⚠️ Jam waktu mulai harus antara 00-23!');
-            return;
-        }
-        if (menitInt < 0 || menitInt > 59) {
-            alert('⚠️ Menit waktu mulai harus antara 00-59!');
-            return;
-        }
-        if (detikInt < 0 || detikInt > 59) {
-            alert('⚠️ Detik waktu mulai harus antara 00-59!');
-            return;
-        }
-        
-        // Validasi range Interval
-        if (intervalJamInt < 0 || intervalJamInt > 23) {
-            alert('⚠️ Jam interval harus antara 00-23!');
-            return;
-        }
-        if (intervalMenitInt < 0 || intervalMenitInt > 59) {
-            alert('⚠️ Menit interval harus antara 00-59!');
-            return;
-        }
-        if (intervalDetikInt < 0 || intervalDetikInt > 59) {
-            alert('⚠️ Detik interval harus antara 00-59!');
-            return;
-        }
-        
-        // Validasi interval tidak boleh 00:00:00
-        if (intervalJamInt === 0 && intervalMenitInt === 0 && intervalDetikInt === 0) {
-            alert('⚠️ Interval tidak boleh 00:00:00! Minimal 1 detik.');
-            return;
-        }
-        
-        // Format waktu
-        const jamStr = String(jamInt).padStart(2, '0');
-        const menitStr = String(menitInt).padStart(2, '0');
-        const detikStr = String(detikInt).padStart(2, '0');
-        const waktuMulaiFormatted = `${jamStr}:${menitStr}:${detikStr}`;
-        
-        const intervalJamStr = String(intervalJamInt).padStart(2, '0');
-        const intervalMenitStr = String(intervalMenitInt).padStart(2, '0');
-        const intervalDetikStr = String(intervalDetikInt).padStart(2, '0');
-        const intervalFormatted = `${intervalJamStr}:${intervalMenitStr}:${intervalDetikStr}`;
-        
-        // Set config
-        waktuMulai = waktuMulaiFormatted;
-        intervalJam = intervalJamInt;
-        intervalMenit = intervalMenitInt;
-        intervalDetik = intervalDetikInt;
-        recordCount = 0; // Reset counter
-        
-        // Set waktu pertama
-        hitungWaktuBerikutnya();
-        
-        // Visual feedback
-        this.innerHTML = '<i class="fas fa-check-circle"></i> Diterapkan!';
-        this.style.background = '#28a745';
-        this.style.color = 'white';
-        
-        setTimeout(() => {
-            this.innerHTML = '<i class="fas fa-check-circle"></i> Terapkan';
-            this.style.background = 'white';
-            this.style.color = '#667eea';
-        }, 2000);
-        
-        alert(`✅ Pengaturan waktu diterapkan!\n\n` +
-              `⏰ Waktu Mulai: ${waktuMulaiFormatted}\n` +
-              `⏱️ Interval: ${intervalFormatted}\n\n` +
-              `Waktu akan otomatis bertambah setiap kali Anda tambah record.`);
-        
-        console.log(`✅ Config: Mulai=${waktuMulai}, Interval=${intervalJamInt}h ${intervalMenitInt}m ${intervalDetikInt}s`);
-            });
-        }
-        
-        // Button Manual Time
-        const btnManualTime = document.getElementById('btn_manual_time');
-        if (btnManualTime) {
-            btnManualTime.addEventListener('click', function() {
-        const newTime = prompt('Masukkan waktu manual (HH:MM:SS):', document.getElementById('vs_jam').value);
-        if (newTime) {
-            // Validasi format
-            const timeRegex = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/;
-            if (timeRegex.test(newTime)) {
-                document.getElementById('vs_jam').value = newTime;
-                console.log('⏰ Waktu diubah manual ke:', newTime);
-            } else {
-                alert('❌ Format waktu tidak valid! Gunakan format HH:MM:SS (contoh: 14:30:00)');
-            }
-        }
-            });
-        }
-    });
-    
-    // Button add vital
-    document.getElementById('btn_add_vital').addEventListener('click', function() {
-        const jam = document.getElementById('vs_jam').value;
-        const respirasi = document.getElementById('vs_respirasi').value;
-        const nadi = document.getElementById('vs_nadi').value;
-        const sistol = document.getElementById('vs_sistol').value;
-        const diastol = document.getElementById('vs_diastol').value;
-        const fio2 = document.getElementById('vs_fio2').value;
-        const spo2 = document.getElementById('vs_spo2').value;
-        
-        // Validation
-        if (!jam) {
-            alert('⚠️ Waktu harus diisi!');
-            return;
-        }
-        
-        if (!respirasi || !nadi || !sistol || !diastol || !fio2 || !spo2) {
-            alert('⚠️ Semua field harus diisi!');
-            return;
-        }
-        
-        // Create record object (gunakan key yang konsisten dengan updateVitalTable)
-        const record = {
-            id: Date.now(),
-            jam: jam,  // Gunakan 'jam' untuk konsistensi dengan updateVitalTable
-            respirasi: parseInt(respirasi),  // Gunakan 'respirasi'
-            nadi: parseInt(nadi),
-            sistol: parseInt(sistol),  // Pisahkan sistol
-            diastol: parseInt(diastol),  // Pisahkan diastol
-            fio2: parseInt(fio2),
-            spo2: parseInt(spo2)
-        };
-        
-        // Add to array
-        vitalSignsArray.push(record);
-        
-        console.log('✅ Vital sign added to array:', record);
-        console.log('📊 Total records in array:', vitalSignsArray.length);
-        
-        // Update UI
-        updateVitalTable();
-        updateVitalChart();
-        updateVitalHiddenInput();
-        
-        // Increment record count untuk waktu otomatis
-        recordCount++;
-        
-        // Hitung waktu berikutnya (otomatis)
-        hitungWaktuBerikutnya();
-        
-        // TIDAK clear form - biarkan data tetap terisi untuk input berikutnya
-        // User bisa langsung edit jika ada perubahan, atau langsung tambah jika sama
-        
-        // Focus ke field pertama untuk kemudahan edit
-        document.getElementById('vs_respirasi').focus();
-        document.getElementById('vs_respirasi').select();
-        
-        // Show success message
-        const nextTime = document.getElementById('vs_jam').value;
-        console.log(`✅ Record ditambahkan. Waktu berikutnya: ${nextTime}`);
-        
-        // Visual feedback - highlight button
-        this.innerHTML = '<i class="fas fa-check"></i> Berhasil!';
-        this.style.background = '#28a745';
-        setTimeout(() => {
-            this.innerHTML = '<i class="fas fa-plus"></i> Tambah Record';
-            this.style.background = '#007bff';
-        }, 1000);
-    });
-    
-    // Button Clear Form
-    document.getElementById('btn_clear_form').addEventListener('click', function() {
-        if (confirm('🗑️ Kosongkan semua input form?')) {
-            document.getElementById('vs_respirasi').value = '';
-            document.getElementById('vs_nadi').value = '';
-            document.getElementById('vs_sistol').value = '';
-            document.getElementById('vs_diastol').value = '';
-            document.getElementById('vs_fio2').value = '';
-            document.getElementById('vs_spo2').value = '';
-            
-            // Focus ke field pertama
-            document.getElementById('vs_respirasi').focus();
-            
-            console.log('🗑️ Form cleared');
-            
-            // Visual feedback
-            this.innerHTML = '<i class="fas fa-check"></i> Cleared!';
-            this.style.background = '#28a745';
-            setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-eraser"></i> Clear';
-                this.style.background = '#6c757d';
-            }, 1000);
-        }
-    });
-    
-    // Button hover effect - Add
-    const btnAdd = document.getElementById('btn_add_vital');
-    btnAdd.addEventListener('mouseenter', function() {
-        this.style.background = '#0056b3';
-        this.style.transform = 'translateY(-2px)';
-        this.style.boxShadow = '0 4px 8px rgba(0,123,255,0.3)';
-    });
-    
-    btnAdd.addEventListener('mouseleave', function() {
-        this.style.background = '#007bff';
-        this.style.transform = 'translateY(0)';
-        this.style.boxShadow = 'none';
-    });
-});
-
-console.log('✅ Vital Sign module initialized');
 
 // ==================== DELETE DATABASE RECORD ====================
 function deleteDbRecord(index, recordId) {
@@ -2539,7 +1936,7 @@ function uncheckRadio(radioName) {
 // ==================== TOGGLE ANESTESI TYPE ====================
 let currentAnestesiType = null; // Track pilihan saat ini
 
-function toggleAnestesiType(type) {
+window.toggleAnestesiType = function(type) {
     const sectionUmum = document.getElementById('section-anestesi-umum');
     const sectionRegional = document.getElementById('section-anestesi-regional');
     const labelUmum = document.getElementById('label-umum');
@@ -2626,7 +2023,7 @@ function toggleAnestesiType(type) {
         currentAnestesiType = 'keduanya';
         console.log('✅ Kedua section ditampilkan (Umum & Regional)');
     }
-}
+};
 
 // Cek apakah ada data di Anestesi Umum
 function hasDataInUmum() {
@@ -2969,4 +2366,356 @@ function getCurrentTimeString() {
     return `${hours}:${minutes}:${seconds}`;
 }
 
+// =================================================================
+// ==================== ALL-IN-ONE JAVASCRIPT MODULE ===============
+// =================================================================
+document.addEventListener('DOMContentLoaded', function() {
+    // ------------------- 
+    // 1. VITAL SIGN LOGIC
+    // ------------------- 
+    let vitalSignsArray = [];
+    // Membaca data dari elemen script JSON yang aman
+    const dbVitalDataElement = document.getElementById('db_vital_data_json');
+    let dbVitalSigns = [];
+    console.log('🔍 Mencari elemen db_vital_data_json...');
+    if (dbVitalDataElement) {
+        console.log('✅ Elemen db_vital_data_json ditemukan');
+        const rawContent = dbVitalDataElement.textContent;
+        console.log('📄 Raw content length:', rawContent.length);
+        console.log('📄 Raw content (first 200 chars):', rawContent.substring(0, 200));
+        console.log('📄 Raw content (last 100 chars):', rawContent.substring(rawContent.length - 100));
+        
+        // Check untuk karakter aneh
+        const hasComma = rawContent.includes(',');
+        const hasBracket = rawContent.includes('[') || rawContent.includes(']');
+        const hasBrace = rawContent.includes('{') || rawContent.includes('}');
+        console.log('📊 Content analysis:', { hasComma, hasBracket, hasBrace });
+        
+        try {
+            dbVitalSigns = JSON.parse(rawContent);
+            console.log('✅ JSON berhasil di-parse, jumlah records:', dbVitalSigns.length);
+            console.log('📋 Parsed data:', dbVitalSigns);
+        } catch (e) {
+            console.error('❌ Gagal mem-parsing data JSON vital sign dari database:', e);
+            console.error('❌ Error message:', e.message);
+            console.error('📄 Content yang gagal di-parse:', rawContent);
+            console.error('📄 Content length:', rawContent.length);
+            alert('Terjadi kesalahan saat memuat data vital sign yang tersimpan: ' + e.message);
+        }
+    } else {
+        console.warn('⚠️ Elemen db_vital_data_json TIDAK ditemukan!');
+    }
+    
+    let vitalChart = null;
+    let isManualMode = false;
+    let waktuMulai = null;
+    let intervalJam = 0, intervalMenit = 3, intervalDetik = 0;
+
+    const el = {
+        // Vital Sign Elements
+        btnSetNow: document.getElementById('btn_set_now'),
+        btnSetWaktuConfig: document.getElementById('btn_set_waktu_config'),
+        vsWaktuJam: document.getElementById('vs_waktu_jam'),
+        vsWaktuMenit: document.getElementById('vs_waktu_menit'),
+        vsWaktuDetik: document.getElementById('vs_waktu_detik'),
+        vsIntervalJam: document.getElementById('vs_interval_jam'),
+        vsIntervalMenit: document.getElementById('vs_interval_menit'),
+        vsIntervalDetik: document.getElementById('vs_interval_detik'),
+        vsJam: document.getElementById('vs_jam'),
+        btnManualTime: document.getElementById('btn_manual_time'),
+        toggleSwitch: document.getElementById('toggleSwitch'),
+        intervalMode: document.getElementById('intervalMode'),
+        manualMode: document.getElementById('manualMode'),
+        toggleSlider: document.getElementById('toggleSlider'),
+        intervalLabel: document.getElementById('intervalLabel'),
+        manualLabel: document.getElementById('manualLabel'),
+        btnAddVital: document.getElementById('btn_add_vital'),
+        btnClearForm: document.getElementById('btn_clear_form'),
+        vsRespirasi: document.getElementById('vs_respirasi'),
+        vsNadi: document.getElementById('vs_nadi'),
+        vsSistol: document.getElementById('vs_sistol'),
+        vsDiastol: document.getElementById('vs_diastol'),
+        vsFio2: document.getElementById('vs_fio2'),
+        vsSpo2: document.getElementById('vs_spo2'),
+        vitalTbody: document.getElementById('vital_tbody'),
+        dbVitalTbody: document.getElementById('db_vital_tbody'),
+        vitalChartCanvas: document.getElementById('vitalChart'),
+        formCatatanSedasi: document.getElementById('formCatatanSedasi'),
+        hiddenVitalSignsInput: document.getElementById('vital_sign_data')
+    };
+
+    function updateVitalSignsDisplay() {
+        const allSigns = [...dbVitalSigns, ...vitalSignsArray].sort((a, b) => (a.waktu || a.jam).localeCompare(b.waktu || b.jam));
+        console.log('📊 updateVitalSignsDisplay() dipanggil dengan', allSigns.length, 'total records');
+        if (vitalChart) {
+            vitalChart.data.labels = allSigns.map(d => (d.waktu || d.jam).substring(0, 5));
+            vitalChart.data.datasets[0].data = allSigns.map(d => d.respirasi || 0);
+            vitalChart.data.datasets[1].data = allSigns.map(d => d.nadi || 0);
+            vitalChart.data.datasets[2].data = allSigns.map(d => d.td_sistolik || d.sistol || 0);
+            vitalChart.data.datasets[3].data = allSigns.map(d => d.td_diastolik || d.diastol || 0);
+            vitalChart.data.datasets[4].data = allSigns.map(d => d.fio2 || 0);
+            vitalChart.data.datasets[5].data = allSigns.map(d => d.spo2 || 0);
+            vitalChart.update();
+            console.log('✅ Grafik diupdate dengan', allSigns.length, 'data points');
+        }
+        if(el.vitalTbody) {
+            el.vitalTbody.innerHTML = vitalSignsArray.map((rec, idx) => `
+                <tr>
+                    <td>${rec.jam}</td>
+                    <td>${rec.respirasi}</td>
+                    <td>${rec.nadi}</td>
+                    <td>${rec.td_sistolik}/${rec.td_diastolik}</td>
+                    <td>${rec.fio2}</td>
+                    <td>${rec.spo2}</td>
+                    <td><button type="button" class="btn-delete-new" data-index="${idx}">Hapus</button></td>
+                </tr>
+            `).join('') || '<tr><td colspan="7" style="text-align:center;padding:20px;">Belum ada data baru.</td></tr>';
+        }
+    }
+
+    function hitungWaktuBerikutnya() {
+        if (isManualMode || !waktuMulai || !el.vsJam) return;
+        const [h, m, s] = waktuMulai.split(':').map(Number);
+        const startDate = new Date();
+        startDate.setHours(h, m, s, 0);
+        const intervalSeconds = (intervalJam * 3600) + (intervalMenit * 60) + intervalDetik;
+        const nextDate = new Date(startDate.getTime() + (vitalSignsArray.length * intervalSeconds * 1000));
+        el.vsJam.value = `${String(nextDate.getHours()).padStart(2, '0')}:${String(nextDate.getMinutes()).padStart(2, '0')}:${String(nextDate.getSeconds()).padStart(2, '0')}`;
+    }
+
+    if(el.toggleSwitch) el.toggleSwitch.addEventListener('click', () => {
+        isManualMode = !isManualMode;
+        el.intervalMode.style.display = isManualMode ? 'none' : 'block';
+        el.manualMode.style.display = isManualMode ? 'block' : 'none';
+        el.toggleSlider.style.transform = isManualMode ? 'translateX(26px)' : 'translateX(0px)';
+        el.intervalLabel.style.opacity = isManualMode ? '0.5' : '1';
+        el.manualLabel.style.opacity = isManualMode ? '1' : '0.5';
+        if (!isManualMode) hitungWaktuBerikutnya();
+    });
+
+    if(el.btnSetNow) el.btnSetNow.addEventListener('click', () => {
+        const now = new Date();
+        el.vsWaktuJam.value = String(now.getHours()).padStart(2, '0');
+        el.vsWaktuMenit.value = String(now.getMinutes()).padStart(2, '0');
+        el.vsWaktuDetik.value = String(now.getSeconds()).padStart(2, '0');
+    });
+
+    if(el.btnSetWaktuConfig) el.btnSetWaktuConfig.addEventListener('click', () => {
+        waktuMulai = `${el.vsWaktuJam.value}:${el.vsWaktuMenit.value}:${el.vsWaktuDetik.value}`;
+        intervalJam = parseInt(el.vsIntervalJam.value) || 0;
+        intervalMenit = parseInt(el.vsIntervalMenit.value) || 0;
+        intervalDetik = parseInt(el.vsIntervalDetik.value) || 0;
+        alert('Pengaturan waktu diterapkan.');
+        hitungWaktuBerikutnya();
+    });
+
+    if(el.btnAddVital) el.btnAddVital.addEventListener('click', () => {
+        console.log('🔵 Tombol "Tambah" diklik');
+        
+        // Ambil nilai dari input, default ke 0 jika kosong
+        const respirasi = parseInt(el.vsRespirasi.value) || 0;
+        const nadi = parseInt(el.vsNadi.value) || 0;
+        const sistol = parseInt(el.vsSistol.value) || 0;
+        const diastol = parseInt(el.vsDiastol.value) || 0;
+        const fio2 = parseInt(el.vsFio2.value) || 0;
+        const spo2 = parseInt(el.vsSpo2.value) || 0;
+        const jam = el.vsJam.value;
+        
+        console.log('📊 Data yang akan ditambahkan:', { jam, respirasi, nadi, sistol, diastol, fio2, spo2 });
+        
+        // Validasi: minimal waktu harus diisi
+        if (jam === '') {
+            alert('⚠️ Waktu harus diisi!');
+            return;
+        }
+        
+        const record = {
+            id: Date.now(),
+            jam: jam,
+            respirasi: respirasi,
+            nadi: nadi,
+            td_sistolik: sistol,  // Gunakan nama yang konsisten dengan backend
+            td_diastolik: diastol, // Gunakan nama yang konsisten dengan backend
+            fio2: fio2,
+            spo2: spo2
+        };
+        
+        console.log('✅ Record dibuat:', record);
+        vitalSignsArray.push(record);
+        console.log('📈 vitalSignsArray sekarang punya', vitalSignsArray.length, 'record');
+        
+        updateVitalSignsDisplay();
+        hitungWaktuBerikutnya();
+    });
+
+    if(el.btnClearForm) el.btnClearForm.addEventListener('click', () => {
+        el.vsRespirasi.value = el.vsNadi.value = el.vsSistol.value = el.vsDiastol.value = el.vsFio2.value = el.vsSpo2.value = '';
+    });
+
+    if(el.vitalTbody) el.vitalTbody.addEventListener('click', e => {
+        if (e.target.matches('.btn-delete-new')) {
+            vitalSignsArray.splice(e.target.dataset.index, 1);
+            updateVitalSignsDisplay();
+            hitungWaktuBerikutnya();
+        }
+    });
+
+    // Fungsi baru untuk menyimpan semua data (vital sign dulu, baru form utama)
+    async function saveAllData() {
+        console.log('🟢 saveAllData() dipanggil');
+        const vitalSignsData = vitalSignsArray;
+        console.log('📋 Jumlah vital sign yang akan disimpan:', vitalSignsData.length);
+
+        // 1. Simpan VITAL SIGN via API jika ada data baru
+        if (vitalSignsData && vitalSignsData.length > 0) {
+            console.log('🔵 Attempting to save vital signs via API...');
+            const payload = {
+                no_rawat: '<?= htmlspecialchars($no_rawat) ?>',
+                kode_paket: '<?= htmlspecialchars($kode_paket) ?>',
+                tanggal: '<?= htmlspecialchars($tanggal) ?>',
+                jam_mulai: '<?= htmlspecialchars($jam_mulai) ?>',
+                vital_signs: vitalSignsData,
+                mode: 'append' // Selalu tambahkan data baru dari form ini
+            };
+
+            console.log('📤 Payload yang dikirim:', payload);
+
+            try {
+                const response = await fetch('../process/process-simpan-vital-sign.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                console.log('📡 Response status:', response.status);
+                const result = await response.json();
+                console.log('📥 Response dari server:', result);
+
+                if (!result.success) {
+                    // Jika penyimpanan vital sign gagal, hentikan proses dan tampilkan error
+                    alert('❌ Error saat menyimpan Vital Sign: ' + result.message);
+                    console.error('API Error:', result.message);
+                    return; // Hentikan eksekusi
+                }
+                console.log('✅ Vital signs saved successfully via API.');
+            } catch (error) {
+                alert('❌ Terjadi kesalahan teknis saat menghubungi server untuk menyimpan vital sign.');
+                console.error('Fetch Error:', error);
+                return; // Hentikan eksekusi
+            }
+        } else {
+            console.log('⚠️ Tidak ada vital sign baru untuk disimpan, lanjut ke form utama');
+        }
+
+        // 2. Jika vital sign berhasil disimpan (atau tidak ada data vital sign), submit form utama
+        console.log('🟡 Proceeding to submit main form...');
+        // Kita tidak perlu lagi mengisi hidden input vital_sign_data karena sudah disimpan terpisah
+        if(el.hiddenVitalSignsInput) {
+            el.hiddenVitalSignsInput.value = ''; // Kosongkan untuk mencegah pemrosesan ganda
+        }
+        el.formCatatanSedasi.submit(); // Lanjutkan submit form utama
+    }
+
+    if(el.formCatatanSedasi) el.formCatatanSedasi.addEventListener('submit', (e) => {
+        e.preventDefault(); // Hentikan submit bawaan
+        console.log('Form submission intercepted. Calling saveAllData().');
+        saveAllData(); // Panggil fungsi baru kita
+    });
+
+    if (el.vitalChartCanvas) {
+        const ctx = el.vitalChartCanvas.getContext('2d');
+        vitalChart = new Chart(ctx, { 
+            type: 'line', 
+            data: { 
+                labels: [], 
+                datasets: [
+                    { label: 'Respirasi', data: [], borderColor: '#1976d2' }, 
+                    { label: 'Nadi', data: [], borderColor: '#e65100' }, 
+                    { label: 'Sistol', data: [], borderColor: '#c62828' },
+                    { label: 'Diastol', data: [], borderColor: '#000000' },
+                    { label: 'FIO2', data: [], borderColor: '#7b1fa2' }, 
+                    { label: 'SPO2', data: [], borderColor: '#2e7d32' }
+                ] 
+            }, 
+            options: { responsive: true } 
+        });
+    }
+    
+    // ------------------- 
+    // 2. OTHER FORM FUNCTIONS (toggleInput)
+    // ------------------- 
+
+    window.toggleInput = function(name) {
+        const select = document.getElementById(`${name}_select`);
+        const inputContainer = document.getElementById(`${name}_input_container`);
+        const input = document.getElementById(`${name}_input`);
+        const hidden = document.getElementById(name);
+
+        if(!select || !inputContainer || !input || !hidden) return;
+
+        if (select.value === 'lainnya') {
+            inputContainer.style.display = 'block';
+            hidden.value = input.value;
+            input.addEventListener('input', () => hidden.value = input.value);
+        } else {
+            inputContainer.style.display = 'none';
+            hidden.value = select.value;
+        }
+    }
+
+    // ------------------- 
+    // 3. DATABASE RECORD BUTTON LISTENERS
+    // ------------------- 
+    // Edit button listeners
+    document.querySelectorAll('.btn-edit-db').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const index = parseInt(this.dataset.index);
+            editDbRecord(index);
+        });
+    });
+    
+    // Delete button listeners
+    document.querySelectorAll('.btn-delete-db').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const index = parseInt(this.dataset.index);
+            const recordId = this.dataset.id;
+            deleteDbRecord(index, recordId);
+        });
+    });
+    
+    // Save button listeners
+    document.querySelectorAll('.btn-save-db').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const index = parseInt(this.dataset.index);
+            saveDbRecord(index);
+        });
+    });
+    
+    // Cancel button listeners
+    document.querySelectorAll('.btn-cancel-db').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const index = parseInt(this.dataset.index);
+            cancelDbEdit(index);
+        });
+    });
+
+    // ------------------- 
+    // 4. INITIALIZATION
+    // ------------------- 
+    updateVitalSignsDisplay();
+    if(el.btnSetNow) el.btnSetNow.click();
+    if(el.btnSetWaktuConfig) el.btnSetWaktuConfig.click();
+    
+    const initialAnestesiType = document.querySelector('input[name="jenis_anestesi"]:checked');
+    if (initialAnestesiType) {
+        toggleAnestesiType(initialAnestesiType.value);
+    }
+});
 </script>

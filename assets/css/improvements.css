@@ -513,6 +513,7 @@ button:focus-visible,
     position: fixed;
     right: 24px;
     bottom: 24px;
+    z-index: 999; /* Pastikan di atas elemen lain */
 }
 
 .app-container > *:first-child {
