@@ -328,7 +328,7 @@ window.addEventListener('unhandledrejection', function(event) {
     left: 10px !important;
   }
 </style>
-
+ 
 
 <!-- Debug console log dihapus untuk performa lebih baik -->
 
@@ -1466,7 +1466,7 @@ window.addEventListener('unhandledrejection', function(event) {
         </div>
         
         <!-- Hidden input untuk vital signs data -->
-        <input type="hidden" name="vital_signs_data" id="vital_signs_data" value="[]">
+        <!-- <input type="hidden" name="vital_signs_data" id="vital_signs_data" value="[]"> -->
         
         <!-- ========== END VITAL SIGN SECTION ========== -->
 
@@ -1567,7 +1567,7 @@ window.addEventListener('unhandledrejection', function(event) {
       <div id="speed-dial-menu-catatan-sedasi" class="flex flex-col w-32 justify-end hidden mb-4 space-y-2 bg-neutral-primary-medium border border-default-medium rounded-base shadow-xs">
           <ul class="p-2 text-sm text-body font-medium">
               <li>
-                  <a href="#" onclick="document.getElementById('formCatatanSedasi').submit(); return false;" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                  <a href="#" onclick="window.submitFormCatatanSedasi(); return false;" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
                       <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M11 16h2m6.707-9.293-2.414-2.414A1 1 0 0 0 16.586 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7.414a1 1 0 0 0-.293-.707ZM16 20v-6a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v6h8ZM9 4h6v3a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V4Z"/></svg>
                       <span class="text-sm font-medium">Simpan</span>
                   </a>
@@ -1599,69 +1599,9 @@ window.addEventListener('unhandledrejection', function(event) {
 // Prevent accidental form submission
 let formSubmitted = false;
 
-// Validasi form sebelum submit
-document.getElementById('formCatatanSedasi').addEventListener('submit', function(e) {
-  if (formSubmitted) {
-    e.preventDefault();
-    return false;
-  }
-  
-  let isValid = true;
-  const requiredFields = this.querySelectorAll('[required]');
-  
-  requiredFields.forEach(field => {
-    if (!field.value.trim()) {
-      isValid = false;
-      field.style.borderColor = 'red';
-    } else {
-      field.style.borderColor = '';
-    }
-  });
-  
-  if (!isValid) {
-    e.preventDefault();
-    alert('Harap lengkapi semua field yang wajib diisi!');
-    return false;
-  }
-  
-  // IMPORTANT: Simpan data vital sign ke hidden field sebelum submit
-  if (typeof vitalSignsArray !== 'undefined' && vitalSignsArray.length > 0) {
-    try {
-      // Ambil data dari hidden inputs yang sudah aman
-      const no_rawat = document.querySelector('input[name="no_rawat"]').value;
-      const kode_paket = document.querySelector('input[name="kode_paket"]').value;
-      const tanggal = document.querySelector('input[name="tanggal"]').value;
-      const jam_mulai = document.querySelector('input[name="jam_mulai"]').value;
-      
-      const vitalSignData = JSON.stringify({
-        no_rawat: no_rawat,
-        kode_paket: kode_paket,
-        tanggal: tanggal,
-        jam_mulai: jam_mulai,
-        vital_signs: vitalSignsArray,
-        mode: 'append'
-      });
-      document.getElementById('vital_sign_data').value = vitalSignData;
-      console.log('✅ Vital sign data akan disimpan bersamaan dengan form:', vitalSignsArray.length, 'records');
-      console.log('📋 Data:', vitalSignData);
-    } catch (e) {
-      console.error('❌ Error saat menyimpan vital sign data:', e);
-    }
-  } else {
-    console.log('ℹ️ Tidak ada data vital sign baru untuk disimpan');
-  }
-  
-  // Beri tahu autosave.js bahwa form sedang disubmit, jangan tampilkan prompt
-  if (window.allowFormSubmission) {
-    window.allowFormSubmission();
-  }
+// Validasi form sebelum submit telah dipindahkan ke window.submitFormCatatanSedasi
+// di bagian akhir file untuk menghindari double event listener
 
-  formSubmitted = true;
-  // Clear autosave data setelah submit
-  localStorage.removeItem('autosave_formCatatanSedasi');
-  
-  return true;
-});
 
 // Toggle untuk Lain-lain Posisi
 document.addEventListener('DOMContentLoaded', function() {
@@ -1884,8 +1824,12 @@ function saveDbRecord(index) {
         return;
     }
     
+    // Ambil ID yang ada
+    const existingId = dbVitalSigns[index].id;
+    
     // Update dbVitalSigns array
     dbVitalSigns[index] = {
+        id: existingId,
         waktu: waktu,
         respirasi: respirasi,
         nadi: nadi,
@@ -2415,6 +2359,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Vital Sign Elements
         btnSetNow: document.getElementById('btn_set_now'),
         btnSetWaktuConfig: document.getElementById('btn_set_waktu_config'),
+        hiddenVitalSignsInput: document.getElementById('vital_sign_data'),
+        formCatatanSedasi: document.getElementById('formCatatanSedasi'),
         vsWaktuJam: document.getElementById('vs_waktu_jam'),
         vsWaktuMenit: document.getElementById('vs_waktu_menit'),
         vsWaktuDetik: document.getElementById('vs_waktu_detik'),
@@ -2426,22 +2372,26 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleSwitch: document.getElementById('toggleSwitch'),
         intervalMode: document.getElementById('intervalMode'),
         manualMode: document.getElementById('manualMode'),
-        toggleSlider: document.getElementById('toggleSlider'),
-        intervalLabel: document.getElementById('intervalLabel'),
-        manualLabel: document.getElementById('manualLabel'),
+        inputModeContainer: document.getElementById('inputModeContainer'),
+        vitalChartCanvas: document.getElementById('vitalChart'),
+        vitalTable: document.getElementById('vital_table'),
+        dbVitalTbody: document.getElementById('db_vital_tbody'),
         btnAddVital: document.getElementById('btn_add_vital'),
         btnClearForm: document.getElementById('btn_clear_form'),
+        btnApplyManual: document.getElementById('btn_apply_manual'),
+        // Input form vital sign
         vsRespirasi: document.getElementById('vs_respirasi'),
         vsNadi: document.getElementById('vs_nadi'),
         vsSistol: document.getElementById('vs_sistol'),
         vsDiastol: document.getElementById('vs_diastol'),
         vsFio2: document.getElementById('vs_fio2'),
         vsSpo2: document.getElementById('vs_spo2'),
+        // Tabel data baru
         vitalTbody: document.getElementById('vital_tbody'),
-        dbVitalTbody: document.getElementById('db_vital_tbody'),
-        vitalChartCanvas: document.getElementById('vitalChart'),
-        formCatatanSedasi: document.getElementById('formCatatanSedasi'),
-        hiddenVitalSignsInput: document.getElementById('vital_sign_data')
+        // Toggle UI controls
+        toggleSlider: document.getElementById('toggleSlider'),
+        intervalLabel: document.getElementById('intervalLabel'),
+        manualLabel: document.getElementById('manualLabel'),
     };
 
     function updateVitalSignsDisplay() {
@@ -2560,69 +2510,60 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Fungsi baru untuk menyimpan semua data (vital sign dulu, baru form utama)
-    async function saveAllData() {
-        console.log('🟢 saveAllData() dipanggil');
-        const vitalSignsData = vitalSignsArray;
-        console.log('📋 Jumlah vital sign yang akan disimpan:', vitalSignsData.length);
+    // Fungsi baru untuk memvalidasi dan menyimpan semua data
+    window.submitFormCatatanSedasi = async function() {
+        console.log('🟢 submitFormCatatanSedasi() dipanggil');
+        
+        if (typeof formSubmitted !== 'undefined' && formSubmitted) {
+            return false;
+        }
 
-        // 1. Simpan VITAL SIGN via API jika ada data baru
-        if (vitalSignsData && vitalSignsData.length > 0) {
-            console.log('🔵 Attempting to save vital signs via API...');
-            const payload = {
-                no_rawat: '<?= htmlspecialchars($no_rawat) ?>',
-                kode_paket: '<?= htmlspecialchars($kode_paket) ?>',
-                tanggal: '<?= htmlspecialchars($tanggal) ?>',
-                jam_mulai: '<?= htmlspecialchars($jam_mulai) ?>',
-                vital_signs: vitalSignsData,
-                mode: 'append' // Selalu tambahkan data baru dari form ini
-            };
-
-            console.log('📤 Payload yang dikirim:', payload);
-
-            try {
-                const response = await fetch('../process/process-simpan-vital-sign.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                console.log('📡 Response status:', response.status);
-                const result = await response.json();
-                console.log('📥 Response dari server:', result);
-
-                if (!result.success) {
-                    // Jika penyimpanan vital sign gagal, hentikan proses dan tampilkan error
-                    alert('❌ Error saat menyimpan Vital Sign: ' + result.message);
-                    console.error('API Error:', result.message);
-                    return; // Hentikan eksekusi
-                }
-                console.log('✅ Vital signs saved successfully via API.');
-            } catch (error) {
-                alert('❌ Terjadi kesalahan teknis saat menghubungi server untuk menyimpan vital sign.');
-                console.error('Fetch Error:', error);
-                return; // Hentikan eksekusi
+        const form = document.getElementById('formCatatanSedasi');
+        let isValid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.style.borderColor = 'red';
+            } else {
+                field.style.borderColor = '';
             }
-        } else {
-            console.log('⚠️ Tidak ada vital sign baru untuk disimpan, lanjut ke form utama');
+        });
+        
+        if (!isValid) {
+            console.warn('⚠️ Validasi gagal: Harap lengkapi semua field yang wajib diisi!');
+            alert('Harap lengkapi semua field yang wajib diisi!');
+            return false;
         }
 
-        // 2. Jika vital sign berhasil disimpan (atau tidak ada data vital sign), submit form utama
+        const vitalSignsData = [...dbVitalSigns, ...vitalSignsArray];
+        console.log('📋 Jumlah total vital sign yang akan di-submit ke backend PHP utama:', vitalSignsData.length);
+
+        // 2. Submit form utama (Data vital sign sudah terkumpul di array vitalSignsData)
         console.log('🟡 Proceeding to submit main form...');
-        // Kita tidak perlu lagi mengisi hidden input vital_sign_data karena sudah disimpan terpisah
-        if(el.hiddenVitalSignsInput) {
-            el.hiddenVitalSignsInput.value = ''; // Kosongkan untuk mencegah pemrosesan ganda
+        
+        // Beri tahu autosave.js bahwa form sedang disubmit, jangan tampilkan prompt
+        if (window.allowFormSubmission) {
+            window.allowFormSubmission();
         }
-        el.formCatatanSedasi.submit(); // Lanjutkan submit form utama
-    }
+        if (typeof formSubmitted !== 'undefined') {
+            formSubmitted = true;
+        }
+        localStorage.removeItem('autosave_formCatatanSedasi');
+
+        // Set hidden input vital_sign_data sebelum submit form utama
+        if(el.hiddenVitalSignsInput) {
+            el.hiddenVitalSignsInput.value = JSON.stringify(vitalSignsArray);
+            console.log('DEBUG sebelum submit: hiddenVitalSignsInput.value =', el.hiddenVitalSignsInput.value);
+        }
+        form.submit(); // Lanjutkan submit form utama
+    };
 
     if(el.formCatatanSedasi) el.formCatatanSedasi.addEventListener('submit', (e) => {
         e.preventDefault(); // Hentikan submit bawaan
-        console.log('Form submission intercepted. Calling saveAllData().');
-        saveAllData(); // Panggil fungsi baru kita
+        console.log('Form submission intercepted. Calling window.submitFormCatatanSedasi().');
+        window.submitFormCatatanSedasi(); // Panggil fungsi baru kita
     });
 
     if (el.vitalChartCanvas) {
@@ -2709,6 +2650,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // ------------------- 
     // 4. INITIALIZATION
     // ------------------- 
+    // Expose updateVitalSignsDisplay as global so deleteDbRecord/saveDbRecord can call it
+    window.updateVitalChart = updateVitalSignsDisplay;
     updateVitalSignsDisplay();
     if(el.btnSetNow) el.btnSetNow.click();
     if(el.btnSetWaktuConfig) el.btnSetWaktuConfig.click();

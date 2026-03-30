@@ -263,7 +263,74 @@ try {
 
     if ($result) {
         $affectedRows = $stmt->rowCount();
-        
+        // === LOGIKA BARU: Simpan Vital Sign (mirip submit-kamar-pemulihan.php) ===
+        $vital_sign_data = $_POST['vital_sign_data'] ?? null;
+        if (!empty($vital_sign_data)) {
+            $vitalSigns = json_decode($vital_sign_data, true);
+            if (is_array($vitalSigns)) {
+                // 1. Hapus record (_deleted)
+                $deletedRecords = array_filter($vitalSigns, function($record) {
+                    return isset($record['_deleted']) && $record['_deleted'] === true && isset($record['id']) && is_string($record['id']);
+                });
+                if (!empty($deletedRecords)) {
+                    $deleteQuery = "DELETE FROM tbl_anestesi_vital_sign WHERE id = ?";
+                    $deleteStmt = $db->prepare($deleteQuery);
+                    foreach ($deletedRecords as $record) {
+                        $deleteStmt->execute([$record['id']]);
+                    }
+                }
+                // 2. Update record lama (id UUID)
+                $updatedRecords = array_filter($vitalSigns, function($record) {
+                    return isset($record['id']) && is_string($record['id']) && (!isset($record['_deleted']) || $record['_deleted'] === false);
+                });
+                if (!empty($updatedRecords)) {
+                    $updateQuery = "UPDATE tbl_anestesi_vital_sign SET waktu = ?, respirasi = ?, nadi = ?, td_sistolik = ?, td_diastolik = ?, fio2 = ?, spo2 = ? WHERE id = ?";
+                    $updateStmt = $db->prepare($updateQuery);
+                    foreach ($updatedRecords as $vital) {
+                        $waktuString = $vital['jam'] ?? $vital['waktu'] ?? '00:00:00';
+                        $waktuDatetime = (strlen($waktuString) <= 8) ? ($tanggal . ' ' . $waktuString) : $waktuString;
+                        $updateStmt->execute([
+                            $waktuDatetime,
+                            $vital['respirasi'] ?? null,
+                            $vital['nadi'] ?? null,
+                            $vital['td_sistolik'] ?? $vital['sistol'] ?? null,
+                            $vital['td_diastolik'] ?? $vital['diastol'] ?? null,
+                            $vital['fio2'] ?? null,
+                            $vital['spo2'] ?? null,
+                            $vital['id']
+                        ]);
+                    }
+                }
+                // 3. Insert record baru (id number)
+                $newRecords = array_filter($vitalSigns, function($record) {
+                    return isset($record['id']) && is_numeric($record['id']);
+                });
+                if (!empty($newRecords)) {
+                    $insertQuery = "INSERT INTO tbl_anestesi_vital_sign (id, no_rawat, kode_paket, tanggal, jam_mulai, waktu, respirasi, nadi, td_sistolik, td_diastolik, fio2, spo2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $insertStmt = $db->prepare($insertQuery);
+                    foreach ($newRecords as $vital) {
+                        $vitalId = generateUUID();
+                        $waktuString = $vital['jam'] ?? $vital['waktu'] ?? '00:00:00';
+                        $waktuDatetime = (strlen($waktuString) <= 8) ? ($tanggal . ' ' . $waktuString) : $waktuString;
+                        $insertStmt->execute([
+                            $vitalId,
+                            $no_rawat,
+                            $kode_paket,
+                            $tanggal,
+                            $jam_mulai,
+                            $waktuDatetime,
+                            $vital['respirasi'] ?? null,
+                            $vital['nadi'] ?? null,
+                            $vital['td_sistolik'] ?? $vital['sistol'] ?? null,
+                            $vital['td_diastolik'] ?? $vital['diastol'] ?? null,
+                            $vital['fio2'] ?? null,
+                            $vital['spo2'] ?? null
+                        ]);
+                    }
+                }
+            }
+        }
+        // === END LOGIKA BARU ===
         if ($isUpdate) {
             $_SESSION['success'] = "Data catatan sedasi berhasil diperbarui!";
         } else {
